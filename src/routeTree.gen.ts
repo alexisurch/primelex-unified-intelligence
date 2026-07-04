@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
 import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
+import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
@@ -37,6 +38,11 @@ const AppTripsDeliveriesRoute = AppTripsDeliveriesRouteImport.update({
 const AppSafetyIncidentsRoute = AppSafetyIncidentsRouteImport.update({
   id: '/safety-incidents',
   path: '/safety-incidents',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => AppRoute,
 } as any)
 const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
+  '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
 }
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
+  '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/': typeof AppIndexRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
+  '/_app/reports': typeof AppReportsRoute
   '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/_app/': typeof AppIndexRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/fleet-operations'
     | '/fuel-intelligence'
     | '/maintenance'
+    | '/reports'
     | '/safety-incidents'
     | '/trips-deliveries'
   fileRoutesByTo: FileRoutesByTo
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/fleet-operations'
     | '/fuel-intelligence'
     | '/maintenance'
+    | '/reports'
     | '/safety-incidents'
     | '/trips-deliveries'
     | '/'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/_app/fleet-operations'
     | '/_app/fuel-intelligence'
     | '/_app/maintenance'
+    | '/_app/reports'
     | '/_app/safety-incidents'
     | '/_app/trips-deliveries'
     | '/_app/'
@@ -174,6 +186,13 @@ declare module '@tanstack/react-router' {
       path: '/safety-incidents'
       fullPath: '/safety-incidents'
       preLoaderRoute: typeof AppSafetyIncidentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/reports': {
+      id: '/_app/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/maintenance': {
@@ -228,6 +247,7 @@ interface AppRouteChildren {
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
+  AppReportsRoute: typeof AppReportsRoute
   AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -240,6 +260,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFleetOperationsRoute: AppFleetOperationsRoute,
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
+  AppReportsRoute: AppReportsRoute,
   AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
   AppIndexRoute: AppIndexRoute,
