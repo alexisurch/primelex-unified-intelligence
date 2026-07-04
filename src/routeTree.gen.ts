@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
+import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
@@ -30,6 +31,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppTripsDeliveriesRoute = AppTripsDeliveriesRouteImport.update({
   id: '/trips-deliveries',
   path: '/trips-deliveries',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSafetyIncidentsRoute = AppSafetyIncidentsRouteImport.update({
+  id: '/safety-incidents',
+  path: '/safety-incidents',
   getParentRoute: () => AppRoute,
 } as any)
 const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
+  '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
 }
 export interface FileRoutesByTo {
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
+  '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/': typeof AppIndexRoute
 }
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
+  '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/_app/': typeof AppIndexRoute
 }
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/fleet-operations'
     | '/fuel-intelligence'
     | '/maintenance'
+    | '/safety-incidents'
     | '/trips-deliveries'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
     | '/fleet-operations'
     | '/fuel-intelligence'
     | '/maintenance'
+    | '/safety-incidents'
     | '/trips-deliveries'
     | '/'
   id:
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
     | '/_app/fleet-operations'
     | '/_app/fuel-intelligence'
     | '/_app/maintenance'
+    | '/_app/safety-incidents'
     | '/_app/trips-deliveries'
     | '/_app/'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/trips-deliveries'
       fullPath: '/trips-deliveries'
       preLoaderRoute: typeof AppTripsDeliveriesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/safety-incidents': {
+      id: '/_app/safety-incidents'
+      path: '/safety-incidents'
+      fullPath: '/safety-incidents'
+      preLoaderRoute: typeof AppSafetyIncidentsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/maintenance': {
@@ -189,6 +208,7 @@ interface AppRouteChildren {
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
+  AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
   AppIndexRoute: typeof AppIndexRoute
 }
@@ -199,6 +219,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFleetOperationsRoute: AppFleetOperationsRoute,
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
+  AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
   AppIndexRoute: AppIndexRoute,
 }
