@@ -17,6 +17,7 @@ import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
 import { Route as AppDriversComplianceRouteImport } from './routes/_app.drivers-compliance'
+import { Route as AppDocumentsRouteImport } from './routes/_app.documents'
 import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
 
 const AppRoute = AppRouteImport.update({
@@ -58,6 +59,11 @@ const AppDriversComplianceRoute = AppDriversComplianceRouteImport.update({
   path: '/drivers-compliance',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDocumentsRoute = AppDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
   id: '/dispatch-center',
   path: '/dispatch-center',
@@ -67,6 +73,7 @@ const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
+  '/documents': typeof AppDocumentsRoute
   '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
@@ -76,6 +83,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/dispatch-center': typeof AppDispatchCenterRoute
+  '/documents': typeof AppDocumentsRoute
   '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_app/dispatch-center': typeof AppDispatchCenterRoute
+  '/_app/documents': typeof AppDocumentsRoute
   '/_app/drivers-compliance': typeof AppDriversComplianceRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dispatch-center'
+    | '/documents'
     | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dispatch-center'
+    | '/documents'
     | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_app/dispatch-center'
+    | '/_app/documents'
     | '/_app/drivers-compliance'
     | '/_app/fleet-operations'
     | '/_app/fuel-intelligence'
@@ -192,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDriversComplianceRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/documents': {
+      id: '/_app/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof AppDocumentsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dispatch-center': {
       id: '/_app/dispatch-center'
       path: '/dispatch-center'
@@ -204,6 +223,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppDispatchCenterRoute: typeof AppDispatchCenterRoute
+  AppDocumentsRoute: typeof AppDocumentsRoute
   AppDriversComplianceRoute: typeof AppDriversComplianceRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
@@ -215,6 +235,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppDispatchCenterRoute: AppDispatchCenterRoute,
+  AppDocumentsRoute: AppDocumentsRoute,
   AppDriversComplianceRoute: AppDriversComplianceRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
