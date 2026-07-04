@@ -15,6 +15,7 @@ import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deli
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
+import { Route as AppDriversComplianceRouteImport } from './routes/_app.drivers-compliance'
 import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
 
 const AppRoute = AppRouteImport.update({
@@ -46,6 +47,11 @@ const AppFleetOperationsRoute = AppFleetOperationsRouteImport.update({
   path: '/fleet-operations',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDriversComplianceRoute = AppDriversComplianceRouteImport.update({
+  id: '/drivers-compliance',
+  path: '/drivers-compliance',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
   id: '/dispatch-center',
   path: '/dispatch-center',
@@ -55,6 +61,7 @@ const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
+  '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/dispatch-center': typeof AppDispatchCenterRoute
+  '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
@@ -72,6 +80,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_app/dispatch-center': typeof AppDispatchCenterRoute
+  '/_app/drivers-compliance': typeof AppDriversComplianceRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
@@ -83,6 +92,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dispatch-center'
+    | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
     | '/maintenance'
@@ -90,6 +100,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dispatch-center'
+    | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
     | '/maintenance'
@@ -99,6 +110,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_app'
     | '/_app/dispatch-center'
+    | '/_app/drivers-compliance'
     | '/_app/fleet-operations'
     | '/_app/fuel-intelligence'
     | '/_app/maintenance'
@@ -154,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFleetOperationsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/drivers-compliance': {
+      id: '/_app/drivers-compliance'
+      path: '/drivers-compliance'
+      fullPath: '/drivers-compliance'
+      preLoaderRoute: typeof AppDriversComplianceRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dispatch-center': {
       id: '/_app/dispatch-center'
       path: '/dispatch-center'
@@ -166,6 +185,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppDispatchCenterRoute: typeof AppDispatchCenterRoute
+  AppDriversComplianceRoute: typeof AppDriversComplianceRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
@@ -175,6 +195,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppDispatchCenterRoute: AppDispatchCenterRoute,
+  AppDriversComplianceRoute: AppDriversComplianceRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
