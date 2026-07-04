@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppUsersAccessRouteImport } from './routes/_app.users-access'
 import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
+import { Route as AppSystemSettingsRouteImport } from './routes/_app.system-settings'
 import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
@@ -41,6 +42,11 @@ const AppUsersAccessRoute = AppUsersAccessRouteImport.update({
 const AppTripsDeliveriesRoute = AppTripsDeliveriesRouteImport.update({
   id: '/trips-deliveries',
   path: '/trips-deliveries',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSystemSettingsRoute = AppSystemSettingsRouteImport.update({
+  id: '/system-settings',
+  path: '/system-settings',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSafetyIncidentsRoute = AppSafetyIncidentsRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
+  '/system-settings': typeof AppSystemSettingsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/users-access': typeof AppUsersAccessRoute
 }
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
+  '/system-settings': typeof AppSystemSettingsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/users-access': typeof AppUsersAccessRoute
   '/': typeof AppIndexRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/reports': typeof AppReportsRoute
   '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
+  '/_app/system-settings': typeof AppSystemSettingsRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/_app/users-access': typeof AppUsersAccessRoute
   '/_app/': typeof AppIndexRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/reports'
     | '/safety-incidents'
+    | '/system-settings'
     | '/trips-deliveries'
     | '/users-access'
   fileRoutesByTo: FileRoutesByTo
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/maintenance'
     | '/reports'
     | '/safety-incidents'
+    | '/system-settings'
     | '/trips-deliveries'
     | '/users-access'
     | '/'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/_app/maintenance'
     | '/_app/reports'
     | '/_app/safety-incidents'
+    | '/_app/system-settings'
     | '/_app/trips-deliveries'
     | '/_app/users-access'
     | '/_app/'
@@ -222,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/trips-deliveries'
       fullPath: '/trips-deliveries'
       preLoaderRoute: typeof AppTripsDeliveriesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/system-settings': {
+      id: '/_app/system-settings'
+      path: '/system-settings'
+      fullPath: '/system-settings'
+      preLoaderRoute: typeof AppSystemSettingsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/safety-incidents': {
@@ -308,6 +327,7 @@ interface AppRouteChildren {
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppReportsRoute: typeof AppReportsRoute
   AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
+  AppSystemSettingsRoute: typeof AppSystemSettingsRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
   AppUsersAccessRoute: typeof AppUsersAccessRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -324,6 +344,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppReportsRoute: AppReportsRoute,
   AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
+  AppSystemSettingsRoute: AppSystemSettingsRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
   AppUsersAccessRoute: AppUsersAccessRoute,
   AppIndexRoute: AppIndexRoute,
