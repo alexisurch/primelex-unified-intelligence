@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
+import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
 import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
 
@@ -35,6 +36,11 @@ const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
   path: '/maintenance',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFuelIntelligenceRoute = AppFuelIntelligenceRouteImport.update({
+  id: '/fuel-intelligence',
+  path: '/fuel-intelligence',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFleetOperationsRoute = AppFleetOperationsRouteImport.update({
   id: '/fleet-operations',
   path: '/fleet-operations',
@@ -50,12 +56,14 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
+  '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
 }
 export interface FileRoutesByTo {
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
+  '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/': typeof AppIndexRoute
@@ -65,6 +73,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_app/dispatch-center': typeof AppDispatchCenterRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
+  '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/_app/': typeof AppIndexRoute
@@ -75,12 +84,14 @@ export interface FileRouteTypes {
     | '/'
     | '/dispatch-center'
     | '/fleet-operations'
+    | '/fuel-intelligence'
     | '/maintenance'
     | '/trips-deliveries'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dispatch-center'
     | '/fleet-operations'
+    | '/fuel-intelligence'
     | '/maintenance'
     | '/trips-deliveries'
     | '/'
@@ -89,6 +100,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_app/dispatch-center'
     | '/_app/fleet-operations'
+    | '/_app/fuel-intelligence'
     | '/_app/maintenance'
     | '/_app/trips-deliveries'
     | '/_app/'
@@ -128,6 +140,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMaintenanceRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/fuel-intelligence': {
+      id: '/_app/fuel-intelligence'
+      path: '/fuel-intelligence'
+      fullPath: '/fuel-intelligence'
+      preLoaderRoute: typeof AppFuelIntelligenceRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/fleet-operations': {
       id: '/_app/fleet-operations'
       path: '/fleet-operations'
@@ -148,6 +167,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppDispatchCenterRoute: typeof AppDispatchCenterRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
+  AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -156,6 +176,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppDispatchCenterRoute: AppDispatchCenterRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,
+  AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
   AppIndexRoute: AppIndexRoute,
