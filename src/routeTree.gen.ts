@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppUsersAccessRouteImport } from './routes/_app.users-access'
 import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
 import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
@@ -30,6 +31,11 @@ const AppRoute = AppRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppUsersAccessRoute = AppUsersAccessRouteImport.update({
+  id: '/users-access',
+  path: '/users-access',
   getParentRoute: () => AppRoute,
 } as any)
 const AppTripsDeliveriesRoute = AppTripsDeliveriesRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
+  '/users-access': typeof AppUsersAccessRoute
 }
 export interface FileRoutesByTo {
   '/dispatch-center': typeof AppDispatchCenterRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
+  '/users-access': typeof AppUsersAccessRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/_app/reports': typeof AppReportsRoute
   '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
+  '/_app/users-access': typeof AppUsersAccessRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/safety-incidents'
     | '/trips-deliveries'
+    | '/users-access'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dispatch-center'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/safety-incidents'
     | '/trips-deliveries'
+    | '/users-access'
     | '/'
   id:
     | '__root__'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/_app/reports'
     | '/_app/safety-incidents'
     | '/_app/trips-deliveries'
+    | '/_app/users-access'
     | '/_app/'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/users-access': {
+      id: '/_app/users-access'
+      path: '/users-access'
+      fullPath: '/users-access'
+      preLoaderRoute: typeof AppUsersAccessRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/trips-deliveries': {
@@ -290,6 +309,7 @@ interface AppRouteChildren {
   AppReportsRoute: typeof AppReportsRoute
   AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
+  AppUsersAccessRoute: typeof AppUsersAccessRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
@@ -305,6 +325,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppReportsRoute: AppReportsRoute,
   AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
+  AppUsersAccessRoute: AppUsersAccessRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
