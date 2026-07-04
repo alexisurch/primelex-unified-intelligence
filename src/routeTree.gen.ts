@@ -9,61 +9,163 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
+import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
+import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
+import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTripsDeliveriesRoute = AppTripsDeliveriesRouteImport.update({
+  id: '/trips-deliveries',
+  path: '/trips-deliveries',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
+  id: '/maintenance',
+  path: '/maintenance',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFleetOperationsRoute = AppFleetOperationsRouteImport.update({
+  id: '/fleet-operations',
+  path: '/fleet-operations',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
+  id: '/dispatch-center',
+  path: '/dispatch-center',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/dispatch-center': typeof AppDispatchCenterRoute
+  '/fleet-operations': typeof AppFleetOperationsRoute
+  '/maintenance': typeof AppMaintenanceRoute
+  '/trips-deliveries': typeof AppTripsDeliveriesRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/dispatch-center': typeof AppDispatchCenterRoute
+  '/fleet-operations': typeof AppFleetOperationsRoute
+  '/maintenance': typeof AppMaintenanceRoute
+  '/trips-deliveries': typeof AppTripsDeliveriesRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/dispatch-center': typeof AppDispatchCenterRoute
+  '/_app/fleet-operations': typeof AppFleetOperationsRoute
+  '/_app/maintenance': typeof AppMaintenanceRoute
+  '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dispatch-center'
+    | '/fleet-operations'
+    | '/maintenance'
+    | '/trips-deliveries'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/dispatch-center'
+    | '/fleet-operations'
+    | '/maintenance'
+    | '/trips-deliveries'
+    | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/dispatch-center'
+    | '/_app/fleet-operations'
+    | '/_app/maintenance'
+    | '/_app/trips-deliveries'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/trips-deliveries': {
+      id: '/_app/trips-deliveries'
+      path: '/trips-deliveries'
+      fullPath: '/trips-deliveries'
+      preLoaderRoute: typeof AppTripsDeliveriesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/maintenance': {
+      id: '/_app/maintenance'
+      path: '/maintenance'
+      fullPath: '/maintenance'
+      preLoaderRoute: typeof AppMaintenanceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/fleet-operations': {
+      id: '/_app/fleet-operations'
+      path: '/fleet-operations'
+      fullPath: '/fleet-operations'
+      preLoaderRoute: typeof AppFleetOperationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dispatch-center': {
+      id: '/_app/dispatch-center'
+      path: '/dispatch-center'
+      fullPath: '/dispatch-center'
+      preLoaderRoute: typeof AppDispatchCenterRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppDispatchCenterRoute: typeof AppDispatchCenterRoute
+  AppFleetOperationsRoute: typeof AppFleetOperationsRoute
+  AppMaintenanceRoute: typeof AppMaintenanceRoute
+  AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppDispatchCenterRoute: AppDispatchCenterRoute,
+  AppFleetOperationsRoute: AppFleetOperationsRoute,
+  AppMaintenanceRoute: AppMaintenanceRoute,
+  AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
