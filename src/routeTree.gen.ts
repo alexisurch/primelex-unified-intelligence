@@ -15,6 +15,7 @@ import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deli
 import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
+import { Route as AppKpiScorecardRouteImport } from './routes/_app.kpi-scorecard'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
 import { Route as AppDriversComplianceRouteImport } from './routes/_app.drivers-compliance'
@@ -50,6 +51,11 @@ const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
   path: '/maintenance',
   getParentRoute: () => AppRoute,
 } as any)
+const AppKpiScorecardRoute = AppKpiScorecardRouteImport.update({
+  id: '/kpi-scorecard',
+  path: '/kpi-scorecard',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFuelIntelligenceRoute = AppFuelIntelligenceRouteImport.update({
   id: '/fuel-intelligence',
   path: '/fuel-intelligence',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
+  '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
+  '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/_app/drivers-compliance': typeof AppDriversComplianceRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
+  '/_app/kpi-scorecard': typeof AppKpiScorecardRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/reports': typeof AppReportsRoute
   '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
+    | '/kpi-scorecard'
     | '/maintenance'
     | '/reports'
     | '/safety-incidents'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
+    | '/kpi-scorecard'
     | '/maintenance'
     | '/reports'
     | '/safety-incidents'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/_app/drivers-compliance'
     | '/_app/fleet-operations'
     | '/_app/fuel-intelligence'
+    | '/_app/kpi-scorecard'
     | '/_app/maintenance'
     | '/_app/reports'
     | '/_app/safety-incidents'
@@ -202,6 +214,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMaintenanceRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/kpi-scorecard': {
+      id: '/_app/kpi-scorecard'
+      path: '/kpi-scorecard'
+      fullPath: '/kpi-scorecard'
+      preLoaderRoute: typeof AppKpiScorecardRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/fuel-intelligence': {
       id: '/_app/fuel-intelligence'
       path: '/fuel-intelligence'
@@ -246,6 +265,7 @@ interface AppRouteChildren {
   AppDriversComplianceRoute: typeof AppDriversComplianceRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
+  AppKpiScorecardRoute: typeof AppKpiScorecardRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppReportsRoute: typeof AppReportsRoute
   AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
@@ -259,6 +279,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDriversComplianceRoute: AppDriversComplianceRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
+  AppKpiScorecardRoute: AppKpiScorecardRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppReportsRoute: AppReportsRoute,
   AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
