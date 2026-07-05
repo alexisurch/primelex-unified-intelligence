@@ -1,5 +1,7 @@
 import { GlassCard } from "./Cards";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Satellite, MapPinOff } from "lucide-react";
+import { usePreferences } from "@/lib/preferences";
+
 
 export function AIInsight({ title, insights }: { title?: string; insights: { label: string; detail: string; tone?: "info" | "success" | "warning" | "danger" | "purple" }[] }) {
   return (
