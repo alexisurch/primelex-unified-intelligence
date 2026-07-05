@@ -12,8 +12,11 @@ export const Route = createFileRoute("/_app/dispatch-center")({
 });
 
 function DispatchCenter() {
+  const { trackingMode } = usePreferences();
+  const isManual = trackingMode === "manual";
   const pending = trips.filter((t) => t.status === "Scheduled").slice(0, 6);
   const available = trucks.filter((t) => t.status === "Idle").slice(0, 6);
+
 
   return (
     <>
