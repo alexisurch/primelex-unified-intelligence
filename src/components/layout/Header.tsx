@@ -11,7 +11,7 @@ interface HeaderProps {
   actions?: React.ReactNode;
 }
 
-export function Header({ title, subtitle, showDate = true, showExport = true, actions }: HeaderProps) {
+export function Header({ title, subtitle, showDate = true, showExport = false, actions }: HeaderProps) {
   const { resolvedTheme, toggleTheme } = usePreferences();
   const isDark = resolvedTheme === "dark";
 
