@@ -32,10 +32,19 @@ export function Header({ title, subtitle, showDate = true, showExport = true, ac
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </button>
           )}
+          <button
+            onClick={toggleTheme}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-elevated/60 text-foreground hover:border-primary/40"
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-elevated/60 hover:border-primary/40">
             <Bell className="h-4 w-4" />
             <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-white">8</span>
           </button>
+
           <div className="flex items-center gap-3 rounded-lg border border-border bg-elevated/60 px-2 py-1.5">
             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-purple ring-2 ring-primary/30" />
             <div className="pr-2 text-right">
