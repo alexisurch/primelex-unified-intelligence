@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
-import { KPICard, SectionCard, GlassCard, Pill } from "@/components/shared/Cards";
+import { KPICard, SectionCard, Pill } from "@/components/shared/Cards";
 import { AIInsight, InteractiveMap } from "@/components/shared/Insights";
 import { trips, trucks } from "@/lib/mock-data";
-import { Radio, Truck, Clock, CheckCircle2, GripVertical, Zap } from "lucide-react";
+import { usePreferences } from "@/lib/preferences";
+import { Radio, Truck, Clock, CheckCircle2, GripVertical, Zap, MapPin } from "lucide-react";
+
 
 export const Route = createFileRoute("/_app/dispatch-center")({
   component: DispatchCenter,
