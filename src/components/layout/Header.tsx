@@ -1,5 +1,7 @@
-import { Bell, Calendar, ChevronDown, Download } from "lucide-react";
+import { Bell, Calendar, ChevronDown, Download, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePreferences } from "@/lib/preferences";
+
 
 interface HeaderProps {
   title: string;
