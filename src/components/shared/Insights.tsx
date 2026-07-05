@@ -1,5 +1,7 @@
 import { GlassCard } from "./Cards";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Satellite, MapPinOff } from "lucide-react";
+import { usePreferences } from "@/lib/preferences";
+
 
 export function AIInsight({ title, insights }: { title?: string; insights: { label: string; detail: string; tone?: "info" | "success" | "warning" | "danger" | "purple" }[] }) {
   return (
@@ -26,7 +28,12 @@ export function AIInsight({ title, insights }: { title?: string; insights: { lab
 }
 
 export function InteractiveMap({ height = 320, label = "Live Fleet Map" }: { height?: number; label?: string }) {
+  const { trackingMode } = usePreferences();
+  if (trackingMode === "manual") {
+    return <ManualTrackingPlaceholder height={height} />;
+  }
   return (
+
     <div
       className="relative overflow-hidden rounded-xl border border-border/60 bg-[radial-gradient(ellipse_at_center,theme(colors.primary/15%),transparent_60%)]"
       style={{ height }}
@@ -68,3 +75,41 @@ export function InteractiveMap({ height = 320, label = "Live Fleet Map" }: { hei
     </div>
   );
 }
+
+export function ManualTrackingPlaceholder({ height = 320 }: { height?: number }) {
+  return (
+    <div
+      className="relative flex flex-col items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-[radial-gradient(ellipse_at_center,theme(colors.primary/10%),transparent_60%)] px-6 text-center"
+      style={{ height }}
+    >
+      <svg className="absolute inset-0 h-full w-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="manualgrid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="oklch(0.6 0 0 / 0.15)" strokeWidth="1"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#manualgrid)" />
+      </svg>
+      <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-elevated/70 shadow-lg">
+        <MapPinOff className="h-6 w-6 text-muted-foreground" />
+        <span className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 ring-2 ring-background">
+          <Satellite className="h-3 w-3 text-primary" />
+        </span>
+      </div>
+      <h4 className="relative mt-4 text-[15px] font-semibold text-foreground">Live Fleet Map Unavailable</h4>
+      <p className="relative mt-1.5 max-w-md text-xs leading-relaxed text-muted-foreground">
+        Your organization is currently using <span className="font-medium text-foreground">Manual Tracking</span>.
+        Live vehicle locations require an integrated GPS tracking provider.
+      </p>
+      <div className="relative mt-4 flex flex-wrap items-center justify-center gap-2">
+        <button className="rounded-md border border-primary/40 bg-primary/15 px-3 py-1.5 text-[11px] font-semibold text-primary hover:bg-primary/25">
+          Learn About GPS Integration
+        </button>
+        <span className="rounded-md border border-border bg-background/60 px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          Tracking Source · Manual
+        </span>
+      </div>
+    </div>
+  );
+}
+

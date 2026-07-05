@@ -1,5 +1,7 @@
-import { Bell, Calendar, ChevronDown, Download } from "lucide-react";
+import { Bell, Calendar, ChevronDown, Download, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePreferences } from "@/lib/preferences";
+
 
 interface HeaderProps {
   title: string;
@@ -10,6 +12,9 @@ interface HeaderProps {
 }
 
 export function Header({ title, subtitle, showDate = true, showExport = true, actions }: HeaderProps) {
+  const { resolvedTheme, toggleTheme } = usePreferences();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <div className="flex flex-col gap-4 border-b border-border/60 bg-background/60 px-8 py-5 backdrop-blur-xl">
       <div className="flex items-start justify-between gap-4">
@@ -27,10 +32,19 @@ export function Header({ title, subtitle, showDate = true, showExport = true, ac
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </button>
           )}
+          <button
+            onClick={toggleTheme}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-elevated/60 text-foreground hover:border-primary/40"
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-elevated/60 hover:border-primary/40">
             <Bell className="h-4 w-4" />
             <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-white">8</span>
           </button>
+
           <div className="flex items-center gap-3 rounded-lg border border-border bg-elevated/60 px-2 py-1.5">
             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-purple ring-2 ring-primary/30" />
             <div className="pr-2 text-right">

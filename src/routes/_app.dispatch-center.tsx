@@ -1,17 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
-import { KPICard, SectionCard, GlassCard, Pill } from "@/components/shared/Cards";
+import { KPICard, SectionCard, Pill } from "@/components/shared/Cards";
 import { AIInsight, InteractiveMap } from "@/components/shared/Insights";
 import { trips, trucks } from "@/lib/mock-data";
-import { Radio, Truck, Clock, CheckCircle2, GripVertical, Zap } from "lucide-react";
+import { usePreferences } from "@/lib/preferences";
+import { Radio, Truck, Clock, CheckCircle2, GripVertical, Zap, MapPin } from "lucide-react";
+
 
 export const Route = createFileRoute("/_app/dispatch-center")({
   component: DispatchCenter,
 });
 
 function DispatchCenter() {
+  const { trackingMode } = usePreferences();
+  const isManual = trackingMode === "manual";
   const pending = trips.filter((t) => t.status === "Scheduled").slice(0, 6);
   const available = trucks.filter((t) => t.status === "Idle").slice(0, 6);
+
 
   return (
     <>
@@ -57,10 +62,18 @@ function DispatchCenter() {
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-semibold">{t.id}</div>
                       <div className="text-[11px] text-muted-foreground truncate">{t.driver} • {t.fuel}% fuel</div>
+                      {isManual && (
+                        <div className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
+                          <MapPin className="h-3 w-3" />
+                          <span className="truncate">Last known: {t.location}</span>
+                          <span className="ml-1 rounded bg-white/[0.05] px-1 py-0.5 uppercase tracking-wider text-[9px]">Manual</span>
+                        </div>
+                      )}
                     </div>
                     <button className="rounded-md bg-primary/20 px-2 py-1 text-[10px] font-semibold text-primary hover:bg-primary/30">Assign</button>
                   </div>
                 ))}
+
               </div>
             </SectionCard>
             <AIInsight insights={[
