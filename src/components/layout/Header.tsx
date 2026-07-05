@@ -12,6 +12,9 @@ interface HeaderProps {
 }
 
 export function Header({ title, subtitle, showDate = true, showExport = true, actions }: HeaderProps) {
+  const { resolvedTheme, toggleTheme } = usePreferences();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <div className="flex flex-col gap-4 border-b border-border/60 bg-background/60 px-8 py-5 backdrop-blur-xl">
       <div className="flex items-start justify-between gap-4">
