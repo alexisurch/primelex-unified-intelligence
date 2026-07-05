@@ -62,10 +62,18 @@ function DispatchCenter() {
                     <div className="flex-1 min-w-0">
                       <div className="text-xs font-semibold">{t.id}</div>
                       <div className="text-[11px] text-muted-foreground truncate">{t.driver} • {t.fuel}% fuel</div>
+                      {isManual && (
+                        <div className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
+                          <MapPin className="h-3 w-3" />
+                          <span className="truncate">Last known: {t.location}</span>
+                          <span className="ml-1 rounded bg-white/[0.05] px-1 py-0.5 uppercase tracking-wider text-[9px]">Manual</span>
+                        </div>
+                      )}
                     </div>
                     <button className="rounded-md bg-primary/20 px-2 py-1 text-[10px] font-semibold text-primary hover:bg-primary/30">Assign</button>
                   </div>
                 ))}
+
               </div>
             </SectionCard>
             <AIInsight insights={[
