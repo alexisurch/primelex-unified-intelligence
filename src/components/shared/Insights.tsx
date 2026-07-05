@@ -28,7 +28,12 @@ export function AIInsight({ title, insights }: { title?: string; insights: { lab
 }
 
 export function InteractiveMap({ height = 320, label = "Live Fleet Map" }: { height?: number; label?: string }) {
+  const { trackingMode } = usePreferences();
+  if (trackingMode === "manual") {
+    return <ManualTrackingPlaceholder height={height} />;
+  }
   return (
+
     <div
       className="relative overflow-hidden rounded-xl border border-border/60 bg-[radial-gradient(ellipse_at_center,theme(colors.primary/15%),transparent_60%)]"
       style={{ height }}
