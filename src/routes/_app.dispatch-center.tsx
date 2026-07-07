@@ -1,103 +1,264 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
-import { KPICard, SectionCard, Pill } from "@/components/shared/Cards";
-import { AIInsight, InteractiveMap } from "@/components/shared/Insights";
-import { trips, trucks } from "@/lib/mock-data";
-import { usePreferences } from "@/lib/preferences";
-import { Radio, Truck, Clock, CheckCircle2, GripVertical, Zap, MapPin } from "lucide-react";
-
+import { GlassCard, Pill } from "@/components/shared/Cards";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState, useMemo } from "react";
+import { trucks, drivers } from "@/lib/mock-data";
+import { useProfileDrawer } from "@/lib/profile-drawer";
+import { toast } from "sonner";
+import {
+  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, Clock, X, Phone,
+} from "lucide-react";
 
 export const Route = createFileRoute("/_app/dispatch-center")({
   component: DispatchCenter,
 });
 
 function DispatchCenter() {
-  const { trackingMode } = usePreferences();
-  const isManual = trackingMode === "manual";
-  const pending = trips.filter((t) => t.status === "Scheduled").slice(0, 6);
-  const available = trucks.filter((t) => t.status === "Idle").slice(0, 6);
+  const { open } = useProfileDrawer();
+  const [pickup, setPickup] = useState("ABC Stores, 27 Warehouse Road, Ikeja, Lagos");
+  const [truckType, setTruckType] = useState("any");
+  const [selectedId, setSelectedId] = useState<string>("TRK-1000");
+  const [detailOpen, setDetailOpen] = useState(true);
 
+  const available = useMemo(() => trucks.filter(t => t.status !== "Maintenance" && t.status !== "Offline").slice(0, 6).map((t, i) => ({
+    ...t,
+    distanceKm: [8.2, 9.7, 11.3, 14.8, 20.1, 22.4][i] ?? (8 + i * 3),
+    tone: (["success","success","success","warning","danger","danger"] as const)[i] ?? "success",
+  })), []);
+
+  const selected = available.find(t => t.id === selectedId) ?? available[0];
+  const selectedDriver = drivers.find(d => d.name === selected?.driver);
 
   return (
     <>
-      <Header title="Dispatch Center" subtitle="Operational command center for real-time truck assignment" />
-      <div className="space-y-6 p-8">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <KPICard label="Pending Requests" value="14" icon={Radio} tone="warning" />
-          <KPICard label="Available Trucks" value="12" icon={Truck} tone="success" />
-          <KPICard label="Avg Assign Time" value="4.2m" icon={Clock} tone="info" delta={{ value: "12%", direction: "up" }} />
-          <KPICard label="Assigned Today" value="87" icon={CheckCircle2} tone="purple" />
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.4fr_1fr_1fr]">
-          <SectionCard title="Live Dispatch Map">
-            <InteractiveMap height={420} label="Real-time nearby trucks" />
-          </SectionCard>
-
-          <SectionCard title="Trip Requests" action={<Pill tone="warning">{pending.length} pending</Pill>}>
-            <div className="space-y-2.5">
-              {pending.map((t) => (
-                <div key={t.id} className="cursor-grab rounded-lg border border-border/60 bg-background/30 p-3 transition-all hover:border-primary/40">
-                  <div className="flex items-center gap-2">
-                    <GripVertical className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs font-semibold text-primary">{t.id}</span>
-                    <Pill tone={t.priority === "Critical" ? "danger" : t.priority === "High" ? "warning" : "info"}>{t.priority}</Pill>
-                  </div>
-                  <div className="mt-2 text-sm font-medium">{t.customer}</div>
-                  <div className="mt-0.5 text-xs text-muted-foreground">{t.origin} → {t.destination}</div>
-                  <div className="mt-2 flex justify-between text-[11px] text-muted-foreground">
-                    <span>{t.distance} km</span><span>ETA {t.eta}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </SectionCard>
-
+      <Header title="Dispatch Command Center" subtitle="Find and dispatch the best available trucks near any location" />
+      <div className="p-6">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[380px_1fr]">
+          {/* LEFT rail */}
           <div className="space-y-4">
-            <SectionCard title="Available Trucks">
-              <div className="space-y-2">
-                {available.map((t) => (
-                  <div key={t.id} className="flex items-center gap-3 rounded-lg border border-border/60 bg-background/30 p-2.5 transition-all hover:border-success/40">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/15"><Truck className="h-4 w-4 text-success" /></div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-semibold">{t.id}</div>
-                      <div className="text-[11px] text-muted-foreground truncate">{t.driver} • {t.fuel}% fuel</div>
-                      {isManual && (
-                        <div className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span className="truncate">Last known: {t.location}</span>
-                          <span className="ml-1 rounded bg-white/[0.05] px-1 py-0.5 uppercase tracking-wider text-[9px]">Manual</span>
-                        </div>
-                      )}
-                    </div>
-                    <button className="rounded-md bg-primary/20 px-2 py-1 text-[10px] font-semibold text-primary hover:bg-primary/30">Assign</button>
-                  </div>
-                ))}
-
+            <GlassCard hover={false} className="p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">1</span>
+                <h3 className="text-sm font-semibold">Where do you need a truck?</h3>
               </div>
-            </SectionCard>
-            <AIInsight insights={[
-              { label: "Recommended: TRK-1012 for TRP-7305", detail: "Closest available truck, 96% capacity match" },
-              { label: "Reassign TRP-7311 for on-time delivery", detail: "Predicted delay of 42 min under current route" },
-            ]}/>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Enter pickup location</label>
+                  <div className="relative mt-1">
+                    <Input value={pickup} onChange={(e) => setPickup(e.target.value)} className="pr-9 bg-elevated/60" />
+                    <Locate className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Pickup Date</label>
+                    <Input type="date" defaultValue="2026-05-15" className="mt-1 bg-elevated/60" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Time</label>
+                    <Input type="time" defaultValue="08:00" className="mt-1 bg-elevated/60" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Truck Type / Capacity (Optional)</label>
+                  <Select value={truckType} onValueChange={setTruckType}>
+                    <SelectTrigger className="mt-1 bg-elevated/60"><SelectValue placeholder="Select type or capacity" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="any">Any type</SelectItem>
+                      <SelectItem value="box">Box Truck</SelectItem>
+                      <SelectItem value="rigid">Rigid Truck</SelectItem>
+                      <SelectItem value="artic">Articulated</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => toast.success("Search updated")}>
+                  <Search className="mr-2 h-4 w-4" />Find Available Trucks
+                </Button>
+              </div>
+            </GlassCard>
+
+            <GlassCard hover={false} className="p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">2</span>
+                <h3 className="text-sm font-semibold">Available Trucks Near This Location</h3>
+              </div>
+              <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
+                <span>{available.length} trucks found within 25 km</span>
+                <span>Sort by: Distance</span>
+              </div>
+              <div className="space-y-2.5">
+                {available.map((t) => {
+                  const active = t.id === selectedId;
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => { setSelectedId(t.id); setDetailOpen(true); }}
+                      className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition ${active ? "border-primary bg-primary/10" : "border-border/60 bg-background/30 hover:border-primary/40"}`}
+                    >
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-elevated/60"><TruckIcon className="h-7 w-7 text-muted-foreground" /></div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold text-white bg-${t.tone}`}>{t.distanceKm} km</span>
+                          <span className="text-sm font-semibold">{t.plate}</span>
+                          <Pill tone="success">Available</Pill>
+                        </div>
+                        <div className="mt-1 text-[11px] text-muted-foreground">{t.model} · 20 Ton · Box Truck</div>
+                        <div className="text-[11px] text-muted-foreground">Driver: {t.driver}</div>
+                        <div className="text-[11px] text-muted-foreground">Current: {t.location.split(" → ")[0]}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-3 text-center text-xs text-muted-foreground">Can't find what you need? <button className="text-primary hover:underline">Expand search area</button></div>
+            </GlassCard>
+          </div>
+
+          {/* RIGHT map + detail */}
+          <div className="space-y-4">
+            <div className="relative overflow-hidden rounded-2xl border border-border/60" style={{ minHeight: 520 }}>
+              <MapCanvas trucks={available} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setDetailOpen(true); }} />
+              <div className="absolute right-3 top-3 flex flex-col gap-1">
+                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Plus className="h-4 w-4" /></button>
+                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Minus className="h-4 w-4" /></button>
+                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Layers className="h-4 w-4" /></button>
+                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Locate className="h-4 w-4" /></button>
+              </div>
+              <button className="absolute right-16 top-3 flex items-center gap-2 rounded-md border border-border bg-background/70 backdrop-blur px-3 py-2 text-xs hover:bg-background">
+                <Search className="h-3.5 w-3.5" /> Search in this area
+              </button>
+            </div>
+
+            {selected && detailOpen && (
+              <GlassCard hover={false} className="p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Selected Truck</div>
+                    <div className="mt-1 flex items-center gap-2">
+                      <h3 className="text-lg font-semibold">{selected.plate}</h3>
+                      <Pill tone="success">Available</Pill>
+                      <span className="text-xs text-muted-foreground">{selected.distanceKm} km away</span>
+                    </div>
+                  </div>
+                  <button onClick={() => setDetailOpen(false)}><X className="h-4 w-4 text-muted-foreground hover:text-foreground" /></button>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                  <div className="rounded-xl border border-border/60 bg-background/30 p-4 flex flex-col items-center justify-center">
+                    <div className="flex h-24 w-full items-center justify-center rounded-lg bg-elevated/60"><TruckIcon className="h-10 w-10 text-muted-foreground" /></div>
+                    {selectedDriver && (
+                      <div className="mt-3 flex items-center gap-2 text-left">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-[11px] font-semibold text-primary">{selected.driver.split(" ").map(w => w[0]).join("").slice(0,2)}</div>
+                        <div>
+                          <div className="text-xs font-semibold">{selected.driver}</div>
+                          <div className="text-[10px] text-muted-foreground flex items-center gap-1"><Phone className="h-2.5 w-2.5" />+234 803 000 0000</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <DetailCol title="Truck Details" rows={[
+                    ["Truck Type", "Box Truck"], ["Make / Model", selected.model], ["Capacity", "20 Ton"],
+                    ["Length", "9.5 m"], ["Height", "2.6 m"], ["Fuel Type", "Diesel"], ["Reg. Year", "2021"],
+                  ]} />
+                  <DetailCol title="Current Status" rows={[
+                    ["Location", selected.location.split(" → ")[0]], ["Status", "Available"], ["Last Update", `${3}m ago`],
+                    ["Odometer", `${selected.odometer.toLocaleString()} km`], ["Fuel Level", `${selected.fuel}%`], ["Health Score", `${selected.engineHealth}/100`],
+                  ]} />
+                  <DetailCol title="Availability" rows={[
+                    ["Earliest Available", "Today, 08:00"], ["Next Booking", "—"], ["Working Hours", "06:00 - 18:00"],
+                    ["Max Daily Distance", "500 km"],
+                  ]} />
+                </div>
+
+                <div className="mt-5 flex items-center justify-between">
+                  <Button variant="outline" className="border-border bg-elevated/60"><MapPin className="mr-2 h-3.5 w-3.5" />View Live Location</Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="border-border bg-elevated/60" onClick={() => open({ kind: "truck", id: selected.id })}>View Full Truck Profile</Button>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => toast.success(`Dispatched ${selected.plate}`)}>Dispatch This Truck</Button>
+                  </div>
+                </div>
+              </GlassCard>
+            )}
           </div>
         </div>
-
-        <SectionCard title="Assignment Timeline">
-          <div className="space-y-2">
-            {trips.slice(0, 6).map((t) => (
-              <div key={t.id} className="flex items-center gap-3 rounded-lg p-2.5 transition-colors hover:bg-white/[0.03]">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15"><Zap className="h-4 w-4 text-primary" /></div>
-                <div className="flex-1">
-                  <div className="text-sm">Assigned <span className="font-medium text-primary">{t.id}</span> to <span className="font-medium">{t.driver}</span> ({t.truck})</div>
-                  <div className="text-xs text-muted-foreground">{t.customer} • {t.origin} → {t.destination}</div>
-                </div>
-                <div className="text-xs text-muted-foreground">{t.eta} ago</div>
-              </div>
-            ))}
-          </div>
-        </SectionCard>
       </div>
     </>
+  );
+}
+
+function DetailCol({ title, rows }: { title: string; rows: [string, string][] }) {
+  return (
+    <div className="rounded-xl border border-border/60 bg-background/30 p-4">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{title}</div>
+      <div className="mt-3 space-y-2 text-xs">
+        {rows.map(([k, v]) => (
+          <div key={k} className="flex items-center justify-between gap-3">
+            <span className="text-muted-foreground">{k}</span>
+            <span className="font-medium text-right">{v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MapCanvas({ trucks: list, selectedId, onSelect }: { trucks: Array<{ id: string; plate: string; distanceKm: number; tone: "success"|"warning"|"danger" }>; selectedId: string; onSelect: (id: string) => void }) {
+  // Stylized dark-map background
+  const positions = [
+    { x: 32, y: 30 }, { x: 55, y: 26 }, { x: 72, y: 40 }, { x: 78, y: 55 }, { x: 40, y: 70 }, { x: 55, y: 78 },
+  ];
+  return (
+    <div className="relative h-full w-full bg-[#0d1a2b]" style={{ minHeight: 520 }}>
+      {/* Roads */}
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="road" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#1e3a5f" /><stop offset="1" stopColor="#0d1a2b" /></linearGradient>
+        </defs>
+        <path d="M 0 45 C 30 40, 60 55, 100 30" stroke="#1a3355" strokeWidth="1.5" fill="none" />
+        <path d="M 20 100 L 55 55 L 100 40" stroke="#1a3355" strokeWidth="1.5" fill="none" />
+        <path d="M 0 80 L 100 75" stroke="#1a3355" strokeWidth="1" fill="none" />
+        <path d="M 50 0 L 50 100" stroke="#1a3355" strokeWidth="1" fill="none" />
+      </svg>
+
+      {/* City labels */}
+      {[
+        { x: 25, y: 20, name: "Ikeja" }, { x: 60, y: 20, name: "Oshodi" }, { x: 78, y: 35, name: "Mushin" },
+        { x: 45, y: 55, name: "Yaba" }, { x: 62, y: 60, name: "Surulere" }, { x: 55, y: 82, name: "Lagos" },
+        { x: 75, y: 82, name: "Victoria Island" }, { x: 88, y: 78, name: "Lekki" },
+      ].map((c) => (
+        <div key={c.name} className="absolute -translate-x-1/2 text-[11px] font-medium text-white/70" style={{ left: `${c.x}%`, top: `${c.y}%` }}>{c.name}</div>
+      ))}
+
+      {/* Center pickup pin */}
+      <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: "48%", top: "45%" }}>
+        <div className="relative">
+          <span className="absolute inset-0 -m-3 animate-ping rounded-full bg-danger/30" />
+          <MapPin className="relative h-8 w-8 text-danger drop-shadow-lg" fill="currentColor" />
+        </div>
+      </div>
+
+      {/* Truck pins */}
+      {list.map((t, i) => {
+        const p = positions[i] ?? { x: 50, y: 50 };
+        const active = t.id === selectedId;
+        const bg = t.tone === "success" ? "bg-success" : t.tone === "warning" ? "bg-warning" : "bg-danger";
+        return (
+          <button
+            key={t.id}
+            onClick={() => onSelect(t.id)}
+            className="absolute -translate-x-1/2 -translate-y-1/2 group"
+            style={{ left: `${p.x}%`, top: `${p.y}%` }}
+          >
+            <div className={`flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold text-white shadow-lg ${bg} ${active ? "ring-2 ring-white" : ""}`}>
+              <TruckIcon className="h-3 w-3" />{t.distanceKm} km
+            </div>
+            <div className={`mx-auto h-0 w-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent ${t.tone === "success" ? "border-t-success" : t.tone === "warning" ? "border-t-warning" : "border-t-danger"}`} />
+          </button>
+        );
+      })}
+    </div>
   );
 }

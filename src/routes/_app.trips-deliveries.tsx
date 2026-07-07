@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
-import { KPICard, Pill, SectionCard } from "@/components/shared/Cards";
+import { KPICard, Pill } from "@/components/shared/Cards";
 import { DataTable, type Column } from "@/components/shared/DataTable";
-import { InteractiveMap } from "@/components/shared/Insights";
-import { trips, type Trip } from "@/lib/mock-data";
+import { trips, type Trip, clients } from "@/lib/mock-data";
+import { useProfileDrawer } from "@/lib/profile-drawer";
 import { Route as RouteIcon, Package, Clock, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/_app/trips-deliveries")({
@@ -13,23 +13,27 @@ export const Route = createFileRoute("/_app/trips-deliveries")({
 const tone = { "In Transit": "info", "Delivered": "success", "Delayed": "danger", "Scheduled": "warning", "Cancelled": "purple" } as const;
 
 function TripsDeliveries() {
+  const { open } = useProfileDrawer();
+  const clientIdFor = (name: string) => clients.find((c) => c.name === name)?.id;
+
   const cols: Column<Trip>[] = [
-    { key: "id", label: "Trip ID", render: (r) => <span className="font-semibold text-primary">{r.id}</span> },
-    { key: "customer", label: "Customer" },
-    { key: "origin", label: "Route", render: (r) => <span className="text-xs text-muted-foreground">{r.origin} → {r.destination}</span> },
-    { key: "driver", label: "Driver" },
-    { key: "truck", label: "Truck" },
-    { key: "status", label: "Status", render: (r) => <Pill tone={tone[r.status]}>{r.status}</Pill> },
-    { key: "progress", label: "Progress", render: (r) => (
-      <div className="flex items-center gap-2">
-        <div className="h-1.5 w-20 overflow-hidden rounded-full bg-white/5">
-          <div className="h-full bg-primary" style={{ width: `${r.progress}%` }} />
-        </div>
-        <span className="text-xs">{r.progress}%</span>
-      </div>
+    { key: "id", label: "Trip ID", render: (r) => (
+      <button onClick={() => open({ kind: "trip", id: r.id })} className="font-semibold text-primary hover:underline">{r.id}</button>
     )},
+    { key: "customer", label: "Customer", render: (r) => {
+      const cid = clientIdFor(r.customer);
+      return cid ? <button onClick={() => open({ kind: "client", id: cid })} className="hover:underline">{r.customer}</button> : r.customer;
+    }},
+    { key: "origin", label: "Route", render: (r) => <span className="text-xs text-muted-foreground">{r.origin} → {r.destination}</span> },
+    { key: "driver", label: "Driver", render: (r) => (
+      <button onClick={() => open({ kind: "driver", id: r.driver })} className="hover:underline">{r.driver}</button>
+    )},
+    { key: "truck", label: "Truck", render: (r) => (
+      <button onClick={() => open({ kind: "truck", id: r.truck })} className="text-primary hover:underline text-xs font-medium">{r.truck}</button>
+    )},
+    { key: "status", label: "Status", render: (r) => <Pill tone={tone[r.status]}>{r.status}</Pill> },
     { key: "eta", label: "ETA" },
-    { key: "stops", label: "Stops" },
+    { key: "distance", label: "Distance", render: (r) => <span className="text-xs">{r.distance} km</span> },
   ];
 
   return (
@@ -42,9 +46,6 @@ function TripsDeliveries() {
           <KPICard label="On-Time Rate" value="92.3%" icon={Clock} tone="purple" delta={{ value: "3.2%", direction: "down" }} />
           <KPICard label="Delayed" value="11" icon={AlertTriangle} tone="danger" footnote="4 critical" />
         </div>
-        <SectionCard title="Delivery Map">
-          <InteractiveMap height={320} label="Active trip routes" />
-        </SectionCard>
         <DataTable title="Trips" columns={cols} rows={trips} searchKeys={["id","customer","driver","truck"]} pageSize={10} />
       </div>
     </>
