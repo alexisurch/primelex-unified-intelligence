@@ -49,16 +49,28 @@ export interface Driver {
   truck: string;
 }
 
+export type IncidentType = "Accident" | "Cargo Damage" | "Vehicle Breakdown" | "Theft" | "Driver Misconduct" | "Delivery Issue" | "Other";
+
 export interface Incident {
   id: string;
-  type: "Accident" | "Near Miss" | "Claim" | "Violation";
+  type: IncidentType;
   driver: string;
   truck: string;
+  trip?: string;
+  client?: string;
   severity: "Low" | "Moderate" | "High" | "Critical";
   status: "Open" | "Investigating" | "Resolved";
   date: string;
   location: string;
   rootCause: string;
+  description: string;
+  reportedBy: string;
+  investigator: string;
+  correctiveActions: string;
+  estDelayMin: number;
+  estFinancialImpact: number;
+  photos: string[];
+  documents: string[];
 }
 
 export interface DocumentRow {
@@ -69,6 +81,18 @@ export interface DocumentRow {
   expiry: string;
   status: "Valid" | "Expiring" | "Expired";
   version: string;
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  contact: string;
+  phone: string;
+  email: string;
+  address: string;
+  industry: string;
+  since: string;
+  status: "Active" | "Prospect" | "Inactive";
 }
 
 const cities = ["Lagos", "Abuja", "Port Harcourt", "Kano", "Ibadan", "Enugu", "Kaduna", "Benin", "Warri", "Jos"];
@@ -133,20 +157,44 @@ export const drivers: Driver[] = Array.from({ length: 20 }, (_, i) => {
   };
 });
 
+export const clients: Client[] = customers.map((name, i) => ({
+  id: `CLI-${300 + i}`,
+  name,
+  contact: pick(["A. Okafor","B. Musa","C. Adeyemi","D. Ibrahim","E. Nwosu"], i),
+  phone: `+234 80${(3000000 + i * 91827).toString().slice(0, 7)}`,
+  email: `contact@${name.toLowerCase().replace(/[^a-z]/g, "")}.ng`,
+  address: `${(i + 1) * 12} ${pick(["Warehouse Rd, Ikeja","Marina, Lagos Island","Wuse II, Abuja","GRA, Port Harcourt","Bompai, Kano"], i)}`,
+  industry: pick(["Retail","Manufacturing","FMCG","E-commerce","Telecom","Food & Beverage"], i),
+  since: `20${20 + (i % 5)}-0${(i % 9) + 1}-1${i % 9}`,
+  status: (i % 9 === 8 ? "Inactive" : i % 7 === 6 ? "Prospect" : "Active"),
+}));
+
+const incidentTypes: IncidentType[] = ["Accident","Cargo Damage","Vehicle Breakdown","Theft","Driver Misconduct","Delivery Issue","Other"];
+
 export const incidents: Incident[] = Array.from({ length: 14 }, (_, i) => {
-  const types: Incident["type"][] = ["Accident","Near Miss","Claim","Violation","Near Miss"];
   const sev: Incident["severity"][] = ["Low","Moderate","High","Critical","Moderate"];
   const st: Incident["status"][] = ["Open","Investigating","Resolved","Resolved","Investigating"];
+  const trip = trips[i % trips.length];
   return {
     id: `INC-${900 + i}`,
-    type: pick(types, i),
+    type: pick(incidentTypes, i),
     driver: pick(driverNames, i),
     truck: `TRK-${1000 + (i % 32)}`,
+    trip: trip.id,
+    client: trip.customer,
     severity: pick(sev, i),
     status: pick(st, i),
     date: `2026-0${(i % 6) + 1}-${String((i % 27) + 1).padStart(2,"0")}`,
     location: pick(cities, i),
     rootCause: pick(["Speeding","Fatigue","Weather","Mechanical","Human Error","Route Deviation"], i),
+    description: "Incident reported by driver. Full account pending investigation.",
+    reportedBy: pick(["A. Bello","M. Yusuf","C. Okoro","S. Adeyemi","N. Ibrahim"], i),
+    investigator: pick(["J. Adeniyi","K. Mohammed","O. Balogun"], i),
+    correctiveActions: "Corrective action plan in progress.",
+    estDelayMin: 30 + (i * 17) % 240,
+    estFinancialImpact: (i + 1) * 125000,
+    photos: [],
+    documents: [],
   };
 });
 
@@ -217,3 +265,91 @@ export const kpis = {
   utilization: 81.7,
   operatingCost: "₦62.6M",
 };
+
+// ---- Maintenance records ----
+export interface MaintenanceRecord {
+  id: string;
+  truck: string;
+  service: string;
+  type: "Routine" | "Safety" | "Diagnostic" | "Repair";
+  dueDate: string;
+  priority: "Low" | "Medium" | "High";
+  cost: number;
+  status: "Scheduled" | "In Workshop" | "Completed" | "Overdue";
+  performedBy: string;
+  workDone: string;
+  nextService: string;
+  date: string;
+}
+
+const workshops = ["AutoCare Workshop","Brake Masters","PrimeLEX Workshop","TechAuto Services"];
+const services = [
+  { name: "Oil Change", type: "Routine" as const, interval: "10,000 km" },
+  { name: "Brake Inspection", type: "Safety" as const, interval: "15,000 km" },
+  { name: "Tire Rotation", type: "Routine" as const, interval: "20,000 km" },
+  { name: "Engine Diagnostics", type: "Diagnostic" as const, interval: "30,000 km" },
+  { name: "Transmission Check", type: "Diagnostic" as const, interval: "25,000 km" },
+  { name: "Air Filter Replacement", type: "Routine" as const, interval: "20,000 km" },
+  { name: "Full Service", type: "Routine" as const, interval: "40,000 km" },
+];
+
+export const maintenanceRecords: MaintenanceRecord[] = Array.from({ length: 22 }, (_, i) => {
+  const s = services[i % services.length];
+  const statuses: MaintenanceRecord["status"][] = ["Scheduled","Scheduled","Scheduled","In Workshop","Completed","Completed","Overdue"];
+  const status = statuses[i % statuses.length];
+  return {
+    id: `MNT-${800 + i}`,
+    truck: trucks[i % trucks.length].id,
+    service: s.name,
+    type: s.type,
+    dueDate: `2026-05-${String((i % 27) + 1).padStart(2,"0")}`,
+    priority: (["Medium","High","Medium","Low","High"] as const)[i % 5],
+    cost: 45000 + (i * 21000) % 300000,
+    status,
+    performedBy: pick(workshops, i),
+    workDone: status === "Completed" ? `Completed ${s.name.toLowerCase()}. Checked levels. All OK.` : "",
+    nextService: `Next: Aug ${((i % 27) + 1)}, 2026, ${s.interval}`,
+    date: `2026-05-${String((i % 13) + 1).padStart(2,"0")}`,
+  };
+});
+
+// ---- Fuel transactions ----
+export interface FuelTransaction {
+  id: string;
+  date: string;
+  type: "Issue" | "Purchase";
+  truck: string;
+  driver: string;
+  fuelType: "Diesel" | "Petrol";
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+  location: string;
+  recordedBy: string;
+  trip?: string;
+  status: "Issued" | "Pending";
+  assignmentType?: "Trip" | "General Use";
+  note?: string;
+}
+
+export const fuelTransactions: FuelTransaction[] = Array.from({ length: 24 }, (_, i) => {
+  const qty = 100 + ((i * 37) % 300);
+  const price = 950 + ((i * 7) % 40);
+  const truck = trucks[i % trucks.length];
+  return {
+    id: `FA-2026-${1240 + i}`,
+    date: `2026-05-${String(20 - (i % 20)).padStart(2,"0")} ${String(6 + (i % 12)).padStart(2,"0")}:${String((i * 11) % 60).padStart(2,"0")} AM`,
+    type: i % 6 === 0 ? "Purchase" : "Issue",
+    truck: truck.id,
+    driver: truck.driver,
+    fuelType: i % 4 === 0 ? "Petrol" : "Diesel",
+    quantity: qty,
+    unitPrice: price,
+    amount: qty * price,
+    location: pick(["Lagos Depot","Port Harcourt Depot","NNPC Filling Station","Total Kaduna","Oando Abuja"], i),
+    recordedBy: "John Admin",
+    trip: trips[i % trips.length].id,
+    status: i % 8 === 3 ? "Pending" : "Issued",
+    assignmentType: i % 3 === 0 ? "General Use" : "Trip",
+  };
+});
