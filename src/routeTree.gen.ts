@@ -15,6 +15,7 @@ import { Route as AppUsersAccessRouteImport } from './routes/_app.users-access'
 import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
 import { Route as AppSystemSettingsRouteImport } from './routes/_app.system-settings'
 import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
+import { Route as AppRouteIntelligenceRouteImport } from './routes/_app.route-intelligence'
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppKpiScorecardRouteImport } from './routes/_app.kpi-scorecard'
@@ -52,6 +53,11 @@ const AppSystemSettingsRoute = AppSystemSettingsRouteImport.update({
 const AppSafetyIncidentsRoute = AppSafetyIncidentsRouteImport.update({
   id: '/safety-incidents',
   path: '/safety-incidents',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRouteIntelligenceRoute = AppRouteIntelligenceRouteImport.update({
+  id: '/route-intelligence',
+  path: '/route-intelligence',
   getParentRoute: () => AppRoute,
 } as any)
 const AppReportsRoute = AppReportsRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
+  '/route-intelligence': typeof AppRouteIntelligenceRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/system-settings': typeof AppSystemSettingsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
+  '/route-intelligence': typeof AppRouteIntelligenceRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
   '/system-settings': typeof AppSystemSettingsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/_app/kpi-scorecard': typeof AppKpiScorecardRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/reports': typeof AppReportsRoute
+  '/_app/route-intelligence': typeof AppRouteIntelligenceRoute
   '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
   '/_app/system-settings': typeof AppSystemSettingsRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/kpi-scorecard'
     | '/maintenance'
     | '/reports'
+    | '/route-intelligence'
     | '/safety-incidents'
     | '/system-settings'
     | '/trips-deliveries'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/kpi-scorecard'
     | '/maintenance'
     | '/reports'
+    | '/route-intelligence'
     | '/safety-incidents'
     | '/system-settings'
     | '/trips-deliveries'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/_app/kpi-scorecard'
     | '/_app/maintenance'
     | '/_app/reports'
+    | '/_app/route-intelligence'
     | '/_app/safety-incidents'
     | '/_app/system-settings'
     | '/_app/trips-deliveries'
@@ -248,6 +260,13 @@ declare module '@tanstack/react-router' {
       path: '/safety-incidents'
       fullPath: '/safety-incidents'
       preLoaderRoute: typeof AppSafetyIncidentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/route-intelligence': {
+      id: '/_app/route-intelligence'
+      path: '/route-intelligence'
+      fullPath: '/route-intelligence'
+      preLoaderRoute: typeof AppRouteIntelligenceRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/reports': {
@@ -326,6 +345,7 @@ interface AppRouteChildren {
   AppKpiScorecardRoute: typeof AppKpiScorecardRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppReportsRoute: typeof AppReportsRoute
+  AppRouteIntelligenceRoute: typeof AppRouteIntelligenceRoute
   AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
   AppSystemSettingsRoute: typeof AppSystemSettingsRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
@@ -343,6 +363,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppKpiScorecardRoute: AppKpiScorecardRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppReportsRoute: AppReportsRoute,
+  AppRouteIntelligenceRoute: AppRouteIntelligenceRoute,
   AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
   AppSystemSettingsRoute: AppSystemSettingsRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
