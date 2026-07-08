@@ -1,8 +1,9 @@
-import { Truck as TruckIcon, UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert } from "lucide-react";
+import { Truck as TruckIcon, UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
-import { trucks, trips, drivers, incidents, maintenanceRecords } from "@/lib/mock-data";
+import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor } from "@/lib/mock-data";
+import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
