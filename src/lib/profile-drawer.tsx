@@ -5,8 +5,10 @@ import { DriverProfile } from "@/components/profiles/DriverProfile";
 import { TripProfile } from "@/components/profiles/TripProfile";
 import { ClientProfile } from "@/components/profiles/ClientProfile";
 import { IncidentProfile } from "@/components/profiles/IncidentProfile";
+import { FleetManagerProfile } from "@/components/profiles/FleetManagerProfile";
+import { RouteProfile } from "@/components/profiles/RouteProfile";
 
-export type ProfileKind = "truck" | "driver" | "trip" | "client" | "incident";
+export type ProfileKind = "truck" | "driver" | "trip" | "client" | "incident" | "fleet-manager" | "route";
 export interface ProfileTarget { kind: ProfileKind; id: string }
 
 interface ProfileDrawerState {
