@@ -58,6 +58,7 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
                 ["Current Trip", active ? <button key="a" className="text-primary hover:underline" onClick={() => onOpen({ kind: "trip", id: active.id })}>{active.id}</button> : "—"],
                 ["Current Status", d.status],
                 ["Last Known Location", truck?.location.split(" → ")[0] ?? "—"],
+                ["Fleet Manager", fleetManager ? <button key="fm" className="text-primary hover:underline" onClick={() => onOpen({ kind: "fleet-manager", id: fleetManager.id })}>{fleetManager.name}</button> : "—"],
               ]} />
             </ProfileSection>
             <ProfileSection title="Driver Statistics" icon={TrendingUp}>
