@@ -3,10 +3,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
 import { drivers, trucks, trips, incidents } from "@/lib/mock-data";
+import { useFleetManagers } from "@/lib/fleet-managers-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
 
 export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
+  const { getManagerForTruck } = useFleetManagers();
   const d = drivers.find((x) => x.id === id) ?? drivers.find((x) => x.name === id);
   if (!d) return <div className="p-6 text-sm text-muted-foreground">Driver not found.</div>;
   const truck = trucks.find((t) => t.driver === d.name);
@@ -14,6 +16,7 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
   const active = driverTrips.find((t) => t.status !== "Delivered" && t.status !== "Cancelled");
   const driverIncidents = incidents.filter((i) => i.driver === d.name);
   const statusTone: Tone = d.status === "Active" ? "success" : d.status === "On Leave" ? "warning" : "danger";
+  const fleetManager = truck ? getManagerForTruck(truck.id) : undefined;
 
   return (
     <>
@@ -55,6 +58,7 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
                 ["Current Trip", active ? <button key="a" className="text-primary hover:underline" onClick={() => onOpen({ kind: "trip", id: active.id })}>{active.id}</button> : "—"],
                 ["Current Status", d.status],
                 ["Last Known Location", truck?.location.split(" → ")[0] ?? "—"],
+                ["Fleet Manager", fleetManager ? <button key="fm" className="text-primary hover:underline" onClick={() => onOpen({ kind: "fleet-manager", id: fleetManager.id })}>{fleetManager.name}</button> : "—"],
               ]} />
             </ProfileSection>
             <ProfileSection title="Driver Statistics" icon={TrendingUp}>

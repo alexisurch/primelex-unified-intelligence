@@ -1,8 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
   LayoutDashboard, Truck, Radio, Route as RouteIcon, Wrench, Fuel,
-  Users, ShieldAlert, FileText, BarChart3, Target,
-  Plug, UserCog, Settings, Building2, PanelLeftClose, ChevronRight,
+  ShieldAlert, FileText, BarChart3, Target,
+  UserCog, Settings, Building2, PanelLeftClose, ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -18,6 +18,7 @@ const groups = [
       { to: "/fleet-operations", label: "Fleet Operations", icon: Truck },
       { to: "/dispatch-center", label: "Dispatch Center", icon: Radio },
       { to: "/trips-deliveries", label: "Trips & Deliveries", icon: RouteIcon },
+      { to: "/route-intelligence", label: "Route Intelligence", icon: RouteIcon },
       { to: "/maintenance", label: "Maintenance", icon: Wrench },
       { to: "/fuel-intelligence", label: "Fuel Intelligence", icon: Fuel },
     ],
@@ -25,7 +26,6 @@ const groups = [
   {
     label: "COMPLIANCE",
     items: [
-      { to: "/drivers-compliance", label: "Drivers & Compliance", icon: Users },
       { to: "/safety-incidents", label: "Safety & Incidents", icon: ShieldAlert },
       { to: "/documents", label: "Documents", icon: FileText },
     ],
@@ -40,7 +40,6 @@ const groups = [
   {
     label: "SETTINGS",
     items: [
-      { to: "/integrations", label: "Integrations", icon: Plug },
       { to: "/users-access", label: "Users & Access", icon: UserCog },
       { to: "/system-settings", label: "System Settings", icon: Settings },
     ],

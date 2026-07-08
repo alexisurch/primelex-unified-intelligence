@@ -1,8 +1,9 @@
-import { Truck as TruckIcon, UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert } from "lucide-react";
+import { Truck as TruckIcon, UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
-import { trucks, trips, drivers, incidents, maintenanceRecords } from "@/lib/mock-data";
+import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor } from "@/lib/mock-data";
+import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
@@ -11,9 +12,11 @@ const naira = (n: number) => "₦" + n.toLocaleString();
 
 export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const { trackingMode } = usePreferences();
+  const { getManagerForTruck } = useFleetManagers();
   const isManual = trackingMode === "manual";
   const t = trucks.find((x) => x.id === id);
   if (!t) return <div className="p-6 text-sm text-muted-foreground">Truck not found.</div>;
+  const fleetManager = getManagerForTruck(t.id);
 
   const truckTrips = trips.filter((tp) => tp.truck === t.id);
   const active = truckTrips.find((tp) => tp.status === "In Transit" || tp.status === "Scheduled" || tp.status === "Delayed");
@@ -34,6 +37,7 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
           ["Manufacturer", t.model.split(" ")[0]], ["Odometer", `${t.odometer.toLocaleString()} km`],
           ["Fuel Level", `${t.fuel}%`], ["GPS", t.gps], ["Last Service", t.lastService],
           ["Tracking Source", isManual ? "Manual" : "GPS"],
+          ["Fleet Manager", fleetManager ? <button key="fm" onClick={() => onOpen({ kind: "fleet-manager", id: fleetManager.id })} className="text-primary hover:underline inline-flex items-center gap-1"><UserCog className="h-3 w-3" />{fleetManager.name}</button> : "—"],
         ]} />
       </ProfileSection>
       <ProfileSection title="Assigned Driver" icon={UserCircle2} action={driver && (
@@ -85,19 +89,25 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
     <div className="overflow-hidden rounded-xl border border-border/60">
       <table className="w-full text-sm">
         <thead className="bg-elevated/70">
-          <tr>{["Trip","Customer","Route","Distance","Status"].map((h) => <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>)}</tr>
+          <tr>{["Trip","Customer","Route","Distance","Fuel Assigned","L/km","Status"].map((h) => <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>)}</tr>
         </thead>
         <tbody>
-          {truckTrips.length === 0 && <tr><td colSpan={5} className="px-4 py-10 text-center text-xs text-muted-foreground">No trips recorded.</td></tr>}
-          {truckTrips.map((tp) => (
-            <tr key={tp.id} className="border-t border-border/60 hover:bg-white/[0.03]">
-              <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "trip", id: tp.id })} className="font-semibold text-primary hover:underline">{tp.id}</button></td>
-              <td className="px-4 py-3 text-xs">{tp.customer}</td>
-              <td className="px-4 py-3 text-xs">{tp.origin} → {tp.destination}</td>
-              <td className="px-4 py-3 text-xs">{tp.distance} km</td>
-              <td className="px-4 py-3"><Pill tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "In Transit" ? "info" : "warning"}>{tp.status}</Pill></td>
-            </tr>
-          ))}
+          {truckTrips.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-xs text-muted-foreground">No trips recorded.</td></tr>}
+          {truckTrips.map((tp) => {
+            const hist = tripFuelHistory.find((h) => h.tripId === tp.id);
+            const routeId = getRouteFor(tp.origin, tp.destination)?.id;
+            return (
+              <tr key={tp.id} className="border-t border-border/60 hover:bg-white/[0.03]">
+                <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "trip", id: tp.id })} className="font-semibold text-primary hover:underline">{tp.id}</button></td>
+                <td className="px-4 py-3 text-xs">{tp.customer}</td>
+                <td className="px-4 py-3 text-xs">{routeId ? <button onClick={() => onOpen({ kind: "route", id: routeId })} className="text-primary hover:underline">{tp.origin} → {tp.destination}</button> : `${tp.origin} → ${tp.destination}`}</td>
+                <td className="px-4 py-3 text-xs">{tp.distance} km</td>
+                <td className="px-4 py-3 text-xs">{hist ? `${hist.assignedFuelL} L` : "—"}</td>
+                <td className="px-4 py-3 text-xs">{hist ? hist.litersPerKm.toFixed(2) : <span className="text-warning">Learning</span>}</td>
+                <td className="px-4 py-3"><Pill tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "In Transit" ? "info" : "warning"}>{tp.status}</Pill></td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

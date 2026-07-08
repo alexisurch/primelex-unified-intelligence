@@ -5,8 +5,10 @@ import { DriverProfile } from "@/components/profiles/DriverProfile";
 import { TripProfile } from "@/components/profiles/TripProfile";
 import { ClientProfile } from "@/components/profiles/ClientProfile";
 import { IncidentProfile } from "@/components/profiles/IncidentProfile";
+import { FleetManagerProfile } from "@/components/profiles/FleetManagerProfile";
+import { RouteProfile } from "@/components/profiles/RouteProfile";
 
-export type ProfileKind = "truck" | "driver" | "trip" | "client" | "incident";
+export type ProfileKind = "truck" | "driver" | "trip" | "client" | "incident" | "fleet-manager" | "route";
 export interface ProfileTarget { kind: ProfileKind; id: string }
 
 interface ProfileDrawerState {
@@ -42,6 +44,8 @@ export function ProfileDrawerProvider({ children }: { children: ReactNode }) {
           {current?.kind === "trip" && <TripProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
           {current?.kind === "client" && <ClientProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
           {current?.kind === "incident" && <IncidentProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
+          {current?.kind === "fleet-manager" && <FleetManagerProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
+          {current?.kind === "route" && <RouteProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
         </SheetContent>
       </Sheet>
     </Ctx.Provider>

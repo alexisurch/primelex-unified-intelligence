@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState, useMemo } from "react";
 import { trucks, drivers } from "@/lib/mock-data";
 import { useProfileDrawer } from "@/lib/profile-drawer";
+import { useFleetManagers } from "@/lib/fleet-managers-store";
+import { usePreferences } from "@/lib/preferences";
 import { toast } from "sonner";
 import {
-  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, Clock, X, Phone,
+  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/dispatch-center")({
@@ -18,6 +20,9 @@ export const Route = createFileRoute("/_app/dispatch-center")({
 
 function DispatchCenter() {
   const { open } = useProfileDrawer();
+  const { getManagerForTruck } = useFleetManagers();
+  const { trackingMode } = usePreferences();
+  const isManual = trackingMode === "manual";
   const [pickup, setPickup] = useState("ABC Stores, 27 Warehouse Road, Ikeja, Lagos");
   const [truckType, setTruckType] = useState("any");
   const [selectedId, setSelectedId] = useState<string>("TRK-1000");
@@ -120,16 +125,27 @@ function DispatchCenter() {
           {/* RIGHT map + detail */}
           <div className="space-y-4">
             <div className="relative overflow-hidden rounded-2xl border border-border/60" style={{ minHeight: 520 }}>
-              <MapCanvas trucks={available} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setDetailOpen(true); }} />
-              <div className="absolute right-3 top-3 flex flex-col gap-1">
-                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Plus className="h-4 w-4" /></button>
-                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Minus className="h-4 w-4" /></button>
-                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Layers className="h-4 w-4" /></button>
-                <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Locate className="h-4 w-4" /></button>
-              </div>
-              <button className="absolute right-16 top-3 flex items-center gap-2 rounded-md border border-border bg-background/70 backdrop-blur px-3 py-2 text-xs hover:bg-background">
-                <Search className="h-3.5 w-3.5" /> Search in this area
-              </button>
+              {isManual ? (
+                <div className="flex h-[520px] w-full flex-col items-center justify-center gap-3 bg-[#0d1a2b] text-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-warning/15"><EyeOff className="h-6 w-6 text-warning" /></div>
+                  <div className="text-sm font-semibold text-white">Manual Tracking Mode</div>
+                  <p className="max-w-sm text-xs text-white/60">Live vehicle markers, live route tracking and live movement are disabled. Operations staff provide location updates from the trip and truck profiles.</p>
+                  <div className="mt-2 rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] text-white/70 flex items-center gap-1.5"><Satellite className="h-3 w-3" /> Switch to Automated Tracking in System Settings to enable the live map.</div>
+                </div>
+              ) : (
+                <>
+                  <MapCanvas trucks={available} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setDetailOpen(true); }} />
+                  <div className="absolute right-3 top-3 flex flex-col gap-1">
+                    <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Plus className="h-4 w-4" /></button>
+                    <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Minus className="h-4 w-4" /></button>
+                    <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Layers className="h-4 w-4" /></button>
+                    <button className="flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background/70 backdrop-blur hover:bg-background"><Locate className="h-4 w-4" /></button>
+                  </div>
+                  <button className="absolute right-16 top-3 flex items-center gap-2 rounded-md border border-border bg-background/70 backdrop-blur px-3 py-2 text-xs hover:bg-background">
+                    <Search className="h-3.5 w-3.5" /> Search in this area
+                  </button>
+                </>
+              )}
             </div>
 
             {selected && detailOpen && (
@@ -173,8 +189,16 @@ function DispatchCenter() {
                   ]} />
                 </div>
 
+                {(() => { const fm = getManagerForTruck(selected.id); return fm ? (
+                  <div className="mt-4 flex items-center gap-2 rounded-lg border border-border/60 bg-background/30 px-3 py-2 text-xs">
+                    <UserCog className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-muted-foreground">Fleet Manager:</span>
+                    <button onClick={() => open({ kind: "fleet-manager", id: fm.id })} className="text-primary font-medium hover:underline">{fm.name}</button>
+                  </div>
+                ) : null; })()}
+
                 <div className="mt-5 flex items-center justify-between">
-                  <Button variant="outline" className="border-border bg-elevated/60"><MapPin className="mr-2 h-3.5 w-3.5" />View Live Location</Button>
+                  <Button variant="outline" className="border-border bg-elevated/60" disabled={isManual}><MapPin className="mr-2 h-3.5 w-3.5" />View Live Location</Button>
                   <div className="flex gap-2">
                     <Button variant="outline" className="border-border bg-elevated/60" onClick={() => open({ kind: "truck", id: selected.id })}>View Full Truck Profile</Button>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => toast.success(`Dispatched ${selected.plate}`)}>Dispatch This Truck</Button>
