@@ -189,8 +189,16 @@ function DispatchCenter() {
                   ]} />
                 </div>
 
+                {(() => { const fm = getManagerForTruck(selected.id); return fm ? (
+                  <div className="mt-4 flex items-center gap-2 rounded-lg border border-border/60 bg-background/30 px-3 py-2 text-xs">
+                    <UserCog className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-muted-foreground">Fleet Manager:</span>
+                    <button onClick={() => open({ kind: "fleet-manager", id: fm.id })} className="text-primary font-medium hover:underline">{fm.name}</button>
+                  </div>
+                ) : null; })()}
+
                 <div className="mt-5 flex items-center justify-between">
-                  <Button variant="outline" className="border-border bg-elevated/60"><MapPin className="mr-2 h-3.5 w-3.5" />View Live Location</Button>
+                  <Button variant="outline" className="border-border bg-elevated/60" disabled={isManual}><MapPin className="mr-2 h-3.5 w-3.5" />View Live Location</Button>
                   <div className="flex gap-2">
                     <Button variant="outline" className="border-border bg-elevated/60" onClick={() => open({ kind: "truck", id: selected.id })}>View Full Truck Profile</Button>
                     <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => toast.success(`Dispatched ${selected.plate}`)}>Dispatch This Truck</Button>
