@@ -19,10 +19,8 @@ import { Route as AppRouteIntelligenceRouteImport } from './routes/_app.route-in
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppKpiScorecardRouteImport } from './routes/_app.kpi-scorecard'
-import { Route as AppIntegrationsRouteImport } from './routes/_app.integrations'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
-import { Route as AppDriversComplianceRouteImport } from './routes/_app.drivers-compliance'
 import { Route as AppDocumentsRouteImport } from './routes/_app.documents'
 import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
 
@@ -75,11 +73,6 @@ const AppKpiScorecardRoute = AppKpiScorecardRouteImport.update({
   path: '/kpi-scorecard',
   getParentRoute: () => AppRoute,
 } as any)
-const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
-  id: '/integrations',
-  path: '/integrations',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppFuelIntelligenceRoute = AppFuelIntelligenceRouteImport.update({
   id: '/fuel-intelligence',
   path: '/fuel-intelligence',
@@ -88,11 +81,6 @@ const AppFuelIntelligenceRoute = AppFuelIntelligenceRouteImport.update({
 const AppFleetOperationsRoute = AppFleetOperationsRouteImport.update({
   id: '/fleet-operations',
   path: '/fleet-operations',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDriversComplianceRoute = AppDriversComplianceRouteImport.update({
-  id: '/drivers-compliance',
-  path: '/drivers-compliance',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDocumentsRoute = AppDocumentsRouteImport.update({
@@ -110,10 +98,8 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
-  '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
-  '/integrations': typeof AppIntegrationsRoute
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
@@ -126,10 +112,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
-  '/drivers-compliance': typeof AppDriversComplianceRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
-  '/integrations': typeof AppIntegrationsRoute
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/reports': typeof AppReportsRoute
@@ -145,10 +129,8 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_app/dispatch-center': typeof AppDispatchCenterRoute
   '/_app/documents': typeof AppDocumentsRoute
-  '/_app/drivers-compliance': typeof AppDriversComplianceRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
-  '/_app/integrations': typeof AppIntegrationsRoute
   '/_app/kpi-scorecard': typeof AppKpiScorecardRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/reports': typeof AppReportsRoute
@@ -165,10 +147,8 @@ export interface FileRouteTypes {
     | '/'
     | '/dispatch-center'
     | '/documents'
-    | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
-    | '/integrations'
     | '/kpi-scorecard'
     | '/maintenance'
     | '/reports'
@@ -181,10 +161,8 @@ export interface FileRouteTypes {
   to:
     | '/dispatch-center'
     | '/documents'
-    | '/drivers-compliance'
     | '/fleet-operations'
     | '/fuel-intelligence'
-    | '/integrations'
     | '/kpi-scorecard'
     | '/maintenance'
     | '/reports'
@@ -199,10 +177,8 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_app/dispatch-center'
     | '/_app/documents'
-    | '/_app/drivers-compliance'
     | '/_app/fleet-operations'
     | '/_app/fuel-intelligence'
-    | '/_app/integrations'
     | '/_app/kpi-scorecard'
     | '/_app/maintenance'
     | '/_app/reports'
@@ -290,13 +266,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppKpiScorecardRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/integrations': {
-      id: '/_app/integrations'
-      path: '/integrations'
-      fullPath: '/integrations'
-      preLoaderRoute: typeof AppIntegrationsRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/fuel-intelligence': {
       id: '/_app/fuel-intelligence'
       path: '/fuel-intelligence'
@@ -309,13 +278,6 @@ declare module '@tanstack/react-router' {
       path: '/fleet-operations'
       fullPath: '/fleet-operations'
       preLoaderRoute: typeof AppFleetOperationsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/drivers-compliance': {
-      id: '/_app/drivers-compliance'
-      path: '/drivers-compliance'
-      fullPath: '/drivers-compliance'
-      preLoaderRoute: typeof AppDriversComplianceRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/documents': {
@@ -338,10 +300,8 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppDispatchCenterRoute: typeof AppDispatchCenterRoute
   AppDocumentsRoute: typeof AppDocumentsRoute
-  AppDriversComplianceRoute: typeof AppDriversComplianceRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
-  AppIntegrationsRoute: typeof AppIntegrationsRoute
   AppKpiScorecardRoute: typeof AppKpiScorecardRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppReportsRoute: typeof AppReportsRoute
@@ -356,10 +316,8 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppDispatchCenterRoute: AppDispatchCenterRoute,
   AppDocumentsRoute: AppDocumentsRoute,
-  AppDriversComplianceRoute: AppDriversComplianceRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
-  AppIntegrationsRoute: AppIntegrationsRoute,
   AppKpiScorecardRoute: AppKpiScorecardRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppReportsRoute: AppReportsRoute,
