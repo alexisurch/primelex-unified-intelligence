@@ -1,85 +1,119 @@
-# PrimeLex UIS — Phase 2 Enhancement Plan
+# PrimeLex UIS — Phase 3 Enhancement Plan
 
-Scope is large; grouping into 5 shippable workstreams. All existing approved UI outside the three redesigned pages stays untouched.
+Feature-only enhancement. No visual redesign. All new profiles reuse the existing right-side slide-out `ProfileShell` pattern used by Truck and Driver profiles.
 
-## 1. Unified Profile System (foundation for everything else)
+## 1. Data Model (extend `src/lib/mock-data.ts`)
 
-Create a single global "profile drawer" mechanism so clicking any Truck, Driver, Trip, Client, or Incident anywhere in the app opens the same right-side slide-out panel with consistent styling.
+New collections + relationships (mock, in-memory, persisted to `localStorage`):
 
-New files:
-- `src/lib/profile-drawer.tsx` — React Context + provider exposing `openProfile({ type, id })`, backed by a single `<Sheet side="right">` mounted in `_app.tsx`. Supports `truck | driver | trip | client | incident`.
-- `src/components/profiles/TruckProfile.tsx` — extracted from current Fleet Ops Sheet.
-- `src/components/profiles/DriverProfile.tsx` — extracted from current Fleet Ops Sheet.
-- `src/components/profiles/TripProfile.tsx` — new (see §2).
-- `src/components/profiles/ClientProfile.tsx` — new (see §3).
-- `src/components/profiles/IncidentProfile.tsx` — new (see §4).
-- `src/components/profiles/ProfileShell.tsx` — shared header/section/tab primitives so all five profiles look identical (avatar/logo, title, status pill, tabbed body, scroll area).
+- **FleetManager**: `id, name, employeeId, role, department, phone, email, photo, status, dateJoined, assignedTruckIds[]`.
+- **Route**: `id, name, origin, destination, distanceKm, createdAt`. Derived stats computed from trips.
+- **Trip** — extend with permanent historical fields: `routeId, fleetManagerId, assignedFuelL, fuelCostNGN, distanceKm, litersPerKm` (frozen once trip is `Completed`).
+- **Truck** — add `fleetManagerId` (nullable).
+- **Incident / Maintenance / FuelTransaction** — add `fleetManagerId` and `routeId` (derived from linked trip/truck).
 
-Wiring: mount `<ProfileDrawerProvider>` inside `_app.tsx`. Replace ad-hoc Sheet in Fleet Operations with `openProfile()` calls. Add click handlers to Trip IDs, Client names, Truck IDs, Driver names, Incident IDs across: Fleet Ops, Dispatch, Trips & Deliveries, Fuel, Maintenance, Safety, Reports, Executive Overview.
+Seed 4–6 Fleet Managers, split existing trucks across them, and back-derive routes from existing trip origin→destination pairs.
 
-## 2. Trip Profile
+## 2. New Stores (`src/lib/`)
 
-`TripProfile.tsx` with tabs: Overview, Timeline, Route, Fuel, Delivery, Financials, Documents. Data derived from existing `trips` mock + trip-store (when populated in manual mode). Timeline auto-generated from trip status transitions + fuel assignment + incidents.
+- `fleet-managers-store.tsx` — CRUD + `assignTrucks(managerId, truckIds)` that propagates to trucks and derives drivers/trips/fuel/incidents/maintenance by selector.
+- `routes-store.tsx` — `upsertRouteFor(origin, destination)`; selectors for trucks/drivers/clients/incidents/fuel and performance aggregates.
+- `fuel-review-engine.ts` — Pure function `reviewFuel(trip, history, config)` implementing the priority hierarchy (Truck+Route → Truck → Class → Learning) with min-history threshold (default 3) and thresholds ±3% Normal / 3–7% Review / >7% Critical. Returns `{ baseline, source, variancePct, status, alert? }`.
 
-## 3. Client Profile
+All stores mounted in `_app.tsx` alongside existing providers.
 
-Extend `mock-data.ts` with a `clients` collection (name, contact, industry, since, status) derived from unique customers already in `trips`. `ClientProfile.tsx` tabs: Company, KPIs, Active Deliveries, Trip History, Documents, Timeline. KPIs computed from trip list.
+## 3. New Profiles (`src/components/profiles/`)
 
-## 4. Incident Management Overhaul
+Both follow the existing `ProfileShell` + `ProfileTabs` primitives — identical header, tabs, section, table styling as Truck/Driver profiles.
 
-- Extend `Incident` in `mock-data.ts` with fields: `type, severity, dateTime, location, description, photos, documents, reportedBy, investigator, status, correctiveActions, affectedTruck, affectedDriver, affectedTrip, affectedClient, estDelayMin, estFinancialImpact`.
-- New `src/lib/incidents-store.tsx` — Context that owns the incident list and exposes `reportIncident()`. Trip/Truck/Driver/Client profiles read incidents via selectors keyed off IDs so there is a single source of truth (no duplication).
-- `IncidentProfile.tsx` tabs: Details, Photos, Documents, Timeline, Investigation, Corrective Actions, Operational Impact.
-- Redesign `_app.safety-incidents.tsx`: keep KPIs + table styling, add "Report Incident" button opening a modal with the full incident form; clicking a row opens `IncidentProfile`.
+### `FleetManagerProfile.tsx`
+Tabs: Overview, KPIs, Assigned Fleet, Drivers, Active Trips, Routes, Fuel, Maintenance, Incidents, Timeline. Every truck / driver / trip / route / incident row uses `ProfileLink` to open its own profile.
 
-## 5. Redesigned Pages (match attached mockups)
+### `RouteProfile.tsx`
+Tabs: Overview (clickable Total Incidents → filtered incidents view), Performance Summary, Trucks, Drivers, Clients, Timeline (completed trips). All cross-entity rows clickable.
 
-### Dispatch Center (`_app.dispatch-center.tsx`)
-Rebuild to match the dark-map mockup: two-column layout — left rail with "Where do you need a truck?" form (pickup, date/time, truck type, Find button) + "Available Trucks Near This Location" list of truck cards with distance chips; right side large dark map with distance pins + "Selected Truck" detail panel (image, Truck Details / Current Status / Availability columns, View Live Location / View Full Truck Profile / Dispatch This Truck actions). Selecting a truck card populates the detail panel; Dispatch button creates a trip via trip-store. Map remains a stylized `InteractiveMap` since we have no real GPS.
+Register both in `src/lib/profile-drawer.tsx` (`kind: "fleet-manager" | "route"`).
 
-### Maintenance (`_app.maintenance.tsx`)
-Rebuild per mockup: 6 KPI cards row (Upcoming, Overdue, In Workshop, Cost MTD, Avg Downtime, Compliance), "Log Maintenance" primary button, `Upcoming Maintenance` table + right-side "Maintenance by Status" donut + Cost line chart + "Cost Breakdown" bar list, `Maintenance Records` table with filters/Export. New `LogMaintenanceDialog` writes into a new `src/lib/maintenance-store.tsx`. Records link to Truck Profile (opens via profile drawer). Remove calendar/parts sections.
+## 4. Cross-App Fleet Manager References
 
-### Fuel Intelligence (`_app.fuel-intelligence.tsx`)
-Rebuild per mockup: 6 KPI row (Total Fuel Cost MTD, Fuel Issued MTD, Avg Cost/L, Fuel Efficiency, Transactions, Variance), tab bar (Overview / Fuel Assignments / Fuel Transactions / Fuel Usage / Fuel Analysis / Alerts), Overview shows Fuel Trend dual-line, Fuel by Type donut, Top Fuel Consumers list, Fuel Assignments table, Fuel Variance chart, Recent Fuel Transactions table with filters, and right-side "Quick Assign Fuel" panel (Driver/Truck/Fuel Type/Quantity/Assignment Type/Note → Assign Fuel button). New `src/lib/fuel-store.tsx` records assignments; on assign, updates Truck/Driver/Trip profiles by reference.
+Wherever a manager could sensibly appear, add a clickable `ProfileLink kind="fleet-manager"`:
 
-## 6. Trips & Deliveries
+- Truck Profile (Overview: "Fleet Manager" row)
+- Driver Profile (Overview)
+- Trip Profile (Overview)
+- Incident Profile (Details)
+- Maintenance table (new column)
+- Fuel Transactions table (new column)
+- Dispatch selected-truck panel
+- Fleet Operations overview table (new column)
 
-- Remove "Progress" and "Stops" columns from the table.
-- Remove the map view section entirely.
-- Trip ID cell now calls `openProfile({ type: 'trip', id })`.
+## 5. Users & Access — Fleet Assignment
 
-## 7. Fleet & Drivers
+Extend `_app.users-access.tsx`:
 
-- Add `Add New Truck` button in Fleet tab → `TruckRegistrationDialog` (form: plate, make/model, type, capacity, year, VIN, initial driver). On submit, prepends to trucks list via a new `src/lib/fleet-store.tsx` (wraps mock trucks with add/update).
-- Add `Add Driver` button in Drivers tab → `DriverRegistrationDialog` (name, phone, license #, license class, expiry, assigned truck).
-- Both dialogs also support edit mode (opened from profile).
+- Filter row for role "Fleet Manager" (existing seed shows these as users).
+- Row action `Manage Fleet` → opens `ManageFleetDialog` (new): dual-list `Available Trucks` ↔ `Assigned Trucks` with Assign / Remove / Save. Save calls `assignTrucks()` on the store; all downstream profiles update via selector.
+- Clicking a Fleet Manager name opens the FleetManagerProfile drawer.
 
-## Data & State
+## 6. Fuel Intelligence Engine wiring
 
-Add lightweight Context stores so all modules read/write the same records:
-- `fleet-store` (trucks + add/update)
-- `drivers-store` (drivers + add/update)
-- `clients-store` (derived + add)
-- `trips-store` (already planned earlier — extend)
-- `incidents-store` (new)
-- `maintenance-store` (new)
-- `fuel-store` (new)
+- On trip completion (mock: when user assigns fuel + marks delivered), snapshot `assignedFuelL / fuelCostNGN / distanceKm / litersPerKm` on the Trip record (immutable).
+- Run `reviewFuel()`; if alert, push into `fuel-store.alerts[]`.
+- Surface alerts on: Executive Dashboard (existing alerts card), Fuel Intelligence Alerts tab, Fleet Manager Profile → Fuel, Truck Profile → Fuel section, Trip Profile → Fuel tab. Show `Learning Baseline` pill when below min-history.
+- Truck Profile Trip History adds columns: Distance, Fuel Assigned, L/km.
 
-All initialized from `mock-data.ts` and persisted to `localStorage` for demo continuity. Providers mounted once in `_app.tsx` under `PreferencesProvider`.
+## 7. Dispatch Center — Tracking Mode
 
-## Out of Scope
-- No changes to sidebar, header, theme, colors, spacing, or any page not listed.
-- No backend/Supabase; all state is client-side.
-- Automated (GPS) tracking mode behavior stays as-is.
+Read `usePreferences().trackingMode`. Manual: hide live markers/route/movement and show the existing "Manual Tracking" placeholder card already in the codebase. Automated: keep current map, markers, ETA, nearest-truck recommendations. Single conditional block wrapping the map surface — no other layout changes.
 
-## Deliverable Order
-1. Profile drawer + Truck/Driver profile extraction (no visual change).
-2. Trip + Client + Incident profiles and global click wiring.
-3. Trips & Deliveries cleanup + Fleet/Driver Add dialogs.
-4. Safety & Incidents master record + Report modal.
-5. Dispatch Center redesign.
-6. Maintenance redesign + Log dialog.
-7. Fuel Intelligence redesign + Quick Assign.
+## 8. Navigation
 
-This is a large multi-file build; I'll execute it in the order above in one turn, batching parallel file writes.
+`src/components/layout/Sidebar.tsx`:
+
+- Remove `Drivers & Compliance` and `Integrations` entries.
+- Add `Route Intelligence` → new route `src/routes/_app.route-intelligence.tsx` (list of Route cards + table; row click opens Route Profile).
+- Drivers list already exists as a tab inside Fleet Operations; delete `_app.drivers-compliance.tsx` file and its route from `routeTree.gen` (auto-regenerated).
+
+## 9. Files
+
+Create:
+- `src/lib/fleet-managers-store.tsx`
+- `src/lib/routes-store.tsx`
+- `src/lib/fuel-review-engine.ts`
+- `src/components/profiles/FleetManagerProfile.tsx`
+- `src/components/profiles/RouteProfile.tsx`
+- `src/components/fleet/ManageFleetDialog.tsx`
+- `src/routes/_app.route-intelligence.tsx`
+
+Edit:
+- `src/lib/mock-data.ts` (new entities + seed + trip fuel snapshot fields)
+- `src/lib/profile-drawer.tsx` (register new kinds)
+- `src/routes/_app.tsx` (mount new providers)
+- `src/routes/_app.users-access.tsx` (Manage Fleet action, profile links)
+- `src/routes/_app.fleet-operations.tsx` (Fleet Manager column + link)
+- `src/routes/_app.trips-deliveries.tsx` (Fleet Manager + Route columns clickable)
+- `src/routes/_app.dispatch-center.tsx` (tracking-mode gate)
+- `src/routes/_app.fuel-intelligence.tsx` (alerts tab, Learning Baseline pill, snapshot on assign)
+- `src/routes/_app.maintenance.tsx` (Fleet Manager column)
+- `src/routes/_app.safety-incidents.tsx` (Fleet Manager + Route columns)
+- `src/routes/_app.index.tsx` (alerts feed uses fuel alerts)
+- `src/components/profiles/TruckProfile.tsx`, `DriverProfile.tsx`, `TripProfile.tsx`, `IncidentProfile.tsx` (Fleet Manager + Route rows/columns; trip history fuel columns)
+- `src/components/layout/Sidebar.tsx` (nav changes)
+
+Delete:
+- `src/routes/_app.drivers-compliance.tsx`
+- `src/routes/_app.integrations.tsx`
+
+## 10. Out of Scope
+
+No changes to header, theme, colors, card styling, or any page not listed. No backend. Automated tracking behavior unchanged apart from the manual-mode gate.
+
+## Build Order
+
+1. Data model + stores + fuel engine.
+2. Fleet Manager + Route profiles registered in drawer.
+3. Users & Access Manage Fleet dialog.
+4. Route Intelligence route + sidebar nav updates (remove tabs, add tab).
+5. Cross-app Fleet Manager / Route link wiring on existing tables and profiles.
+6. Dispatch tracking-mode gate.
+7. Fuel snapshot on assignment + review engine alerts wiring.
