@@ -20,6 +20,9 @@ export const Route = createFileRoute("/_app/dispatch-center")({
 
 function DispatchCenter() {
   const { open } = useProfileDrawer();
+  const { getManagerForTruck } = useFleetManagers();
+  const { trackingMode } = usePreferences();
+  const isManual = trackingMode === "manual";
   const [pickup, setPickup] = useState("ABC Stores, 27 Warehouse Road, Ikeja, Lagos");
   const [truckType, setTruckType] = useState("any");
   const [selectedId, setSelectedId] = useState<string>("TRK-1000");
