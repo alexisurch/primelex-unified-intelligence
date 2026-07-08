@@ -8,6 +8,7 @@ import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
 
 export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
+  const { getManagerForTruck } = useFleetManagers();
   const d = drivers.find((x) => x.id === id) ?? drivers.find((x) => x.name === id);
   if (!d) return <div className="p-6 text-sm text-muted-foreground">Driver not found.</div>;
   const truck = trucks.find((t) => t.driver === d.name);
@@ -15,6 +16,7 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
   const active = driverTrips.find((t) => t.status !== "Delivered" && t.status !== "Cancelled");
   const driverIncidents = incidents.filter((i) => i.driver === d.name);
   const statusTone: Tone = d.status === "Active" ? "success" : d.status === "On Leave" ? "warning" : "danger";
+  const fleetManager = truck ? getManagerForTruck(truck.id) : undefined;
 
   return (
     <>
