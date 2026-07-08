@@ -95,6 +95,29 @@ export interface Client {
   status: "Active" | "Prospect" | "Inactive";
 }
 
+export interface FleetManager {
+  id: string;
+  name: string;
+  employeeId: string;
+  role: string;
+  department: string;
+  phone: string;
+  email: string;
+  photo?: string;
+  status: "Active" | "On Leave" | "Suspended";
+  dateJoined: string;
+  assignedTruckIds: string[];
+}
+
+export interface RouteEntity {
+  id: string;
+  name: string;
+  origin: string;
+  destination: string;
+  distanceKm: number;
+  createdAt: string;
+}
+
 const cities = ["Lagos", "Abuja", "Port Harcourt", "Kano", "Ibadan", "Enugu", "Kaduna", "Benin", "Warri", "Jos"];
 const customers = ["ABC Stores", "Dangote Cement", "Chi Ltd", "Konga", "Jumia", "MTN Nigeria", "Nestlé NG", "Shoprite", "SPAR", "Unilever"];
 const driverNames = ["Adeleke O.", "Tunde A.", "Chinedu E.", "Aisha B.", "Ifeanyi N.", "Musa I.", "Kelechi O.", "Bola A.", "Ngozi U.", "Yakubu D.", "Femi J.", "Chidi M.", "Emeka R.", "Sade K.", "Halima Y."];
