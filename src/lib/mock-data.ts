@@ -376,3 +376,61 @@ export const fuelTransactions: FuelTransaction[] = Array.from({ length: 24 }, (_
     assignmentType: i % 3 === 0 ? "General Use" : "Trip",
   };
 });
+
+// ---- Fleet Managers ----
+const managerSeed: Array<Omit<FleetManager, "assignedTruckIds">> = [
+  { id: "FM-101", name: "Bola Adeyemi",   employeeId: "EMP-1021", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0110", email: "bola.a@primelex.com", status: "Active", dateJoined: "2023-04-11" },
+  { id: "FM-102", name: "Chinedu Okonkwo", employeeId: "EMP-1044", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0221", email: "chinedu.o@primelex.com", status: "Active", dateJoined: "2022-11-02" },
+  { id: "FM-103", name: "Aisha Bello",     employeeId: "EMP-1065", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0332", email: "aisha.b@primelex.com", status: "Active", dateJoined: "2024-02-19" },
+  { id: "FM-104", name: "Musa Ibrahim",    employeeId: "EMP-1088", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0443", email: "musa.i@primelex.com", status: "Active", dateJoined: "2023-08-25" },
+];
+
+// Default round-robin assignment of trucks to managers (used as seed baseline).
+export const fleetManagers: FleetManager[] = managerSeed.map((m, i) => ({
+  ...m,
+  assignedTruckIds: trucks.filter((_, ti) => ti % managerSeed.length === i).map((t) => t.id),
+}));
+
+export function getFleetManagerForTruck(truckId: string, managers: FleetManager[] = fleetManagers) {
+  return managers.find((m) => m.assignedTruckIds.includes(truckId));
+}
+
+// ---- Routes ----
+function routeKey(origin: string, destination: string) { return `${origin}__${destination}`; }
+const routeMap = new Map<string, RouteEntity>();
+trips.forEach((t) => {
+  const key = routeKey(t.origin, t.destination);
+  if (!routeMap.has(key)) {
+    routeMap.set(key, {
+      id: `RTE-${400 + routeMap.size}`,
+      name: `${t.origin} → ${t.destination}`,
+      origin: t.origin,
+      destination: t.destination,
+      distanceKm: t.distance,
+      createdAt: "2025-06-01",
+    });
+  }
+});
+export const routes: RouteEntity[] = Array.from(routeMap.values());
+export function getRouteFor(origin: string, destination: string) {
+  return routeMap.get(routeKey(origin, destination));
+}
+export function getRouteById(id: string) { return routes.find((r) => r.id === id); }
+
+// ---- Trip historical fuel snapshots (permanent per trip) ----
+export interface TripFuelSnapshot { tripId: string; assignedFuelL: number; fuelCostNGN: number; distanceKm: number; litersPerKm: number; routeId?: string; }
+export const tripFuelHistory: TripFuelSnapshot[] = trips
+  .filter((t) => t.status === "Delivered")
+  .map((t) => {
+    const litersPerKm = 0.30 + ((parseInt(t.id.slice(-2), 10) % 9) * 0.008); // synthetic variance
+    const assignedFuelL = Math.round(t.distance * litersPerKm);
+    const price = 970 + ((parseInt(t.id.slice(-2), 10) % 4) * 8);
+    return {
+      tripId: t.id,
+      assignedFuelL,
+      fuelCostNGN: assignedFuelL * price,
+      distanceKm: t.distance,
+      litersPerKm: Math.round(litersPerKm * 1000) / 1000,
+      routeId: getRouteFor(t.origin, t.destination)?.id,
+    };
+  });
