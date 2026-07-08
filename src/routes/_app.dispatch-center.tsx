@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState, useMemo } from "react";
 import { trucks, drivers } from "@/lib/mock-data";
 import { useProfileDrawer } from "@/lib/profile-drawer";
+import { useFleetManagers } from "@/lib/fleet-managers-store";
+import { usePreferences } from "@/lib/preferences";
 import { toast } from "sonner";
 import {
-  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, Clock, X, Phone,
+  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/dispatch-center")({
