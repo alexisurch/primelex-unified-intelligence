@@ -12,9 +12,11 @@ const naira = (n: number) => "₦" + n.toLocaleString();
 
 export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const { trackingMode } = usePreferences();
+  const { getManagerForTruck } = useFleetManagers();
   const isManual = trackingMode === "manual";
   const t = trucks.find((x) => x.id === id);
   if (!t) return <div className="p-6 text-sm text-muted-foreground">Truck not found.</div>;
+  const fleetManager = getManagerForTruck(t.id);
 
   const truckTrips = trips.filter((tp) => tp.truck === t.id);
   const active = truckTrips.find((tp) => tp.status === "In Transit" || tp.status === "Scheduled" || tp.status === "Delayed");
