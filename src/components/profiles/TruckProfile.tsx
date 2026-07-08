@@ -37,6 +37,7 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
           ["Manufacturer", t.model.split(" ")[0]], ["Odometer", `${t.odometer.toLocaleString()} km`],
           ["Fuel Level", `${t.fuel}%`], ["GPS", t.gps], ["Last Service", t.lastService],
           ["Tracking Source", isManual ? "Manual" : "GPS"],
+          ["Fleet Manager", fleetManager ? <button key="fm" onClick={() => onOpen({ kind: "fleet-manager", id: fleetManager.id })} className="text-primary hover:underline inline-flex items-center gap-1"><UserCog className="h-3 w-3" />{fleetManager.name}</button> : "—"],
         ]} />
       </ProfileSection>
       <ProfileSection title="Assigned Driver" icon={UserCircle2} action={driver && (
