@@ -1,8 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import {
   LayoutDashboard, Truck, Radio, Route as RouteIcon, Wrench, Fuel,
-  Users, ShieldAlert, FileText, BarChart3, Target,
-  Plug, UserCog, Settings, Building2, PanelLeftClose, ChevronRight,
+  ShieldAlert, FileText, BarChart3, Target,
+  UserCog, Settings, Building2, PanelLeftClose, ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
