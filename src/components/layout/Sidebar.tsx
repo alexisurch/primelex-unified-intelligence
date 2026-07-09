@@ -61,12 +61,19 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-info shadow-lg shadow-primary/30">
-          <RouteIcon className="h-5 w-5 text-white" />
-        </div>
+        {logoDataUrl ? (
+          <img src={logoDataUrl} alt={companyShort} className="h-9 w-9 shrink-0 rounded-lg object-cover shadow-lg shadow-primary/30" />
+        ) : (
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-lg shadow-primary/30"
+            style={{ background: `linear-gradient(135deg, ${primaryColor}, #06b6d4)` }}
+          >
+            <RouteIcon className="h-5 w-5 text-white" />
+          </div>
+        )}
         {!collapsed && (
           <div className="min-w-0">
-            <div className="text-[13px] font-bold tracking-wide">PRIMELEX</div>
+            <div className="truncate text-[13px] font-bold tracking-wide">{companyShort}</div>
             <div className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Unified Intelligence System</div>
           </div>
         )}
