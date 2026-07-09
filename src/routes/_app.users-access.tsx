@@ -3,11 +3,17 @@ import { Header } from "@/components/layout/Header";
 import { KPICard, Pill, SectionCard } from "@/components/shared/Cards";
 import { DataTable, type Column } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
-import { UserCog, Users, ShieldCheck, Activity, UserPlus, Settings2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { UserCog, Users, ShieldCheck, Activity, UserPlus, Settings2, Globe, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { ManageFleetDialog } from "@/components/fleet/ManageFleetDialog";
+import { useBranding } from "@/lib/branding";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/users-access")({
   component: UsersAccess,
