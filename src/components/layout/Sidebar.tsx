@@ -49,6 +49,7 @@ const groups = [
 
 export function Sidebar() {
   const { pathname } = useLocation();
+  const { companyName, companyShort, logoDataUrl, primaryColor } = useBranding();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
