@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { PreferencesProvider } from "../lib/preferences";
+import { BrandingProvider } from "../lib/branding";
 import { Toaster } from "../components/ui/sonner";
 
 
@@ -121,9 +122,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <PreferencesProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <Toaster />
+        <BrandingProvider>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+          <Toaster />
+        </BrandingProvider>
       </PreferencesProvider>
     </QueryClientProvider>
   );

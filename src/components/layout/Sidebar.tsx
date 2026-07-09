@@ -5,6 +5,7 @@ import {
   UserCog, Settings, Building2, PanelLeftClose, ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBranding } from "@/lib/branding";
 import { useState } from "react";
 
 const groups = [
@@ -48,6 +49,7 @@ const groups = [
 
 export function Sidebar() {
   const { pathname } = useLocation();
+  const { companyName, companyShort, logoDataUrl, primaryColor } = useBranding();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -59,12 +61,19 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-info shadow-lg shadow-primary/30">
-          <RouteIcon className="h-5 w-5 text-white" />
-        </div>
+        {logoDataUrl ? (
+          <img src={logoDataUrl} alt={companyShort} className="h-9 w-9 shrink-0 rounded-lg object-cover shadow-lg shadow-primary/30" />
+        ) : (
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg shadow-lg shadow-primary/30"
+            style={{ background: `linear-gradient(135deg, ${primaryColor}, #06b6d4)` }}
+          >
+            <RouteIcon className="h-5 w-5 text-white" />
+          </div>
+        )}
         {!collapsed && (
           <div className="min-w-0">
-            <div className="text-[13px] font-bold tracking-wide">PRIMELEX</div>
+            <div className="truncate text-[13px] font-bold tracking-wide">{companyShort}</div>
             <div className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Unified Intelligence System</div>
           </div>
         )}
@@ -112,7 +121,7 @@ export function Sidebar() {
       <div className="border-t border-sidebar-border p-3 space-y-1">
         <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-muted-foreground hover:bg-white/[0.04] hover:text-white">
           <Building2 className="h-[18px] w-[18px]" />
-          {!collapsed && <span className="truncate">Primelex Logistics</span>}
+          {!collapsed && <span className="truncate">{companyName}</span>}
         </button>
         <button
           onClick={() => setCollapsed((c) => !c)}

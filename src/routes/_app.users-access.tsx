@@ -3,11 +3,17 @@ import { Header } from "@/components/layout/Header";
 import { KPICard, Pill, SectionCard } from "@/components/shared/Cards";
 import { DataTable, type Column } from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
-import { UserCog, Users, ShieldCheck, Activity, UserPlus, Settings2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { UserCog, Users, ShieldCheck, Activity, UserPlus, Settings2, Globe, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { ManageFleetDialog } from "@/components/fleet/ManageFleetDialog";
+import { useBranding } from "@/lib/branding";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/users-access")({
   component: UsersAccess,
@@ -27,7 +33,18 @@ const statusTone = { Active: "success", Invited: "warning", Suspended: "danger" 
 function UsersAccess() {
   const { managers } = useFleetManagers();
   const { open } = useProfileDrawer();
+  const { workspaceSlug, companyName } = useBranding();
   const [manageId, setManageId] = useState<string | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const workspaceUrl = `https://${workspaceSlug}.primelex.app`;
+
+  const copyUrl = () => {
+    navigator.clipboard?.writeText(workspaceUrl);
+    setCopied(true);
+    toast.success("Workspace URL copied");
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   const fmUsers: UserRow[] = managers.map((m, i) => ({
     id: `U-1${String(i + 10).padStart(2, "0")}`,
@@ -78,11 +95,97 @@ function UsersAccess() {
           <KPICard label="Fleet Managers" value={String(managers.length)} icon={UserCog} tone="purple" />
           <KPICard label="Audit Events (24h)" value="1.2k" icon={Activity} tone="warning" />
         </div>
-        <SectionCard title="User Directory" action={<Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30"><UserPlus className="mr-1.5 h-3.5 w-3.5"/>Invite User</Button>}>
+
+        <SectionCard
+          title="Workspace"
+          action={<Pill tone="success">Active</Pill>}
+        >
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/15">
+                <Globe className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold">{companyName}</div>
+                <div className="mt-0.5 flex items-center gap-2">
+                  <code className="font-mono text-xs text-primary">{workspaceUrl}</code>
+                  <button
+                    onClick={copyUrl}
+                    className="flex h-6 w-6 items-center justify-center rounded border border-border bg-elevated/60 text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                    aria-label="Copy workspace URL"
+                  >
+                    {copied ? <Check className="h-3 w-3 text-success" /> : <Copy className="h-3 w-3" />}
+                  </button>
+                </div>
+                <div className="mt-1 text-[11px] text-muted-foreground">Custom tenant URL for {companyName} team members.</div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="border-border">Configure SSO</Button>
+              <Button variant="outline" size="sm" className="border-border">Domain settings</Button>
+            </div>
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title="User Directory"
+          action={
+            <Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30" onClick={() => setInviteOpen(true)}>
+              <UserPlus className="mr-1.5 h-3.5 w-3.5" />Invite User
+            </Button>
+          }
+        >
           <DataTable columns={cols} rows={users} searchKeys={["name","email","role","department"]} pageSize={10} />
         </SectionCard>
       </div>
       <ManageFleetDialog managerId={manageId} open={!!manageId} onOpenChange={(o) => { if (!o) setManageId(null); }} />
+      <InviteUserDialog open={inviteOpen} onOpenChange={setInviteOpen} workspaceUrl={workspaceUrl} />
     </>
+  );
+}
+
+function InviteUserDialog({ open, onOpenChange, workspaceUrl }: { open: boolean; onOpenChange: (v: boolean) => void; workspaceUrl: string }) {
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("Fleet Manager");
+
+  const send = () => {
+    if (!email.includes("@")) return toast.error("Enter a valid email");
+    toast.success(`Invitation sent to ${email}`);
+    setEmail("");
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Invite team member</DialogTitle>
+          <DialogDescription>
+            They'll receive a magic link to join <code className="font-mono text-primary">{workspaceUrl}</code>.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-2">
+          <div className="space-y-2">
+            <Label>Work email</Label>
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teammate@company.com" />
+          </div>
+          <div className="space-y-2">
+            <Label>Role</Label>
+            <Select value={role} onValueChange={setRole}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {["Admin", "Fleet Manager", "Dispatch Coordinator", "Driver Manager", "Finance Analyst", "Viewer"].map((r) => (
+                  <SelectItem key={r} value={r}>{r}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={send}>Send invitation</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
