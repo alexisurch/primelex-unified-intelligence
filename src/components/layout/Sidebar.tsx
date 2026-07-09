@@ -5,6 +5,7 @@ import {
   UserCog, Settings, Building2, PanelLeftClose, ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBranding } from "@/lib/branding";
 import { useState } from "react";
 
 const groups = [
