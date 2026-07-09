@@ -33,7 +33,18 @@ const statusTone = { Active: "success", Invited: "warning", Suspended: "danger" 
 function UsersAccess() {
   const { managers } = useFleetManagers();
   const { open } = useProfileDrawer();
+  const { workspaceSlug, companyName } = useBranding();
   const [manageId, setManageId] = useState<string | null>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const workspaceUrl = `https://${workspaceSlug}.primelex.app`;
+
+  const copyUrl = () => {
+    navigator.clipboard?.writeText(workspaceUrl);
+    setCopied(true);
+    toast.success("Workspace URL copied");
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   const fmUsers: UserRow[] = managers.map((m, i) => ({
     id: `U-1${String(i + 10).padStart(2, "0")}`,
