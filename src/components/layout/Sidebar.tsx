@@ -121,7 +121,7 @@ export function Sidebar() {
       <div className="border-t border-sidebar-border p-3 space-y-1">
         <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-muted-foreground hover:bg-white/[0.04] hover:text-white">
           <Building2 className="h-[18px] w-[18px]" />
-          {!collapsed && <span className="truncate">Primelex Logistics</span>}
+          {!collapsed && <span className="truncate">{companyName}</span>}
         </button>
         <button
           onClick={() => setCollapsed((c) => !c)}
