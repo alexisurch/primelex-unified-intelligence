@@ -1,9 +1,4 @@
-import {
-  Truck,
-  CircleDot,
-  Wrench,
-  ParkingCircle,
-} from "lucide-react";
+import { Truck, CircleDot, Wrench, CircleParking as ParkingCircle } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import {
   KPICard,

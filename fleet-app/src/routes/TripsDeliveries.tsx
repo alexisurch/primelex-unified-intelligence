@@ -1,10 +1,4 @@
-import {
-  Package,
-  Navigation,
-  CheckCircle2,
-  Clock,
-  Route as RouteIcon,
-} from "lucide-react";
+import { Package, Navigation, CircleCheck as CheckCircle2, Clock, Route as RouteIcon } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import {
   KPICard,

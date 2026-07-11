@@ -1,16 +1,5 @@
 import { useMemo } from "react";
-import {
-  Truck as TruckIcon,
-  Fuel,
-  Gauge,
-  HeartPulse,
-  MapPin,
-  Wrench,
-  AlertTriangle,
-  FileText,
-  Route as RouteIcon,
-  Navigation,
-} from "lucide-react";
+import { Truck as TruckIcon, Fuel, Gauge, HeartPulse, MapPin, Wrench, TriangleAlert as AlertTriangle, FileText, Route as RouteIcon, Navigation } from "lucide-react";
 import {
   type ProfileTarget,
 } from "@/lib/profile-drawer";

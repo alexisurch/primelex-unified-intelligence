@@ -1,9 +1,4 @@
-import {
-  FileText,
-  CheckCircle2,
-  Clock,
-  XCircle,
-} from "lucide-react";
+import { FileText, CircleCheck as CheckCircle2, Clock, Circle as XCircle } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import {
   KPICard,

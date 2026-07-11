@@ -1,13 +1,5 @@
 import { useMemo } from "react";
-import {
-  User,
-  Phone,
-  ShieldCheck,
-  AlertOctagon,
-  Route as RouteIcon,
-  IdCard,
-  Star,
-} from "lucide-react";
+import { User, Phone, ShieldCheck, OctagonAlert as AlertOctagon, Route as RouteIcon, IdCard, Star } from "lucide-react";
 import {
   type ProfileTarget,
 } from "@/lib/profile-drawer";

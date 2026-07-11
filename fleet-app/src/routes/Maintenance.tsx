@@ -1,9 +1,4 @@
-import {
-  Wrench,
-  AlertOctagon,
-  CalendarClock,
-  CheckCircle2,
-} from "lucide-react";
+import { Wrench, OctagonAlert as AlertOctagon, CalendarClock, CircleCheck as CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import {
   KPICard,

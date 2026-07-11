@@ -1,9 +1,4 @@
-import {
-  Building2,
-  CheckCircle2,
-  Wallet,
-  TrendingUp,
-} from "lucide-react";
+import { Building2, CircleCheck as CheckCircle2, Wallet, TrendingUp } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import {
   KPICard,

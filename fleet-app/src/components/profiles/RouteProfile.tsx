@@ -1,13 +1,5 @@
 import { useMemo } from "react";
-import {
-  Route as RouteIcon,
-  MapPin,
-  Clock,
-  ShieldAlert,
-  AlertTriangle,
-  Gauge,
-  ArrowRight,
-} from "lucide-react";
+import { Route as RouteIcon, MapPin, Clock, ShieldAlert, TriangleAlert as AlertTriangle, Gauge, ArrowRight } from "lucide-react";
 import {
   type ProfileTarget,
 } from "@/lib/profile-drawer";

@@ -1,9 +1,4 @@
-import {
-  ShieldAlert,
-  AlertCircle,
-  Search,
-  CheckCircle2,
-} from "lucide-react";
+import { ShieldAlert, CircleAlert as AlertCircle, Search, CircleCheck as CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import {
   KPICard,
