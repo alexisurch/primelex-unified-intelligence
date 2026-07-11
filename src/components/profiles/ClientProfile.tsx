@@ -1,8 +1,9 @@
-import { Building2, TrendingUp, Package, CheckCircle2, Activity, AlertTriangle, DollarSign, Clock, Route as RouteIcon, Circle, Phone, Mail, MapPin, ShieldAlert } from "lucide-react";
+import { Building2, TrendingUp, Package, CircleCheck as CheckCircle2, Activity, TriangleAlert as AlertTriangle, DollarSign, Clock, Route as RouteIcon, Circle, Phone, Mail, MapPin, ShieldAlert } from "lucide-react";
 import { clients, trips, incidents } from "@/lib/mock-data";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, type Tone } from "./ProfileShell";
 import { Pill } from "@/components/shared/Cards";
+import { RecommendationsSection, type Recommendation } from "@/components/shared/Insights";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -76,10 +77,10 @@ export function ClientProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
         { value: "timeline", label: "Timeline", content: (
           <TimelineList events={[
             { time: client.since, label: "Customer Created", detail: `${client.name} onboarded`, tone: "info" },
-            { time: "2025-10-14", label: "First Trip", detail: clientTrips[0]?.id ?? "—", tone: "success" },
+            { time: "2025-10-14", label: "First Trip", detail: clientTrips[0]?.id ?? "-", tone: "success" },
             ...delivered.slice(0, 3).map((t) => ({ time: "Recent", label: "Delivery Completed", detail: `${t.id} · ${t.destination}`, tone: "success" as const })),
             ...clientIncidents.slice(0, 2).map((i) => ({ time: i.date, label: "Incident Reported", detail: `${i.type} · ${i.location}`, tone: "danger" as const })),
-            { time: "This week", label: "New Booking", detail: activeTrips[0]?.id ?? "—", tone: "info" as const },
+            { time: "This week", label: "New Booking", detail: activeTrips[0]?.id ?? "-", tone: "info" as const },
           ]} />
         )},
         { value: "documents", label: "Documents", content: <DocumentsGrid docs={[
@@ -87,8 +88,20 @@ export function ClientProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
           { name: "Purchase Order" }, { name: "Invoices" }, { name: "Delivery Confirmations" },
         ]} /> },
       ]} />
+      <div className="px-6 pb-10">
+        <RecommendationsSection title="Client Recommendations" recommendations={clientRecommendations(clientTrips, delayed, clientIncidents)} />
+      </div>
     </>
   );
+}
+
+function clientRecommendations(clientTrips: typeof trips, delayed: typeof trips, clientIncidents: typeof incidents): Recommendation[] {
+  const recs: Recommendation[] = [];
+  if (delayed.length >= 2) recs.push({ title: "Frequent Delays", detail: delayed.length + " delayed trips. Review scheduling and route planning.", tone: "warning", icon: "performance" });
+  if (clientIncidents.length >= 2) recs.push({ title: "Repeated Cargo Damage", detail: clientIncidents.length + " incidents. Review handling procedures.", tone: "danger", icon: "incident" });
+  if (clientTrips.length >= 10) recs.push({ title: "High Volume Customer", detail: clientTrips.length + " total trips. Priority client - ensure dedicated fleet manager.", tone: "success", icon: "performance" });
+  if (recs.length === 0) recs.push({ title: "Client in Good Standing", detail: "No operational concerns detected.", tone: "success", icon: "performance" });
+  return recs;
 }
 
 function TripList({ trips: rows, onOpen, empty }: { trips: typeof trips; onOpen: (t: ProfileTarget) => void; empty: string }) {

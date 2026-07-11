@@ -1,6 +1,54 @@
 import { GlassCard } from "./Cards";
-import { Sparkles, Satellite, MapPinOff } from "lucide-react";
+import { Sparkles, Satellite, MapPinOff, Lightbulb, Fuel, Wrench, TriangleAlert as AlertTriangle, Star, ShieldAlert } from "lucide-react";
 import { usePreferences } from "@/lib/preferences";
+
+export interface Recommendation {
+  title: string;
+  detail: string;
+  tone?: "info" | "success" | "warning" | "danger" | "purple";
+  icon?: "fuel" | "maintenance" | "incident" | "performance" | "compliance" | "general";
+}
+
+const recIconMap: Record<string, typeof Lightbulb> = {
+  fuel: Fuel, maintenance: Wrench, incident: AlertTriangle,
+  performance: Star, compliance: ShieldAlert, general: Lightbulb,
+};
+
+export function RecommendationsSection({ title, recommendations }: { title: string; recommendations: Recommendation[] }) {
+  if (recommendations.length === 0) return null;
+  return (
+    <GlassCard hover={false} className="border-primary/20 bg-gradient-to-br from-primary/10 via-transparent to-purple/10">
+      <div className="flex items-center gap-2 pb-4">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20">
+          <Lightbulb className="h-4 w-4 text-primary" />
+        </div>
+        <div>
+          <h3 className="text-[14px] font-semibold">{title}</h3>
+          <p className="text-[11px] text-muted-foreground">Generated from operational data</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        {recommendations.map((r, idx) => {
+          const Icon = r.icon ? recIconMap[r.icon] ?? Lightbulb : Lightbulb;
+          const tone = r.tone ?? "info";
+          const bg = { info: "bg-info/15", success: "bg-success/15", warning: "bg-warning/15", danger: "bg-danger/15", purple: "bg-purple/15" }[tone];
+          const text = { info: "text-info", success: "text-success", warning: "text-warning", danger: "text-danger", purple: "text-purple" }[tone];
+          return (
+            <div key={idx} className="rounded-lg border border-border/60 bg-background/30 p-3">
+              <div className="flex items-center gap-2">
+                <div className={"flex h-7 w-7 items-center justify-center rounded-lg " + bg}>
+                  <Icon className={"h-3.5 w-3.5 " + text} />
+                </div>
+                <div className="text-[13px] font-medium text-foreground">{r.title}</div>
+              </div>
+              <div className="mt-1.5 text-xs text-muted-foreground">{r.detail}</div>
+            </div>
+          );
+        })}
+      </div>
+    </GlassCard>
+  );
+}
 
 
 export function AIInsight({ title, insights }: { title?: string; insights: { label: string; detail: string; tone?: "info" | "success" | "warning" | "danger" | "purple" }[] }) {

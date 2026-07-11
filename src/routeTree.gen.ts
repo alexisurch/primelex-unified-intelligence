@@ -19,6 +19,7 @@ import { Route as AppSystemSettingsRouteImport } from './routes/_app.system-sett
 import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
 import { Route as AppRouteIntelligenceRouteImport } from './routes/_app.route-intelligence'
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
+import { Route as AppOrganisationRouteImport } from './routes/_app.organisation'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppKpiScorecardRouteImport } from './routes/_app.kpi-scorecard'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
@@ -75,6 +76,11 @@ const AppReportsRoute = AppReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOrganisationRoute = AppOrganisationRouteImport.update({
+  id: '/organisation',
+  path: '/organisation',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
   id: '/maintenance',
   path: '/maintenance',
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
+  '/organisation': typeof AppOrganisationRoute
   '/reports': typeof AppReportsRoute
   '/route-intelligence': typeof AppRouteIntelligenceRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
+  '/organisation': typeof AppOrganisationRoute
   '/reports': typeof AppReportsRoute
   '/route-intelligence': typeof AppRouteIntelligenceRoute
   '/safety-incidents': typeof AppSafetyIncidentsRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
   '/_app/kpi-scorecard': typeof AppKpiScorecardRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
+  '/_app/organisation': typeof AppOrganisationRoute
   '/_app/reports': typeof AppReportsRoute
   '/_app/route-intelligence': typeof AppRouteIntelligenceRoute
   '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/fuel-intelligence'
     | '/kpi-scorecard'
     | '/maintenance'
+    | '/organisation'
     | '/reports'
     | '/route-intelligence'
     | '/safety-incidents'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/fuel-intelligence'
     | '/kpi-scorecard'
     | '/maintenance'
+    | '/organisation'
     | '/reports'
     | '/route-intelligence'
     | '/safety-incidents'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/_app/fuel-intelligence'
     | '/_app/kpi-scorecard'
     | '/_app/maintenance'
+    | '/_app/organisation'
     | '/_app/reports'
     | '/_app/route-intelligence'
     | '/_app/safety-incidents'
@@ -292,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppReportsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/organisation': {
+      id: '/_app/organisation'
+      path: '/organisation'
+      fullPath: '/organisation'
+      preLoaderRoute: typeof AppOrganisationRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/maintenance': {
       id: '/_app/maintenance'
       path: '/maintenance'
@@ -344,6 +363,7 @@ interface AppRouteChildren {
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
   AppKpiScorecardRoute: typeof AppKpiScorecardRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
+  AppOrganisationRoute: typeof AppOrganisationRoute
   AppReportsRoute: typeof AppReportsRoute
   AppRouteIntelligenceRoute: typeof AppRouteIntelligenceRoute
   AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
@@ -360,6 +380,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
   AppKpiScorecardRoute: AppKpiScorecardRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
+  AppOrganisationRoute: AppOrganisationRoute,
   AppReportsRoute: AppReportsRoute,
   AppRouteIntelligenceRoute: AppRouteIntelligenceRoute,
   AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
@@ -379,3 +400,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

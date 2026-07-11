@@ -1,9 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import {
-  LayoutDashboard, Truck, Radio, Route as RouteIcon, Wrench, Fuel,
-  ShieldAlert, FileText, BarChart3, Target,
-  UserCog, Settings, Building2, PanelLeftClose, ChevronRight,
-} from "lucide-react";
+import { LayoutDashboard, Truck, Radio, Route as RouteIcon, Wrench, Fuel, ShieldAlert, FileText, ChartBar as BarChart3, Target, UserCog, Settings, Building2, PanelLeftClose, ChevronRight, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useBranding } from "@/lib/branding";
 import { useState } from "react";
@@ -11,11 +7,12 @@ import { useState } from "react";
 const groups = [
   {
     label: null,
-    items: [{ to: "/", label: "Executive Overview", icon: LayoutDashboard }],
+    items: [{ to: "/", label: "Overview", icon: LayoutDashboard }],
   },
   {
     label: "OPERATIONS",
     items: [
+      { to: "/action-center", label: "Action Center", icon: Zap },
       { to: "/fleet-operations", label: "Fleet Operations", icon: Truck },
       { to: "/dispatch-center", label: "Dispatch Center", icon: Radio },
       { to: "/trips-deliveries", label: "Trips & Deliveries", icon: RouteIcon },
@@ -42,6 +39,7 @@ const groups = [
     label: "SETTINGS",
     items: [
       { to: "/users-access", label: "Users & Access", icon: UserCog },
+      { to: "/organisation", label: "Organisation", icon: Building2 },
       { to: "/system-settings", label: "System Settings", icon: Settings },
     ],
   },
