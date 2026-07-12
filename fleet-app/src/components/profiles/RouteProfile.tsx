@@ -1,11 +1,13 @@
 import { useMemo } from "react";
-import { Route as RouteIcon, MapPin, Clock, ShieldAlert, TriangleAlert as AlertTriangle, Gauge, ArrowRight } from "lucide-react";
+import { Route as RouteIcon, MapPin, Clock, ShieldAlert, TriangleAlert as AlertTriangle, Gauge, ArrowRight, Truck as TruckIcon, User } from "lucide-react";
 import {
   type ProfileTarget,
 } from "@/lib/profile-drawer";
 import {
   routes,
   trips,
+  trucks,
+  drivers,
   getIncidentsForRoute,
   type Route,
   type Trip,
@@ -203,38 +205,82 @@ interface IncidentRowProps {
 }
 
 function IncidentRow({ incident, onOpen }: IncidentRowProps) {
+  const truck = useMemo(() => trucks.find((t) => t.id === incident.truckId), []);
+  const driver = useMemo(() => drivers.find((d) => d.id === incident.driverId), []);
+  const relatedTrip = useMemo(() => trips.find((t) => t.routeId === incident.routeId && t.truck === incident.truckId), []);
+
   return (
-    <button
-      type="button"
-      onClick={() => onOpen({ kind: "incident", id: incident.id })}
-      className={cn(
-        "flex w-full flex-col gap-2 rounded-xl border border-border/60 bg-white/[0.02] p-4 text-left",
-        "transition-colors hover:border-primary/40 hover:bg-white/[0.04]",
-        "focus:outline-none focus:ring-2 focus:ring-primary",
-      )}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-semibold text-foreground">
-          {incident.type}
-        </span>
-        <div className="flex items-center gap-2">
-          <Pill tone={severityTone(incident.severity)}>
-            {incident.severity}
-          </Pill>
-          <Pill tone={incidentStatusTone(incident.status)}>
-            {incident.status}
-          </Pill>
+    <div className="rounded-xl border border-border/60 bg-white/[0.02] overflow-hidden">
+      {/* Header row — clickable to open incident profile */}
+      <button
+        type="button"
+        onClick={() => onOpen({ kind: "incident", id: incident.id })}
+        className={cn(
+          "flex w-full items-center justify-between gap-3 px-4 py-3 text-left",
+          "transition-colors hover:bg-white/[0.04]",
+          "focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary",
+        )}
+      >
+        <div className="flex items-center gap-3">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-danger/15 text-danger">
+            <ShieldAlert className="h-4 w-4" strokeWidth={2} />
+          </span>
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm font-semibold text-foreground">{incident.id} · {incident.type}</span>
+            <span className="text-xs text-muted-foreground">{incident.location} · {formatDate(incident.date)}</span>
+          </div>
         </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <Pill tone={severityTone(incident.severity)}>{incident.severity}</Pill>
+          <Pill tone={incidentStatusTone(incident.status)}>{incident.status}</Pill>
+        </div>
+      </button>
+
+      {/* Detail row — related entities */}
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border/40 bg-white/[0.01] px-4 py-2.5">
+        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <TruckIcon className="h-3.5 w-3.5" strokeWidth={2} />
+          {truck ? (
+            <button
+              type="button"
+              onClick={() => onOpen({ kind: "truck", id: incident.truckId })}
+              className="font-medium text-primary transition-colors hover:underline"
+            >
+              {truck.plate}
+            </button>
+          ) : (
+            <span>{incident.truckId}</span>
+          )}
+        </span>
+        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <User className="h-3.5 w-3.5" strokeWidth={2} />
+          {driver ? (
+            <button
+              type="button"
+              onClick={() => onOpen({ kind: "driver", id: incident.driverId })}
+              className="font-medium text-primary transition-colors hover:underline"
+            >
+              {driver.name}
+            </button>
+          ) : (
+            <span>{incident.driverId}</span>
+          )}
+        </span>
+        {relatedTrip && (
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <RouteIcon className="h-3.5 w-3.5" strokeWidth={2} />
+            <button
+              type="button"
+              onClick={() => onOpen({ kind: "trip", id: relatedTrip.id })}
+              className="font-medium text-primary transition-colors hover:underline"
+            >
+              {relatedTrip.id}
+            </button>
+          </span>
+        )}
+        <span className="ml-auto text-xs text-muted-foreground">{incident.investigator}</span>
       </div>
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        {incident.description}
-      </p>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        <span className="font-medium text-foreground">{incident.id}</span>
-        <span>{formatDate(incident.date)}</span>
-        <span>{incident.location}</span>
-      </div>
-    </button>
+    </div>
   );
 }
 
@@ -440,11 +486,11 @@ export function RouteProfile({ id, onOpen }: RouteProfileProps) {
 
         <ProfileTabContent value="incidents" className="pt-4">
           <ProfileSection
-            title={`Incidents (${routeIncidents.length})`}
+            title={`Incident History (${routeIncidents.length})`}
             action={
               <span className="flex items-center gap-1 text-xs text-muted-foreground">
                 <ShieldAlert className="h-3.5 w-3.5" aria-hidden="true" />
-                Click an incident for details
+                Click any incident for full details
               </span>
             }
           >

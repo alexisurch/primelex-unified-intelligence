@@ -10,11 +10,13 @@ import {
   Mail,
   Phone,
   MapPin,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Header } from "@/components/layout/Header";
-import { SectionCard } from "@/components/shared/Cards";
+import { SectionCard, GlassCard } from "@/components/shared/Cards";
 import { useBranding } from "@/lib/branding";
+import { useProfileDrawer } from "@/lib/profile-drawer";
 
 /* ------------------------------------------------------------------ */
 /* Small presentational helpers                                        */
@@ -73,6 +75,7 @@ function TextInput(props: {
 
 export function Organisation() {
   const { branding, update, reset } = useBranding();
+  const { open: openProfile } = useProfileDrawer();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleLogoChange(e: ChangeEvent<HTMLInputElement>) {
@@ -109,6 +112,34 @@ export function Organisation() {
         subtitle="Company profile, brand identity and general workspace settings."
         showExport={false}
       />
+
+      {/* Organisation profile card — clicking opens the right-side slide-out */}
+      <GlassCard hover={true} className="cursor-pointer border-primary/20">
+        <button
+          type="button"
+          onClick={() => openProfile({ kind: "organisation", id: "org" })}
+          className="flex w-full items-center gap-4 text-left"
+          aria-label="Open organisation profile"
+        >
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-white/[0.02]">
+            {branding.logoDataUrl ? (
+              <img
+                src={branding.logoDataUrl}
+                alt="Company logo"
+                className="h-full w-full object-contain"
+              />
+            ) : (
+              <Building2 className="h-7 w-7 text-muted-foreground" strokeWidth={1.5} />
+            )}
+          </div>
+          <div className="flex flex-1 flex-col gap-0.5">
+            <span className="text-base font-semibold text-foreground">{branding.companyName}</span>
+            <span className="text-sm text-muted-foreground">{branding.industry}</span>
+            <span className="text-xs text-muted-foreground">{branding.businessEmail}</span>
+          </div>
+          <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" strokeWidth={2} />
+        </button>
+      </GlassCard>
 
       {/* Company Profile */}
       <SectionCard

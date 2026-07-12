@@ -1,4 +1,4 @@
-import { useState, type ComponentType, type ReactNode } from "react";
+import { type ComponentType } from "react";
 import {
   Truck,
   TruckIcon,
@@ -32,15 +32,6 @@ import {
   type Tone,
 } from "@/components/shared/Cards";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import {
   alerts,
   priorities,
   fleetBreakdown,
@@ -50,27 +41,6 @@ import {
   type Priority,
 } from "@/lib/mock-data";
 import { useProfileDrawer } from "@/lib/profile-drawer";
-
-/* ------------------------------------------------------------------ */
-/* Types                                                               */
-/* ------------------------------------------------------------------ */
-
-/** A unified notification used by the detail dialog. */
-interface NotificationDetail {
-  id: string;
-  icon: ComponentType<LucideProps>;
-  iconTone: Tone;
-  title: string;
-  time: string;
-  description: string;
-  category: string;
-  priority: "High" | "Medium" | "Low";
-  status: string;
-  relatedModule: string;
-  relatedTarget?: { kind: "truck" | "driver" | "incident" | "route"; id: string };
-  assignedTo: string;
-  createdBy: string;
-}
 
 /* ------------------------------------------------------------------ */
 /* Tone → oklch color map (for pie chart segments)                     */
@@ -85,11 +55,7 @@ const TONE_OKLCH: Record<string, string> = {
   purple: "oklch(0.6 0.2 300)",
 };
 
-const PRIORITY_TONE: Record<NotificationDetail["priority"], Tone> = {
-  High: "danger",
-  Medium: "warning",
-  Low: "success",
-};
+
 
 /** Static background-tint classes per tone (15% opacity) — Tailwind v4 needs literal class names. */
 const toneBg15: Record<Tone, string> = {
@@ -160,49 +126,10 @@ const deliveryStats = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Helper: build a NotificationDetail from an alert or priority       */
-/* ------------------------------------------------------------------ */
-
-function alertToDetail(alert: Alert): NotificationDetail {
-  return {
-    id: alert.id,
-    icon: ALERT_ICONS[alert.icon],
-    iconTone: ALERT_TONE[alert.type],
-    title: alert.title,
-    time: alert.time,
-    description: alert.detail,
-    category: "Alert",
-    priority: alert.type === "danger" ? "High" : alert.type === "warning" ? "Medium" : "Low",
-    status: "Open",
-    relatedModule: "Operations",
-    assignedTo: "Operations Team",
-    createdBy: "System Monitor",
-  };
-}
-
-function priorityToDetail(priority: Priority): NotificationDetail {
-  return {
-    id: priority.id,
-    icon: PRIORITY_ICONS[priority.icon],
-    iconTone: priority.color,
-    title: priority.title,
-    time: priority.time,
-    description: priority.detail,
-    category: "Priority",
-    priority: priority.color === "danger" ? "High" : priority.color === "warning" ? "Medium" : "Low",
-    status: "Pending",
-    relatedModule: "Operations",
-    assignedTo: "Fleet Manager",
-    createdBy: "Operations Lead",
-  };
-}
-
-/* ------------------------------------------------------------------ */
 /* Component                                                            */
 /* ------------------------------------------------------------------ */
 
 export function Overview() {
-  const [selected, setSelected] = useState<NotificationDetail | null>(null);
   const { open: openProfile } = useProfileDrawer();
 
   const totalFleet = fleetBreakdown.reduce((sum, item) => sum + item.value, 0);
@@ -443,7 +370,7 @@ export function Overview() {
                 <li key={alert.id}>
                   <button
                     type="button"
-                    onClick={() => setSelected(alertToDetail(alert))}
+                    onClick={() => openProfile({ kind: "alert", id: alert.id })}
                     className="flex w-full items-start gap-3 rounded-lg border border-border/40 bg-white/[0.02] p-3 text-left transition-colors hover:bg-white/[0.04] hover:border-primary/40"
                   >
                     <span
@@ -489,7 +416,7 @@ export function Overview() {
                 <li key={priority.id}>
                   <button
                     type="button"
-                    onClick={() => setSelected(priorityToDetail(priority))}
+                    onClick={() => openProfile({ kind: "alert", id: priority.id })}
                     className="flex w-full items-start gap-3 rounded-lg border border-border/40 bg-white/[0.02] p-3 text-left transition-colors hover:bg-white/[0.04] hover:border-primary/40"
                   >
                     <span
@@ -575,100 +502,6 @@ export function Overview() {
           </div>
         </SectionCard>
       </div>
-
-      {/* ---------------------------------------------------------- */}
-      {/* 4. Detail Dialog                                            */}
-      {/* ---------------------------------------------------------- */}
-      <Dialog
-        open={selected !== null}
-        onOpenChange={(next) => {
-          if (!next) setSelected(null);
-        }}
-      >
-        <DialogContent className="max-w-xl">
-          {selected ? (
-            <>
-              <DialogHeader>
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`flex h-10 w-10 items-center justify-center rounded-full ${toneBg15[selected.iconTone]} ${toneText[selected.iconTone]}`}
-                  >
-                    <selected.icon className="h-5 w-5" strokeWidth={2} />
-                  </span>
-                  <div className="flex flex-col gap-1">
-                    <DialogTitle>{selected.title}</DialogTitle>
-                    <DialogDescription>
-                      {selected.time} · {selected.description}
-                    </DialogDescription>
-                  </div>
-                </div>
-              </DialogHeader>
-
-              <div className="grid grid-cols-2 gap-4">
-                <DetailField label="Category" value={selected.category} />
-                <DetailField
-                  label="Priority"
-                  value={
-                    <Pill tone={PRIORITY_TONE[selected.priority]}>
-                      {selected.priority}
-                    </Pill>
-                  }
-                />
-                <DetailField label="Status" value={selected.status} />
-                <DetailField label="Related Module" value={selected.relatedModule} />
-                <DetailField label="Assigned To" value={selected.assignedTo} />
-                <DetailField label="Created By" value={selected.createdBy} />
-              </div>
-
-              <DialogFooter>
-                <DialogClose asChild>
-                  <button
-                    type="button"
-                    className="inline-flex h-9 items-center justify-center rounded-md border border-border/60 px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/[0.04] hover:text-foreground"
-                  >
-                    Close
-                  </button>
-                </DialogClose>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (selected.relatedTarget) {
-                      openProfile(selected.relatedTarget);
-                      setSelected(null);
-                    }
-                  }}
-                  className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-                >
-                  Open Related Record
-                </button>
-              </DialogFooter>
-            </>
-          ) : null}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/* Local helper component                                               */
-/* ------------------------------------------------------------------ */
-
-function DetailField({
-  label,
-  value,
-}: {
-  label: string;
-  value: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
-      <span className="text-sm text-foreground">{value}</span>
-    </div>
-  );
-}
-
-export default Overview;

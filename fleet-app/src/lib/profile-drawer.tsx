@@ -22,6 +22,8 @@ import { FleetManagerProfile } from "@/components/profiles/FleetManagerProfile";
 import { IncidentProfile } from "@/components/profiles/IncidentProfile";
 import { TripProfile } from "@/components/profiles/TripProfile";
 import { RouteProfile } from "@/components/profiles/RouteProfile";
+import { AlertNotificationPanel } from "@/components/profiles/AlertNotificationPanel";
+import { OrganisationProfile } from "@/components/profiles/OrganisationProfile";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -34,7 +36,9 @@ export type ProfileTargetKind =
   | "fleet-manager"
   | "incident"
   | "trip"
-  | "route";
+  | "route"
+  | "alert"
+  | "organisation";
 
 export interface ProfileTarget {
   kind: ProfileTargetKind;
@@ -77,6 +81,8 @@ const KIND_LABELS: Record<ProfileTargetKind, string> = {
   incident: "Incident",
   trip: "Trip",
   route: "Route",
+  alert: "Notification",
+  organisation: "Organisation",
 };
 
 /**
@@ -110,6 +116,10 @@ function ProfileBody({
       return <TripProfile id={target.id} onOpen={onOpen} onBack={onBack} />;
     case "route":
       return <RouteProfile id={target.id} onOpen={onOpen} onBack={onBack} />;
+    case "alert":
+      return <AlertNotificationPanel id={target.id} onOpen={onOpen} />;
+    case "organisation":
+      return <OrganisationProfile onBack={onBack} />;
     default:
       return null;
   }
@@ -193,7 +203,9 @@ export function ProfileDrawerProvider({
                   {current ? KIND_LABELS[current.kind] : ""}
                 </p>
                 <p className="text-base font-semibold text-foreground">
-                  {current ? `${KIND_LABELS[current.kind]} #${current.id}` : ""}
+                  {current && current.kind !== "organisation"
+                    ? `${KIND_LABELS[current.kind]} ${current.kind === "alert" ? current.id : `#${current.id}`}`
+                    : current?.kind === "organisation" ? "Organisation Profile" : ""}
                 </p>
               </div>
               <button

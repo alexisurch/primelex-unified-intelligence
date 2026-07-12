@@ -14,6 +14,7 @@ import {
 import {
   clients,
   trips,
+  routes,
   type Client,
   type Trip,
   type TripStatus,
@@ -138,6 +139,15 @@ function TripRow({ trip, onOpen }: TripRowProps) {
             onClick={() => onOpen({ kind: "truck", id: trip.truck })}
           />
         </span>
+        {(() => { const r = routes.find(rt => rt.id === trip.routeId); return r ? (
+          <span>
+            Route:{" "}
+            <LinkButton
+              label={r.name}
+              onClick={() => onOpen({ kind: "route", id: trip.routeId })}
+            />
+          </span>
+        ) : null; })()}
         <span>Dep: {formatDateTime(trip.departureTime)}</span>
         <span>Cargo: {trip.cargo}</span>
       </div>
