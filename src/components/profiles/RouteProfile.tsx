@@ -1,9 +1,11 @@
-import { Route as RouteIcon, MapPin, Package, Users, Truck as TruckIcon, ShieldAlert, Fuel, TrendingUp, Circle, Clock, CheckCircle2, Activity, DollarSign, Building2 } from "lucide-react";
+import { Route as RouteIcon, MapPin, Package, Users, Truck as TruckIcon, ShieldAlert, Fuel, TrendingUp, Circle, Clock, CircleCheck as CheckCircle2, Activity, DollarSign, Building2 } from "lucide-react";
 import { Pill } from "@/components/shared/Cards";
 import { routes, trips, incidents, tripFuelHistory, clients, getRouteById, drivers } from "@/lib/mock-data";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, type Tone } from "./ProfileShell";
 import { useState } from "react";
+import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
+import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -148,6 +150,8 @@ export function RouteProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
             ...completed.slice(0, 8).map((t) => ({ time: "Completed", label: `Trip ${t.id}`, detail: `${t.customer} · ${t.truck}`, tone: "success" as const })),
           ]} />
         )},
+        { value: "notes", label: "Notes", content: <CollaborationPanel entityType="route" entityId={id} className="px-1 py-2" /> },
+        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="route" entityId={id} className="px-1 py-2" /> },
       ]} />
     </>
   );

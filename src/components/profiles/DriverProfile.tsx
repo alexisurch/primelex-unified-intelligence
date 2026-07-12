@@ -1,4 +1,4 @@
-import { UserCircle2, IdCard, ClipboardList, TrendingUp, Activity, CheckCircle2, Fuel, Clock, Route as RouteIcon, ShieldAlert, Circle } from "lucide-react";
+import { CircleUser as UserCircle2, IdCard, ClipboardList, TrendingUp, Activity, CircleCheck as CheckCircle2, Fuel, Clock, Route as RouteIcon, ShieldAlert, Circle } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
@@ -6,6 +6,8 @@ import { drivers, trucks, trips, incidents } from "@/lib/mock-data";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
+import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
+import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const { getManagerForTruck } = useFleetManagers();
@@ -119,6 +121,8 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
           { name: "Medical Certificate", expiry: d.medicalExpiry, status: "Valid" },
           { name: "Training Records" },
         ]} /> },
+        { value: "notes", label: "Notes", content: <CollaborationPanel entityType="driver" entityId={id} className="px-1 py-2" /> },
+        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="driver" entityId={id} className="px-1 py-2" /> },
       ]} />
     </>
   );

@@ -4,6 +4,8 @@ import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, type Tone } from "./ProfileShell";
 import { Pill } from "@/components/shared/Cards";
 import { RecommendationsSection, type Recommendation } from "@/components/shared/Insights";
+import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
+import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -87,6 +89,8 @@ export function ClientProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
           { name: "Master Service Agreement", expiry: "2027-12-31", status: "Valid" },
           { name: "Purchase Order" }, { name: "Invoices" }, { name: "Delivery Confirmations" },
         ]} /> },
+        { value: "notes", label: "Notes", content: <CollaborationPanel entityType="client" entityId={id} className="px-1 py-2" /> },
+        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="client" entityId={id} className="px-1 py-2" /> },
       ]} />
       <div className="px-6 pb-10">
         <RecommendationsSection title="Client Recommendations" recommendations={clientRecommendations(clientTrips, delayed, clientIncidents)} />

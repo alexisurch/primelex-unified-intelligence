@@ -1,10 +1,12 @@
-import { UserCog, Truck as TruckIcon, Users, Package, Route as RouteIcon, Fuel, Wrench, ShieldAlert, TrendingUp, Circle, Phone, Mail, IdCard, Calendar, Activity, CheckCircle2, Clock, AlertTriangle, DollarSign } from "lucide-react";
+import { UserCog, Truck as TruckIcon, Users, Package, Route as RouteIcon, Fuel, Wrench, ShieldAlert, TrendingUp, Circle, Phone, Mail, IdCard, Calendar, Activity, CircleCheck as CheckCircle2, Clock, TriangleAlert as AlertTriangle, DollarSign } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Pill } from "@/components/shared/Cards";
 import { trucks, trips, drivers, incidents, maintenanceRecords, fuelTransactions, tripFuelHistory, getRouteFor } from "@/lib/mock-data";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, initials, type Tone } from "./ProfileShell";
+import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
+import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -191,6 +193,8 @@ export function FleetManagerProfile({ id, onOpen, onBack }: { id: string; onOpen
             ...myFuel.slice(0, 2).map((f) => ({ time: f.date, label: "Fuel Assigned", detail: `${f.quantity} L · ${f.truck}`, tone: "info" as const })),
           ]} />
         )},
+        { value: "notes", label: "Notes", content: <CollaborationPanel entityType="fleet-manager" entityId={id} className="px-1 py-2" /> },
+        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="fleet-manager" entityId={id} className="px-1 py-2" /> },
       ]} />
     </>
   );

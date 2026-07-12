@@ -26,6 +26,8 @@ import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-inte
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
 import { Route as AppDocumentsRouteImport } from './routes/_app.documents'
 import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
+import { Route as AppAuditTrailRouteImport } from './routes/_app.audit-trail'
+import { Route as AppActionCenterRouteImport } from './routes/_app.action-center'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -111,11 +113,23 @@ const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
   path: '/dispatch-center',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAuditTrailRoute = AppAuditTrailRouteImport.update({
+  id: '/audit-trail',
+  path: '/audit-trail',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppActionCenterRoute = AppActionCenterRouteImport.update({
+  id: '/action-center',
+  path: '/action-center',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/auth': typeof AuthRoute
   '/register': typeof RegisterRoute
+  '/action-center': typeof AppActionCenterRoute
+  '/audit-trail': typeof AppAuditTrailRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
@@ -133,6 +147,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/register': typeof RegisterRoute
+  '/action-center': typeof AppActionCenterRoute
+  '/audit-trail': typeof AppAuditTrailRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
@@ -153,6 +169,8 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/auth': typeof AuthRoute
   '/register': typeof RegisterRoute
+  '/_app/action-center': typeof AppActionCenterRoute
+  '/_app/audit-trail': typeof AppAuditTrailRoute
   '/_app/dispatch-center': typeof AppDispatchCenterRoute
   '/_app/documents': typeof AppDocumentsRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
@@ -174,6 +192,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/register'
+    | '/action-center'
+    | '/audit-trail'
     | '/dispatch-center'
     | '/documents'
     | '/fleet-operations'
@@ -191,6 +211,8 @@ export interface FileRouteTypes {
   to:
     | '/auth'
     | '/register'
+    | '/action-center'
+    | '/audit-trail'
     | '/dispatch-center'
     | '/documents'
     | '/fleet-operations'
@@ -210,6 +232,8 @@ export interface FileRouteTypes {
     | '/_app'
     | '/auth'
     | '/register'
+    | '/_app/action-center'
+    | '/_app/audit-trail'
     | '/_app/dispatch-center'
     | '/_app/documents'
     | '/_app/fleet-operations'
@@ -353,10 +377,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDispatchCenterRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/audit-trail': {
+      id: '/_app/audit-trail'
+      path: '/audit-trail'
+      fullPath: '/audit-trail'
+      preLoaderRoute: typeof AppAuditTrailRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/action-center': {
+      id: '/_app/action-center'
+      path: '/action-center'
+      fullPath: '/action-center'
+      preLoaderRoute: typeof AppActionCenterRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppActionCenterRoute: typeof AppActionCenterRoute
+  AppAuditTrailRoute: typeof AppAuditTrailRoute
   AppDispatchCenterRoute: typeof AppDispatchCenterRoute
   AppDocumentsRoute: typeof AppDocumentsRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
@@ -374,6 +414,8 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppActionCenterRoute: AppActionCenterRoute,
+  AppAuditTrailRoute: AppAuditTrailRoute,
   AppDispatchCenterRoute: AppDispatchCenterRoute,
   AppDocumentsRoute: AppDocumentsRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,

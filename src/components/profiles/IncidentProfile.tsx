@@ -1,8 +1,10 @@
-import { ShieldAlert, ClipboardList, Camera, FileText, TrendingUp, Circle, MapPin, Clock, AlertTriangle, DollarSign, Activity } from "lucide-react";
+import { ShieldAlert, ClipboardList, Camera, FileText, TrendingUp, Circle, MapPin, Clock, TriangleAlert as AlertTriangle, DollarSign, Activity } from "lucide-react";
 import { incidents, trucks, drivers, trips, clients } from "@/lib/mock-data";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, type Tone } from "./ProfileShell";
 import { Pill } from "@/components/shared/Cards";
+import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
+import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -93,6 +95,8 @@ export function IncidentProfile({ id, onOpen, onBack }: { id: string; onOpen: (t
         { value: "documents", label: "Documents", content: <DocumentsGrid docs={[
           { name: "Incident Report" }, { name: "Police Report" }, { name: "Insurance Claim" },
         ]} /> },
+        { value: "notes", label: "Notes", content: <CollaborationPanel entityType="incident" entityId={id} className="px-1 py-2" /> },
+        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="incident" entityId={id} className="px-1 py-2" /> },
       ]} />
     </>
   );

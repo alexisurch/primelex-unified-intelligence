@@ -1,9 +1,11 @@
-import { Route as RouteIcon, Package, MapPin, Fuel, DollarSign, ClipboardList, Truck as TruckIcon, UserCircle2, Building2, Circle, FileText, Clock } from "lucide-react";
+import { Route as RouteIcon, Package, MapPin, Fuel, DollarSign, ClipboardList, Truck as TruckIcon, CircleUser as UserCircle2, Building2, Circle, FileText, Clock } from "lucide-react";
 import { trips, trucks, drivers, clients, incidents } from "@/lib/mock-data";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, type Tone } from "./ProfileShell";
 import { Pill } from "@/components/shared/Cards";
+import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
+import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -130,6 +132,8 @@ export function TripProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: Pr
         { value: "documents", label: "Documents", content: <DocumentsGrid docs={[
           { name: "Waybill" }, { name: "Invoice" }, { name: "Delivery Note" }, { name: "Proof of Delivery" },
         ]} /> },
+        { value: "notes", label: "Notes", content: <CollaborationPanel entityType="trip" entityId={id} className="px-1 py-2" /> },
+        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="trip" entityId={id} className="px-1 py-2" /> },
       ]} />
     </>
   );

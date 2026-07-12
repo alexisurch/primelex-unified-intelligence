@@ -1,4 +1,4 @@
-import { Truck as TruckIcon, UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog } from "lucide-react";
+import { Truck as TruckIcon, CircleUser as UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CircleCheck as CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
@@ -7,6 +7,8 @@ import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
+import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
+import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -185,6 +187,8 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
           { name: "Road Worthiness", expiry: "2026-09-30", status: "Valid" },
           { name: "Inspection Certificate", expiry: "2026-08-18", status: "Valid" },
         ]} /> },
+        { value: "notes", label: "Notes", content: <CollaborationPanel entityType="truck" entityId={id} className="px-1 py-2" /> },
+        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="truck" entityId={id} className="px-1 py-2" /> },
       ]} />
     </>
   );
