@@ -57,16 +57,6 @@ function DispatchCenter() {
                     <Locate className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Pickup Date</label>
-                    <Input type="date" defaultValue="2026-05-15" className="mt-1 bg-elevated/60" />
-                  </div>
-                  <div>
-                    <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Time</label>
-                    <Input type="time" defaultValue="08:00" className="mt-1 bg-elevated/60" />
-                  </div>
-                </div>
                 <div>
                   <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Truck Type / Capacity (Optional)</label>
                   <Select value={truckType} onValueChange={setTruckType}>
@@ -156,13 +146,13 @@ function DispatchCenter() {
                     <div className="mt-1 flex items-center gap-2">
                       <h3 className="text-lg font-semibold">{selected.plate}</h3>
                       <Pill tone="success">Available</Pill>
-                      <span className="text-xs text-muted-foreground">{selected.distanceKm} km away</span>
+                      {!isManual && <span className="text-xs text-muted-foreground">{selected.distanceKm} km away</span>}
                     </div>
                   </div>
                   <button onClick={() => setDetailOpen(false)}><X className="h-4 w-4 text-muted-foreground hover:text-foreground" /></button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="rounded-xl border border-border/60 bg-background/30 p-4 flex flex-col items-center justify-center">
                     <div className="flex h-24 w-full items-center justify-center rounded-lg bg-elevated/60"><TruckIcon className="h-10 w-10 text-muted-foreground" /></div>
                     {selectedDriver && (
@@ -182,10 +172,7 @@ function DispatchCenter() {
                   <DetailCol title="Current Status" rows={[
                     ["Location", selected.location.split(" → ")[0]], ["Status", "Available"], ["Last Update", `${3}m ago`],
                     ["Odometer", `${selected.odometer.toLocaleString()} km`], ["Fuel Level", `${selected.fuel}%`], ["Health Score", `${selected.engineHealth}/100`],
-                  ]} />
-                  <DetailCol title="Availability" rows={[
-                    ["Earliest Available", "Today, 08:00"], ["Next Booking", "—"], ["Working Hours", "06:00 - 18:00"],
-                    ["Max Daily Distance", "500 km"],
+                    ...(!isManual ? [["Distance Away", `${selected.distanceKm} km`] as [string,string]] : []),
                   ]} />
                 </div>
 

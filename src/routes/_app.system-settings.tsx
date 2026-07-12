@@ -1,15 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
-import { GlassCard, SectionCard } from "@/components/shared/Cards";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SectionCard } from "@/components/shared/Cards";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { usePreferences, type ThemePreference, type TrackingMode } from "@/lib/preferences";
 import {
-  Building2, Palette, Bell, ShieldCheck, Database, Activity,
-  Satellite, Sun, Moon, MonitorSmartphone, Hand, Zap,
+  Bell, Palette, Satellite, Sun, Moon, MonitorSmartphone, Hand, Zap,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/system-settings")({
@@ -17,22 +14,19 @@ export const Route = createFileRoute("/_app/system-settings")({
 });
 
 const sections = [
-  { id: "general",       icon: Building2,   name: "General",       desc: "Company profile & branding" },
-  { id: "notifications", icon: Bell,        name: "Notifications", desc: "Alerts & communications" },
-  { id: "tracking",      icon: Satellite,   name: "Fleet Tracking",desc: "Manual vs Automated GPS" },
-  { id: "appearance",    icon: Palette,     name: "Appearance",    desc: "Theme & display" },
-  { id: "security",      icon: ShieldCheck, name: "Security",      desc: "MFA, SSO, session policy" },
-  { id: "system",        icon: Database,    name: "System",        desc: "Backups, audit & data" },
+  { id: "notifications", icon: Bell,      name: "Notifications", desc: "Alerts & communications" },
+  { id: "tracking",      icon: Satellite, name: "Fleet Tracking", desc: "Manual vs Automated GPS" },
+  { id: "appearance",    icon: Palette,   name: "Appearance",    desc: "Theme & display" },
 ] as const;
 
 type SectionId = (typeof sections)[number]["id"];
 
 function SystemSettings() {
-  const [active, setActive] = useState<SectionId>("general");
+  const [active, setActive] = useState<SectionId>("notifications");
 
   return (
     <>
-      <Header title="System Settings" subtitle="Configure organization, tracking, appearance, security and audit" showExport={false} />
+      <Header title="System Settings" subtitle="Configure tracking, notifications and appearance" showExport={false} />
       <div className="grid grid-cols-1 gap-6 p-8 xl:grid-cols-[280px_1fr]">
         <div className="space-y-1">
           {sections.map((s) => {
@@ -59,28 +53,12 @@ function SystemSettings() {
         </div>
 
         <div className="space-y-6">
-          {active === "general" && <GeneralSection />}
           {active === "notifications" && <NotificationsSection />}
           {active === "tracking" && <TrackingSection />}
           {active === "appearance" && <AppearanceSection />}
-          {active === "security" && <SecuritySection />}
-          {active === "system" && <SystemSection />}
         </div>
       </div>
     </>
-  );
-}
-
-function GeneralSection() {
-  return (
-    <SectionCard title="Organization">
-      <div className="grid grid-cols-2 gap-4">
-        <div><label className="text-xs text-muted-foreground">Legal Name</label><Input defaultValue="Primelex Logistics Ltd" className="mt-1 border-border bg-elevated/60" /></div>
-        <div><label className="text-xs text-muted-foreground">Tax ID</label><Input defaultValue="NG-2024-887432" className="mt-1 border-border bg-elevated/60" /></div>
-        <div><label className="text-xs text-muted-foreground">HQ Address</label><Input defaultValue="12 Marina, Lagos" className="mt-1 border-border bg-elevated/60" /></div>
-        <div><label className="text-xs text-muted-foreground">Support Email</label><Input defaultValue="ops@primelex.com" className="mt-1 border-border bg-elevated/60" /></div>
-      </div>
-    </SectionCard>
   );
 }
 
@@ -194,34 +172,6 @@ function AppearanceSection() {
       </div>
       <div className="mt-4 text-[11px] text-muted-foreground">
         Active theme: <span className="font-medium text-foreground capitalize">{resolvedTheme}</span>
-      </div>
-    </SectionCard>
-  );
-}
-
-function SecuritySection() {
-  return (
-    <SectionCard title="Security">
-      <div className="grid grid-cols-2 gap-4">
-        <GlassCard className="p-4"><div className="text-xs text-muted-foreground">MFA Enforcement</div><div className="mt-1 text-lg font-semibold text-success">Required</div></GlassCard>
-        <GlassCard className="p-4"><div className="text-xs text-muted-foreground">SSO Provider</div><div className="mt-1 text-lg font-semibold">Okta</div></GlassCard>
-        <GlassCard className="p-4"><div className="text-xs text-muted-foreground">Session Timeout</div><div className="mt-1 text-lg font-semibold">30 minutes</div></GlassCard>
-        <GlassCard className="p-4"><div className="text-xs text-muted-foreground">Data Encryption</div><div className="mt-1 text-lg font-semibold text-success">AES-256</div></GlassCard>
-      </div>
-      <div className="mt-4 flex justify-end gap-2">
-        <Button variant="outline" size="sm" className="border-border bg-elevated/60">Cancel</Button>
-        <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">Save Changes</Button>
-      </div>
-    </SectionCard>
-  );
-}
-
-function SystemSection() {
-  return (
-    <SectionCard title="System">
-      <div className="grid grid-cols-2 gap-4">
-        <GlassCard className="p-4"><div className="flex items-center gap-2 text-xs text-muted-foreground"><Database className="h-3.5 w-3.5"/>Backups</div><div className="mt-1 text-lg font-semibold">Nightly · 02:00 UTC</div></GlassCard>
-        <GlassCard className="p-4"><div className="flex items-center gap-2 text-xs text-muted-foreground"><Activity className="h-3.5 w-3.5"/>Audit Logs</div><div className="mt-1 text-lg font-semibold">Retained 365 days</div></GlassCard>
       </div>
     </SectionCard>
   );

@@ -1,83 +1,77 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
-import { GlassCard, SectionCard, StatusDot } from "@/components/shared/Cards";
-import { weekly } from "@/lib/mock-data";
-import { ResponsiveContainer, LineChart, Line } from "recharts";
+import { KPICard, SectionCard } from "@/components/shared/Cards";
+import { TrendingUp, Clock, Package, Fuel, TrendingDown, TriangleAlert as AlertTriangle, ShieldCheck, Activity, CircleCheck as CheckCircle2, Gauge, Wrench, CalendarClock } from "lucide-react";
 
 export const Route = createFileRoute("/_app/kpi-scorecard")({
   component: KPIScorecard,
 });
 
 const departments = [
-  { name: "Operations", metrics: [
-    { name: "Fleet Utilization", actual: 81.7, target: 85, unit: "%" },
-    { name: "On-Time Delivery", actual: 92.3, target: 95, unit: "%" },
-    { name: "Trips Completed", actual: 1420, target: 1500, unit: "" },
-  ]},
-  { name: "Fuel", metrics: [
-    { name: "Cost per KM", actual: 62, target: 55, unit: "₦" },
-    { name: "Fleet Efficiency", actual: 87, target: 90, unit: "%" },
-    { name: "Theft Events", actual: 4, target: 0, unit: "" },
-  ]},
-  { name: "Safety", metrics: [
-    { name: "Safety Score", actual: 92, target: 95, unit: "" },
-    { name: "Open Incidents", actual: 7, target: 3, unit: "" },
-    { name: "Training Complete", actual: 76, target: 85, unit: "%" },
-  ]},
-  { name: "Maintenance", metrics: [
-    { name: "Downtime", actual: 18, target: 12, unit: "h" },
-    { name: "Cost per Truck", actual: 2.2, target: 1.8, unit: "M" },
-    { name: "PM Compliance", actual: 88, target: 95, unit: "%" },
-  ]},
+  {
+    name: "Operations",
+    desc: "Trip throughput and delivery reliability.",
+    kpis: [
+      { label: "On-Time Delivery",  value: "92.3%", tone: "warning" as const, icon: CheckCircle2,  delta: { value: "3.2%", direction: "down" as const }, footnote: "Target 95%" },
+      { label: "Active Deliveries", value: "142",   tone: "success" as const, icon: Package,        delta: { value: "+12",  direction: "up"   as const }, footnote: "Target 130" },
+      { label: "Delayed Trips",     value: "18",    tone: "danger"  as const, icon: Clock,          delta: { value: "-6",   direction: "down" as const }, footnote: "Target < 12" },
+    ],
+  },
+  {
+    name: "Fuel",
+    desc: "Consumption efficiency and spend.",
+    kpis: [
+      { label: "Avg Fuel Efficiency",   value: "3.8 km/L", tone: "danger"  as const, icon: Fuel,         delta: { value: "-0.4", direction: "down" as const }, footnote: "Target 4.2 km/L" },
+      { label: "Monthly Fuel Cost",     value: "₦640M",    tone: "success" as const, icon: TrendingDown,  delta: { value: "-6.7%",direction: "down" as const }, footnote: "Target ₦680M" },
+      { label: "Fuel Theft Incidents",  value: "2",        tone: "warning" as const, icon: AlertTriangle, delta: { value: "+1",   direction: "up"   as const }, footnote: "Target 0" },
+    ],
+  },
+  {
+    name: "Safety",
+    desc: "Incident rates and compliance.",
+    kpis: [
+      { label: "Incident Rate",    value: "1.4", tone: "warning" as const, icon: ShieldCheck,   delta: { value: "-0.3", direction: "down" as const }, footnote: "Target < 1.0" },
+      { label: "Open Incidents",   value: "3",   tone: "info"    as const, icon: Activity,       delta: { value: "-2",   direction: "down" as const }, footnote: "Target 0" },
+      { label: "Compliance Score", value: "94%", tone: "success" as const, icon: CheckCircle2,   delta: { value: "+2%",  direction: "up"   as const }, footnote: "Target 95%" },
+    ],
+  },
+  {
+    name: "Maintenance",
+    desc: "Service adherence and fleet uptime.",
+    kpis: [
+      { label: "Fleet Uptime",          value: "91.2%", tone: "warning" as const, icon: Gauge,         delta: { value: "-1.8%", direction: "down" as const }, footnote: "Target 95%" },
+      { label: "Overdue Services",      value: "1",     tone: "success" as const, icon: Wrench,         delta: { value: "-1",    direction: "down" as const }, footnote: "Target 0" },
+      { label: "Scheduled This Week",   value: "4",     tone: "info"    as const, icon: CalendarClock,  delta: { value: "+1",    direction: "up"   as const }, footnote: "Target 5" },
+    ],
+  },
 ];
-
-function traffic(actual: number, target: number, inverse = false) {
-  const ratio = inverse ? target / actual : actual / target;
-  if (ratio >= 0.98) return "success";
-  if (ratio >= 0.85) return "warning";
-  return "danger";
-}
 
 function KPIScorecard() {
   return (
     <>
-      <Header title="KPI Scorecard" subtitle="Executive KPI monitoring across departments — actual vs target" />
+      <Header title="KPI Scorecard" subtitle="Department-level KPIs measured against monthly targets." />
       <div className="space-y-6 p-8">
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          {departments.map((d) => (
-            <SectionCard key={d.name} title={d.name}>
-              <div className="space-y-3">
-                {d.metrics.map((m) => {
-                  const inverse = ["Cost per KM","Theft Events","Open Incidents","Downtime","Cost per Truck"].includes(m.name);
-                  const tone = traffic(m.actual, m.target, inverse);
-                  const variance = ((m.actual - m.target) / m.target * 100).toFixed(1);
-                  return (
-                    <GlassCard key={m.name} className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <StatusDot tone={tone as any} />
-                          <span className="text-sm font-medium">{m.name}</span>
-                        </div>
-                        <div className="flex items-center gap-6 text-xs">
-                          <div><span className="text-muted-foreground">Target</span> <span className="ml-1 font-medium">{m.unit === "₦" ? "₦" : ""}{m.target}{m.unit === "%" ? "%" : m.unit === "h" ? "h" : m.unit === "M" ? "M" : ""}</span></div>
-                          <div><span className="text-muted-foreground">Actual</span> <span className={`ml-1 font-semibold text-${tone}`}>{m.unit === "₦" ? "₦" : ""}{m.actual}{m.unit === "%" ? "%" : m.unit === "h" ? "h" : m.unit === "M" ? "M" : ""}</span></div>
-                          <div className={`font-medium text-${tone}`}>{Number(variance) >= 0 ? "+" : ""}{variance}%</div>
-                        </div>
-                      </div>
-                      <div className="mt-3 h-8">
-                        <ResponsiveContainer>
-                          <LineChart data={weekly}>
-                            <Line type="monotone" dataKey="onTime" stroke={`var(--${tone})`} strokeWidth={2} dot={false}/>
-                          </LineChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </GlassCard>
-                  );
-                })}
-              </div>
-            </SectionCard>
-          ))}
-        </div>
+        {departments.map((dept) => (
+          <SectionCard
+            key={dept.name}
+            title={dept.name}
+            action={<span className="text-xs text-muted-foreground">{dept.desc}</span>}
+          >
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {dept.kpis.map((k) => (
+                <KPICard
+                  key={k.label}
+                  icon={k.icon}
+                  label={k.label}
+                  value={k.value}
+                  tone={k.tone}
+                  delta={k.delta}
+                  footnote={k.footnote}
+                />
+              ))}
+            </div>
+          </SectionCard>
+        ))}
       </div>
     </>
   );
