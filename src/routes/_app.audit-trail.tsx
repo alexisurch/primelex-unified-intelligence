@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
-import { History, Search, ListFilter as Filter, RefreshCw, Download } from "lucide-react";
+import { History, RefreshCw, ListFilter as Filter } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { KPICard, SectionCard, Pill } from "@/components/shared/Cards";
 import { fetchAuditTrail, type DbAuditEntry } from "@/lib/supabase";
@@ -20,6 +20,7 @@ const ACTION_TONE: Record<string, "success" | "info" | "warning" | "danger" | "p
   Escalated: "danger",
 };
 
+const ALL_ACTIONS = ["All Actions", "Created", "Updated", "Status Changed", "Deleted", "Assigned", "Resolved", "Escalated"];
 const MODULES = ["All Modules", "Trips", "Fleet", "Drivers", "Incidents", "Fuel Intelligence", "Maintenance", "Routes", "Clients", "Documents", "Action Center", "Operations"];
 
 function formatDate(iso: string): string {
@@ -39,15 +40,9 @@ function AuditRow({ entry }: { entry: DbAuditEntry }) {
       className={cn("border-b border-border/30 transition-colors hover:bg-white/[0.02]", expanded && "bg-white/[0.02]")}
       onClick={() => hasDetails && setExpanded((v) => !v)}
     >
-      <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
-        {formatDate(entry.created_at)}
-      </td>
-      <td className="px-4 py-3">
-        <Pill tone={tone}>{entry.action}</Pill>
-      </td>
-      <td className="px-4 py-3 text-sm font-medium text-foreground">
-        {entry.entity_label || entry.entity_id}
-      </td>
+      <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">{formatDate(entry.created_at)}</td>
+      <td className="px-4 py-3"><Pill tone={tone}>{entry.action}</Pill></td>
+      <td className="px-4 py-3 text-sm font-medium text-foreground">{entry.entity_label || entry.entity_id}</td>
       <td className="px-4 py-3 text-xs text-muted-foreground">{entry.module}</td>
       <td className="px-4 py-3 text-xs">
         <span className="font-medium text-foreground">{entry.changed_by}</span>
@@ -57,12 +52,8 @@ function AuditRow({ entry }: { entry: DbAuditEntry }) {
         {entry.field_name ? (
           <span>
             <span className="font-medium text-foreground/70">{entry.field_name}</span>
-            {entry.previous_value && (
-              <><span className="mx-1 text-danger line-through">{entry.previous_value}</span><span className="mx-1">→</span></>
-            )}
-            {entry.new_value && (
-              <span className="text-success">{entry.new_value}</span>
-            )}
+            {entry.previous_value && (<><span className="mx-1 text-danger line-through">{entry.previous_value}</span><span className="mx-1">→</span></>)}
+            {entry.new_value && (<span className="text-success">{entry.new_value}</span>)}
           </span>
         ) : entry.notes ? (
           <span className="line-clamp-1">{entry.notes}</span>
@@ -77,7 +68,7 @@ function AuditRow({ entry }: { entry: DbAuditEntry }) {
 function AuditTrailPage() {
   const [entries, setEntries] = useState<DbAuditEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [actionFilter, setActionFilter] = useState("All Actions");
   const [moduleFilter, setModuleFilter] = useState("All Modules");
 
   const load = useCallback(async () => {
@@ -94,15 +85,8 @@ function AuditTrailPage() {
   useEffect(() => { void load(); }, [load]);
 
   const filtered = entries.filter((e) => {
-    if (!search) return true;
-    const s = search.toLowerCase();
-    return (
-      e.action.toLowerCase().includes(s) ||
-      e.entity_label.toLowerCase().includes(s) ||
-      e.changed_by.toLowerCase().includes(s) ||
-      e.module.toLowerCase().includes(s) ||
-      (e.field_name?.toLowerCase().includes(s) ?? false)
-    );
+    if (actionFilter !== "All Actions" && e.action !== actionFilter) return false;
+    return true;
   });
 
   const byAction: Record<string, number> = {};
@@ -116,7 +100,7 @@ function AuditTrailPage() {
 
   return (
     <>
-      <Header title="Audit Trail" subtitle="Complete searchable record of every operational change." showExport={false} />
+      <Header title="Audit Trail" subtitle="Complete record of every operational change." showExport={false} />
       <div className="space-y-6 p-8">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <KPICard label="Total Events" value={entries.length} icon={History} tone="info" footnote="All time" />
@@ -129,23 +113,23 @@ function AuditTrailPage() {
           title="Event Log"
           action={
             <div className="flex items-center gap-2">
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Search events…"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="h-8 rounded-md border border-border/60 bg-elevated/60 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none"
-                />
+              <div className="flex items-center gap-1.5">
+                <Filter className="h-3.5 w-3.5 text-muted-foreground" />
+                <select
+                  value={actionFilter}
+                  onChange={(e) => setActionFilter(e.target.value)}
+                  className="h-8 rounded-md border border-border/60 bg-elevated/60 px-2 text-xs text-foreground focus:outline-none"
+                >
+                  {ALL_ACTIONS.map((a) => <option key={a}>{a}</option>)}
+                </select>
+                <select
+                  value={moduleFilter}
+                  onChange={(e) => setModuleFilter(e.target.value)}
+                  className="h-8 rounded-md border border-border/60 bg-elevated/60 px-2 text-xs text-foreground focus:outline-none"
+                >
+                  {MODULES.map((m) => <option key={m}>{m}</option>)}
+                </select>
               </div>
-              <select
-                value={moduleFilter}
-                onChange={(e) => setModuleFilter(e.target.value)}
-                className="h-8 rounded-md border border-border/60 bg-elevated/60 px-2 text-xs text-foreground focus:outline-none"
-              >
-                {MODULES.map((m) => <option key={m}>{m}</option>)}
-              </select>
               <button
                 type="button"
                 onClick={() => void load()}
@@ -160,7 +144,7 @@ function AuditTrailPage() {
             <div className="py-12 text-center text-sm text-muted-foreground">Loading audit trail…</div>
           ) : filtered.length === 0 ? (
             <div className="py-12 text-center text-sm text-muted-foreground">
-              {search ? "No matching events." : "No audit events yet. Events are recorded automatically as you use the system."}
+              No audit events match the current filters.
             </div>
           ) : (
             <div className="overflow-x-auto">

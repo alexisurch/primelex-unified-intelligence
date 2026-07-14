@@ -3,15 +3,17 @@ import { Header } from "@/components/layout/Header";
 import { GlassCard, Pill } from "@/components/shared/Cards";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useState, useMemo } from "react";
-import { trucks, drivers } from "@/lib/mock-data";
+import { trucks, drivers, clients, getTruckAvgLkm, exportCSV, type Client } from "@/lib/mock-data";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import { toast } from "sonner";
 import {
-  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog,
+  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog, Building2, ArrowUpDown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/dispatch-center")({
@@ -27,15 +29,43 @@ function DispatchCenter() {
   const [truckType, setTruckType] = useState("any");
   const [selectedId, setSelectedId] = useState<string>("TRK-1000");
   const [detailOpen, setDetailOpen] = useState(true);
+  const [selectedClient, setSelectedClient] = useState("none");
+  const [addClientOpen, setAddClientOpen] = useState(false);
+  const [clientList, setClientList] = useState(clients);
+  const [sortBy, setSortBy] = useState<"distance" | "plate" | "driver">("distance");
 
-  const available = useMemo(() => trucks.filter(t => t.status !== "Maintenance" && t.status !== "Offline").slice(0, 6).map((t, i) => ({
-    ...t,
-    distanceKm: [8.2, 9.7, 11.3, 14.8, 20.1, 22.4][i] ?? (8 + i * 3),
-    tone: (["success","success","success","warning","danger","danger"] as const)[i] ?? "success",
-  })), []);
+  const available = useMemo(() => {
+    const filtered = trucks.filter(t => t.status !== "Maintenance" && t.status !== "Offline").slice(0, 6).map((t, i) => ({
+      ...t,
+      distanceKm: [8.2, 9.7, 11.3, 14.8, 20.1, 22.4][i] ?? (8 + i * 3),
+      tone: (["success","success","success","warning","danger","danger"] as const)[i] ?? "success",
+      avgLkm: getTruckAvgLkm(t.id),
+    }));
+    if (sortBy === "distance") filtered.sort((a, b) => a.distanceKm - b.distanceKm);
+    else if (sortBy === "plate") filtered.sort((a, b) => a.plate.localeCompare(b.plate));
+    else filtered.sort((a, b) => a.driver.localeCompare(b.driver));
+    return filtered;
+  }, [sortBy]);
 
   const selected = available.find(t => t.id === selectedId) ?? available[0];
   const selectedDriver = drivers.find(d => d.name === selected?.driver);
+
+  function handleAddClient(name: string) {
+    const newClient: Client = {
+      id: `CLI-${300 + clientList.length}`,
+      name,
+      industry: "Logistics",
+      contact: "",
+      phone: "",
+      email: "",
+      address: "",
+      since: new Date().toISOString().split("T")[0],
+      status: "Active",
+    };
+    setClientList((prev) => [...prev, newClient]);
+    setSelectedClient(newClient.id);
+    toast.success(`Client "${name}" created and added to dropdown`);
+  }
 
   return (
     <>
@@ -58,6 +88,23 @@ function DispatchCenter() {
                   </div>
                 </div>
                 <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Client / Company</label>
+                    <button type="button" onClick={() => setAddClientOpen(true)} className="flex items-center gap-0.5 text-[11px] text-primary hover:underline">
+                      <Plus className="h-3 w-3" /> Add Client
+                    </button>
+                  </div>
+                  <Select value={selectedClient} onValueChange={setSelectedClient}>
+                    <SelectTrigger className="mt-1 bg-elevated/60"><SelectValue placeholder="Select client" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No client selected</SelectItem>
+                      {clientList.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Truck Type / Capacity (Optional)</label>
                   <Select value={truckType} onValueChange={setTruckType}>
                     <SelectTrigger className="mt-1 bg-elevated/60"><SelectValue placeholder="Select type or capacity" /></SelectTrigger>
@@ -78,11 +125,17 @@ function DispatchCenter() {
             <GlassCard hover={false} className="p-5">
               <div className="mb-3 flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">2</span>
-                <h3 className="text-sm font-semibold">Available Trucks Near This Location</h3>
+                <h3 className="text-sm font-semibold">Available Trucks</h3>
               </div>
               <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{available.length} trucks found within 25 km</span>
-                <span>Sort by: Distance</span>
+                <span>{available.length} trucks found{!isManual && " within 25 km"}</span>
+                <button
+                  type="button"
+                  onClick={() => setSortBy(sortBy === "distance" ? "plate" : sortBy === "plate" ? "driver" : "distance")}
+                  className="flex items-center gap-1 text-primary hover:underline"
+                >
+                  <ArrowUpDown className="h-3 w-3" /> Sort: {sortBy === "distance" ? "Distance" : sortBy === "plate" ? "Plate" : "Driver"}
+                </button>
               </div>
               <div className="space-y-2.5">
                 {available.map((t) => {
@@ -96,7 +149,7 @@ function DispatchCenter() {
                       <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-elevated/60"><TruckIcon className="h-7 w-7 text-muted-foreground" /></div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold text-white bg-${t.tone}`}>{t.distanceKm} km</span>
+                          {!isManual && <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold text-white bg-${t.tone}`}>{t.distanceKm} km</span>}
                           <span className="text-sm font-semibold">{t.plate}</span>
                           <Pill tone="success">Available</Pill>
                         </div>
@@ -171,7 +224,7 @@ function DispatchCenter() {
                   ]} />
                   <DetailCol title="Current Status" rows={[
                     ["Location", selected.location.split(" → ")[0]], ["Status", "Available"], ["Last Update", `${3}m ago`],
-                    ["Odometer", `${selected.odometer.toLocaleString()} km`], ["Fuel Level", `${selected.fuel}%`], ["Health Score", `${selected.engineHealth}/100`],
+                    ["Odometer", `${selected.odometer.toLocaleString()} km`], ["Current L/km", selected.avgLkm ? selected.avgLkm.toFixed(2) : "—"],
                     ...(!isManual ? [["Distance Away", `${selected.distanceKm} km`] as [string,string]] : []),
                   ]} />
                 </div>
@@ -196,7 +249,53 @@ function DispatchCenter() {
           </div>
         </div>
       </div>
+
+      <AddClientDialog open={addClientOpen} onOpenChange={setAddClientOpen} onAdd={handleAddClient} />
     </>
+  );
+}
+
+function AddClientDialog({ open, onOpenChange, onAdd }: { open: boolean; onOpenChange: (v: boolean) => void; onAdd: (name: string) => void }) {
+  const [name, setName] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [contact, setContact] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const submit = () => {
+    if (!name.trim()) { toast.error("Client name is required"); return; }
+    onAdd(name.trim());
+    setName(""); setIndustry(""); setContact(""); setPhone("");
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader><DialogTitle>Add New Client</DialogTitle></DialogHeader>
+        <div className="grid grid-cols-2 gap-4 pt-2">
+          <div className="col-span-2">
+            <Label className="text-[11px] uppercase text-muted-foreground">Client Name *</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. ABC Logistics" className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-[11px] uppercase text-muted-foreground">Industry (Optional)</Label>
+            <Input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. Logistics" className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-[11px] uppercase text-muted-foreground">Contact Person (Optional)</Label>
+            <Input value={contact} onChange={(e) => setContact(e.target.value)} className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-[11px] uppercase text-muted-foreground">Phone (Optional)</Label>
+            <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="mt-1" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={submit} className="bg-primary text-primary-foreground">Add Client</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -217,13 +316,11 @@ function DetailCol({ title, rows }: { title: string; rows: [string, string][] })
 }
 
 function MapCanvas({ trucks: list, selectedId, onSelect }: { trucks: Array<{ id: string; plate: string; distanceKm: number; tone: "success"|"warning"|"danger" }>; selectedId: string; onSelect: (id: string) => void }) {
-  // Stylized dark-map background
   const positions = [
     { x: 32, y: 30 }, { x: 55, y: 26 }, { x: 72, y: 40 }, { x: 78, y: 55 }, { x: 40, y: 70 }, { x: 55, y: 78 },
   ];
   return (
     <div className="relative h-full w-full bg-[#0d1a2b]" style={{ minHeight: 520 }}>
-      {/* Roads */}
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
           <linearGradient id="road" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#1e3a5f" /><stop offset="1" stopColor="#0d1a2b" /></linearGradient>
@@ -233,8 +330,6 @@ function MapCanvas({ trucks: list, selectedId, onSelect }: { trucks: Array<{ id:
         <path d="M 0 80 L 100 75" stroke="#1a3355" strokeWidth="1" fill="none" />
         <path d="M 50 0 L 50 100" stroke="#1a3355" strokeWidth="1" fill="none" />
       </svg>
-
-      {/* City labels */}
       {[
         { x: 25, y: 20, name: "Ikeja" }, { x: 60, y: 20, name: "Oshodi" }, { x: 78, y: 35, name: "Mushin" },
         { x: 45, y: 55, name: "Yaba" }, { x: 62, y: 60, name: "Surulere" }, { x: 55, y: 82, name: "Lagos" },
@@ -242,16 +337,12 @@ function MapCanvas({ trucks: list, selectedId, onSelect }: { trucks: Array<{ id:
       ].map((c) => (
         <div key={c.name} className="absolute -translate-x-1/2 text-[11px] font-medium text-white/70" style={{ left: `${c.x}%`, top: `${c.y}%` }}>{c.name}</div>
       ))}
-
-      {/* Center pickup pin */}
       <div className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: "48%", top: "45%" }}>
         <div className="relative">
           <span className="absolute inset-0 -m-3 animate-ping rounded-full bg-danger/30" />
           <MapPin className="relative h-8 w-8 text-danger drop-shadow-lg" fill="currentColor" />
         </div>
       </div>
-
-      {/* Truck pins */}
       {list.map((t, i) => {
         const p = positions[i] ?? { x: 50, y: 50 };
         const active = t.id === selectedId;

@@ -7,12 +7,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserCog, Users, ShieldCheck, Activity, UserPlus, Settings2, Globe, Copy, Check } from "lucide-react";
-import { useState } from "react";
+import { UserCog, Users, ShieldCheck, Activity, UserPlus, Settings2, Globe, Copy, Check, Download, Search, ListFilter as Filter } from "lucide-react";
+import { useState, useMemo } from "react";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { ManageFleetDialog } from "@/components/fleet/ManageFleetDialog";
 import { useBranding } from "@/lib/branding";
+import { exportCSV } from "@/lib/mock-data";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/users-access")({
@@ -37,6 +38,9 @@ function UsersAccess() {
   const [manageId, setManageId] = useState<string | null>(null);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilterVal, setStatusFilterVal] = useState("all");
   const workspaceUrl = `https://${workspaceSlug}.primelex.app`;
 
   const copyUrl = () => {
@@ -58,6 +62,25 @@ function UsersAccess() {
   }));
 
   const users = [...staticUsers, ...fmUsers];
+
+  const filtered = useMemo(() => {
+    return users.filter((u) => {
+      if (roleFilter !== "all" && u.role !== roleFilter) return false;
+      if (statusFilterVal !== "all" && u.status !== statusFilterVal) return false;
+      if (!search) return true;
+      const s = search.toLowerCase();
+      return u.name.toLowerCase().includes(s) || u.email.toLowerCase().includes(s) || u.role.toLowerCase().includes(s) || u.department.toLowerCase().includes(s);
+    });
+  }, [users, search, roleFilter, statusFilterVal]);
+
+  function handleExport() {
+    exportCSV(
+      "users.csv",
+      ["User ID", "Name", "Email", "Role", "Department", "Status", "Last Active"],
+      filtered.map((u) => [u.id, u.name, u.email, u.role, u.department, u.status, u.lastActive]),
+    );
+    toast.success("Exported users to CSV");
+  }
 
   const cols: Column<UserRow>[] = [
     { key: "id", label: "User ID", render: (r) => <span className="font-semibold text-primary">{r.id}</span> },
@@ -120,22 +143,55 @@ function UsersAccess() {
                 <div className="mt-1 text-[11px] text-muted-foreground">Custom tenant URL for {companyName} team members.</div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" className="border-border">Configure SSO</Button>
-              <Button variant="outline" size="sm" className="border-border">Domain settings</Button>
-            </div>
           </div>
         </SectionCard>
 
         <SectionCard
           title="User Directory"
           action={
-            <Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30" onClick={() => setInviteOpen(true)}>
-              <UserPlus className="mr-1.5 h-3.5 w-3.5" />Invite User
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search users…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="h-8 rounded-md border border-border/60 bg-elevated/60 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
+                />
+              </div>
+              <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="h-8 rounded-md border border-border/60 bg-elevated/60 px-2 text-xs text-foreground focus:outline-none"
+              >
+                <option value="all">All Roles</option>
+                <option value="CEO / Admin">CEO / Admin</option>
+                <option value="Fleet Manager">Fleet Manager</option>
+                <option value="Dispatch Coordinator">Dispatch Coordinator</option>
+                <option value="Finance Analyst">Finance Analyst</option>
+                <option value="Driver Manager">Driver Manager</option>
+              </select>
+              <select
+                value={statusFilterVal}
+                onChange={(e) => setStatusFilterVal(e.target.value)}
+                className="h-8 rounded-md border border-border/60 bg-elevated/60 px-2 text-xs text-foreground focus:outline-none"
+              >
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Invited">Invited</option>
+                <option value="Suspended">Suspended</option>
+              </select>
+              <Button size="sm" variant="outline" className="border-border bg-elevated/60" onClick={handleExport}>
+                <Download className="mr-1.5 h-3.5 w-3.5" />Export CSV
+              </Button>
+              <Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30" onClick={() => setInviteOpen(true)}>
+                <UserPlus className="mr-1.5 h-3.5 w-3.5" />Invite User
+              </Button>
+            </div>
           }
         >
-          <DataTable columns={cols} rows={users} searchKeys={["name","email","role","department"]} pageSize={10} />
+          <DataTable columns={cols} rows={filtered} searchKeys={["name","email","role","department"]} pageSize={10} />
         </SectionCard>
       </div>
       <ManageFleetDialog managerId={manageId} open={!!manageId} onOpenChange={(o) => { if (!o) setManageId(null); }} />

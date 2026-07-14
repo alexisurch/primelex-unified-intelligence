@@ -76,9 +76,9 @@ export interface Incident {
 export interface DocumentRow {
   id: string;
   name: string;
-  type: "License" | "Insurance" | "Registration" | "Permit";
+  type: string;
   owner: string;
-  expiry: string;
+  expiry?: string;
   status: "Valid" | "Expiring" | "Expired";
   version: string;
 }
@@ -434,3 +434,142 @@ export const tripFuelHistory: TripFuelSnapshot[] = trips
       routeId: getRouteFor(t.origin, t.destination)?.id,
     };
   });
+
+// ---- Fuel KPI helpers ----
+export function getFleetAvgLkm(): number {
+  const totalFuel = tripFuelHistory.reduce((s, h) => s + h.assignedFuelL, 0);
+  const totalDist = tripFuelHistory.reduce((s, h) => s + h.distanceKm, 0);
+  return totalDist ? totalFuel / totalDist : 0;
+}
+export function getTruckAvgLkm(truckId: string): number {
+  const truckTrips = trips.filter((t) => t.truck === truckId);
+  const snapshots = tripFuelHistory.filter((h) => truckTrips.some((t) => t.id === h.tripId));
+  const totalFuel = snapshots.reduce((s, h) => s + h.assignedFuelL, 0);
+  const totalDist = snapshots.reduce((s, h) => s + h.distanceKm, 0);
+  return totalDist ? totalFuel / totalDist : 0;
+}
+export function getDriverAvgLkm(driverName: string): number {
+  const driverTrips = trips.filter((t) => t.driver === driverName);
+  const snapshots = tripFuelHistory.filter((h) => driverTrips.some((t) => t.id === h.tripId));
+  const totalFuel = snapshots.reduce((s, h) => s + h.assignedFuelL, 0);
+  const totalDist = snapshots.reduce((s, h) => s + h.distanceKm, 0);
+  return totalDist ? totalFuel / totalDist : 0;
+}
+export function getRouteAvgLkm(routeId: string): number {
+  const routeFuel = tripFuelHistory.filter((h) => h.routeId === routeId);
+  const totalFuel = routeFuel.reduce((s, h) => s + h.assignedFuelL, 0);
+  const totalDist = routeFuel.reduce((s, h) => s + h.distanceKm, 0);
+  return totalDist ? totalFuel / totalDist : 0;
+}
+export function getFleetManagerAvgLkm(managerTruckIds: string[]): number {
+  const managerTrips = trips.filter((t) => managerTruckIds.includes(t.truck));
+  const snapshots = tripFuelHistory.filter((h) => managerTrips.some((t) => t.id === h.tripId));
+  const totalFuel = snapshots.reduce((s, h) => s + h.assignedFuelL, 0);
+  const totalDist = snapshots.reduce((s, h) => s + h.distanceKm, 0);
+  return totalDist ? totalFuel / totalDist : 0;
+}
+
+// ---- Maintenance intelligence helpers ----
+export function getTruckHealthScore(truckId: string): number {
+  const truckMaint = maintenanceRecords.filter((m) => m.truck === truckId);
+  const truckIncidents = incidents.filter((i) => i.truck === truckId);
+  const completedMaint = truckMaint.filter((m) => m.status === "Completed");
+  const downtimeHours = completedMaint.length * 18;
+  const repairCost = completedMaint.reduce((s, m) => s + m.cost, 0);
+  let score = 100;
+  score -= Math.min(truckMaint.length * 3, 20);
+  score -= Math.min(downtimeHours / 100, 15);
+  score -= Math.min(repairCost / 100000, 20);
+  score -= Math.min(truckIncidents.length * 8, 25);
+  return Math.max(0, Math.round(score));
+}
+export function getAvgDowntime(truckId?: string): number {
+  const records = truckId ? maintenanceRecords.filter((m) => m.truck === truckId) : maintenanceRecords;
+  const completed = records.filter((m) => m.status === "Completed");
+  return completed.length ? 18 : 0;
+}
+export function getAvgRepairCost(truckId?: string): number {
+  const records = truckId ? maintenanceRecords.filter((m) => m.truck === truckId) : maintenanceRecords;
+  const completed = records.filter((m) => m.status === "Completed");
+  return completed.length ? Math.round(completed.reduce((s, m) => s + m.cost, 0) / completed.length) : 0;
+}
+export function getMTBR(truckId: string): number {
+  const records = maintenanceRecords
+    .filter((m) => m.truck === truckId && m.status === "Completed")
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  if (records.length < 2) return 0;
+  const totalDays = (new Date(records[records.length - 1].date).getTime() - new Date(records[0].date).getTime()) / 86400000;
+  return Math.round(totalDays / (records.length - 1));
+}
+export function getMaintenanceSpend(truckId?: string): number {
+  const records = truckId ? maintenanceRecords.filter((m) => m.truck === truckId) : maintenanceRecords;
+  return records.filter((m) => m.status === "Completed").reduce((s, m) => s + m.cost, 0);
+}
+
+// ---- Route intelligence helpers ----
+export function getPreferredTrucks(routeId: string, limit = 5): string[] {
+  const rt = getRouteById(routeId);
+  if (!rt) return [];
+  const routeTrips = trips.filter((t) => t.origin === rt.origin && t.destination === rt.destination);
+  const counts: Record<string, number> = {};
+  routeTrips.forEach((t) => { counts[t.truck] = (counts[t.truck] ?? 0) + 1; });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([id]) => id);
+}
+export function getPreferredDrivers(routeId: string, limit = 5): string[] {
+  const rt = getRouteById(routeId);
+  if (!rt) return [];
+  const routeTrips = trips.filter((t) => t.origin === rt.origin && t.destination === rt.destination);
+  const counts: Record<string, number> = {};
+  routeTrips.forEach((t) => { counts[t.driver] = (counts[t.driver] ?? 0) + 1; });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([name]) => name);
+}
+export function getRouteHealthScore(routeId: string): number {
+  const rt = getRouteById(routeId);
+  if (!rt) return 0;
+  const routeTrips = trips.filter((t) => t.origin === rt.origin && t.destination === rt.destination);
+  const routeIncidents = incidents.filter((i) => {
+    const tp = trips.find((t) => t.id === i.trip);
+    return tp && tp.origin === rt.origin && tp.destination === rt.destination;
+  });
+  const routeFuel = tripFuelHistory.filter((h) => h.routeId === routeId);
+  const routeMaint = maintenanceRecords.filter((m) => routeTrips.some((t) => t.truck === m.truck));
+  const completedTrips = routeTrips.filter((t) => t.status === "Delivered");
+  const onTimeRate = completedTrips.length ? 0.92 : 0.5;
+  let score = 100;
+  const avgLpk = routeFuel.length ? routeFuel.reduce((s, h) => s + h.litersPerKm, 0) / routeFuel.length : 0.35;
+  if (avgLpk > 0.4) score -= 15;
+  else if (avgLpk > 0.35) score -= 8;
+  score -= Math.min(routeIncidents.length * 10, 30);
+  score -= Math.min(routeMaint.length * 3, 15);
+  if (onTimeRate > 0.9) score += 5;
+  else score -= 10;
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+export function getRouteMaintenanceSummary(routeId: string) {
+  const rt = getRouteById(routeId);
+  if (!rt) return { totalEvents: 0, totalSpend: 0, downtimeHours: 0 };
+  const routeTrips = trips.filter((t) => t.origin === rt.origin && t.destination === rt.destination);
+  const routeMaint = maintenanceRecords.filter((m) => routeTrips.some((t) => t.truck === m.truck));
+  const completed = routeMaint.filter((m) => m.status === "Completed");
+  return { totalEvents: routeMaint.length, totalSpend: completed.reduce((s, m) => s + m.cost, 0), downtimeHours: completed.length * 18 };
+}
+export function getRouteFuelSummary(routeId: string) {
+  const routeFuel = tripFuelHistory.filter((h) => h.routeId === routeId);
+  const totalFuel = routeFuel.reduce((s, h) => s + h.assignedFuelL, 0);
+  const totalDist = routeFuel.reduce((s, h) => s + h.distanceKm, 0);
+  return { totalFuel, avgFuelPerTrip: routeFuel.length ? Math.round(totalFuel / routeFuel.length) : 0, avgLkm: totalDist ? totalFuel / totalDist : 0 };
+}
+
+// ---- CSV export helper ----
+export function exportCSV(filename: string, headers: string[], rows: (string | number)[][]) {
+  const csv = [headers.join(","), ...rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
