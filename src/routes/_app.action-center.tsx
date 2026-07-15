@@ -23,7 +23,7 @@ const CATEGORY_ICON: Record<string, React.ElementType> = {
   "License Expiry": FileText,
   "Insurance Expiry": ShieldAlert,
   "Fuel Review": Fuel,
-  "Delayed Trip": Route as unknown as React.ElementType,
+  "Delayed Trip": RouteIcon as unknown as React.ElementType,
   "Maintenance Due": Wrench,
   "KPI Below Target": TrendingDown,
   "Document Expiry": FileText,
