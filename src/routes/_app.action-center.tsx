@@ -6,8 +6,8 @@ import { GlassCard, KPICard, SectionCard, Pill } from "@/components/shared/Cards
 import { cn } from "@/lib/utils";
 import {
   fetchActionItems, updateActionStatus, createActionItem,
-  type DbActionItem,
-} from "@/lib/supabase";
+  type ActionItem,
+} from "@/lib/action-items";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { appendAudit } from "@/lib/supabase";
 
@@ -80,7 +80,7 @@ function dueDateLabel(due: string | null): { text: string; tone: string } {
 /* ------------------------------------------------------------------ */
 
 interface ActionCardProps {
-  item: DbActionItem;
+  item: ActionItem;
   onResolve: (id: string) => void;
   onDismiss: (id: string) => void;
   onOpenProfile: (type: string, id: string) => void;
@@ -187,7 +187,7 @@ function ActionCard({ item, onResolve, onDismiss, onOpenProfile }: ActionCardPro
 
 interface PriorityGroupProps {
   priority: "High" | "Medium" | "Low";
-  items: DbActionItem[];
+  items: ActionItem[];
   onResolve: (id: string) => void;
   onDismiss: (id: string) => void;
   onOpenProfile: (type: string, id: string) => void;
@@ -241,7 +241,7 @@ function PriorityGroup({ priority, items, onResolve, onDismiss, onOpenProfile }:
 
 function ActionCenter() {
   const { open: openProfile } = useProfileDrawer();
-  const [items, setItems] = useState<DbActionItem[]>([]);
+  const [items, setItems] = useState<ActionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<"all" | "open" | "resolved">("open");
   const [moduleFilter, setModuleFilter] = useState("all");
@@ -249,7 +249,7 @@ function ActionCenter() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const statuses: DbActionItem["status"][] =
+      const statuses: ActionItem["status"][] =
         statusFilter === "all" ? ["open", "in_progress", "resolved", "dismissed"]
         : statusFilter === "resolved" ? ["resolved"]
         : ["open", "in_progress"];
