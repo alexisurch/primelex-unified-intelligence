@@ -18,6 +18,7 @@ export interface Truck {
   engineHealth: number;
   gps: "Online" | "Offline";
   lastService: string;
+  trackingNumber: string;
 }
 
 export interface Trip {
@@ -140,6 +141,7 @@ export const trucks: Truck[] = Array.from({ length: 32 }, (_, i) => {
     engineHealth: 60 + ((i * 7) % 40),
     gps: i % 11 === 0 ? "Offline" : "Online",
     lastService: `2026-0${(i % 6) + 1}-1${i % 9}`,
+    trackingNumber: `TRK-GPS-${20000 + i * 41}`,
   };
 });
 

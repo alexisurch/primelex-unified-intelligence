@@ -1,11 +1,12 @@
-import { Route as RouteIcon, Package, MapPin, Fuel, DollarSign, ClipboardList, Truck as TruckIcon, CircleUser as UserCircle2, Building2, Circle, FileText, Clock } from "lucide-react";
-import { trips, trucks, drivers, clients, incidents } from "@/lib/mock-data";
+import { Route as RouteIcon, Package, MapPin, Fuel, DollarSign, ClipboardList, Truck as TruckIcon, CircleUser as UserCircle2, Building2, Circle, FileText, Clock, Upload } from "lucide-react";
+import { trips, trucks, drivers, clients, incidents, tripFuelHistory, getRouteFor, getTruckAvgLkm } from "@/lib/mock-data";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
-import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, type Tone } from "./ProfileShell";
+import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, DocumentsGrid, type Tone } from "./ProfileShell";
 import { Pill } from "@/components/shared/Cards";
 import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
-import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
+import { DocumentUploadDialog } from "./ProfileDialogs";
+import { useState } from "react";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -13,6 +14,7 @@ export function TripProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: Pr
   const { trackingMode } = usePreferences();
   const isManual = trackingMode === "manual";
   const trip = trips.find((t) => t.id === id);
+  const [uploadOpen, setUploadOpen] = useState(false);
   if (!trip) return <div className="p-6 text-sm text-muted-foreground">Trip not found.</div>;
 
   const truck = trucks.find((t) => t.id === trip.truck);
@@ -27,6 +29,8 @@ export function TripProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: Pr
   const revenue = trip.distance * 4500;
   const otherExp = 45000;
   const margin = revenue - fuelCost - otherExp;
+  const lpk = trip.distance ? (fuelL / trip.distance).toFixed(2) : "—";
+  const truckAvgLkm = truck ? getTruckAvgLkm(truck.id) : 0;
 
   return (
     <>
@@ -80,23 +84,11 @@ export function TripProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: Pr
                 <StatTile label="Price Per Litre" value={naira(pricePerL)} icon={DollarSign} />
                 <StatTile label="Fuel Cost" value={naira(fuelCost)} icon={DollarSign} />
                 <StatTile label="Cost Per KM" value={naira(Math.round(fuelCost / trip.distance))} icon={RouteIcon} />
+                <StatTile label="Trip L/km" value={lpk} icon={Fuel} />
+                <StatTile label="Truck Avg L/km" value={truckAvgLkm ? truckAvgLkm.toFixed(2) : "—"} icon={Fuel} />
               </div>
             </ProfileSection>
           </>
-        )},
-        { value: "timeline", label: "Timeline", content: (
-          <TimelineList events={[
-            { time: "Day 1 · 07:30", label: "Trip Created", detail: `Created for ${trip.customer}`, tone: "info" },
-            { time: "Day 1 · 07:45", label: "Truck Assigned", detail: trip.truck, tone: "info" },
-            { time: "Day 1 · 07:50", label: "Driver Assigned", detail: trip.driver, tone: "info" },
-            { time: "Day 1 · 08:00", label: "Fuel Assigned", detail: `${fuelL} L · ${naira(fuelCost)}`, tone: "warning" },
-            { time: "Day 1 · 08:22", label: "Departed", detail: trip.origin, tone: "success" },
-            { time: "Day 1 · 09:15", label: "Loading Started", tone: "info" },
-            { time: "Day 1 · 10:12", label: "Loading Completed", tone: "info" },
-            { time: "Day 1 · 12m ago", label: "Location Updated", detail: truck?.location.split(" → ")[0] ?? "—", tone: "info" },
-            ...tripIncidents.map((i) => ({ time: i.date, label: `Incident: ${i.type}`, detail: i.location, tone: "danger" as const })),
-            ...(trip.status === "Delivered" ? [{ time: "Day 2 · 14:30", label: "Delivered", detail: trip.destination, tone: "success" as const }] : []),
-          ]} />
         )},
         { value: "delivery", label: "Delivery", content: (
           <ProfileSection title="Delivery Details" icon={ClipboardList}>
@@ -131,10 +123,11 @@ export function TripProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: Pr
         )},
         { value: "documents", label: "Documents", content: <DocumentsGrid docs={[
           { name: "Waybill" }, { name: "Invoice" }, { name: "Delivery Note" }, { name: "Proof of Delivery" },
-        ]} /> },
+        ]} onUpload={() => setUploadOpen(true)} /> },
         { value: "notes", label: "Notes", content: <CollaborationPanel entityType="trip" entityId={id} className="px-1 py-2" /> },
-        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="trip" entityId={id} className="px-1 py-2" /> },
       ]} />
+
+      <DocumentUploadDialog open={uploadOpen} onOpenChange={setUploadOpen} entityType="trip" />
     </>
   );
 }

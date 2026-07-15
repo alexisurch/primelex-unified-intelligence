@@ -112,12 +112,12 @@ export function TimelineList({ events }: { events: Array<{ time: string; label: 
   );
 }
 
-export function DocumentsGrid({ docs }: { docs: Array<{ name: string; expiry?: string; status?: "Valid" | "Expiring" | "Expired" }> }) {
+export function DocumentsGrid({ docs, onUpload }: { docs: Array<{ name: string; expiry?: string; status?: "Valid" | "Expiring" | "Expired" }>; onUpload?: () => void }) {
   return (
     <>
       <div className="mb-3 flex items-center justify-between">
         <p className="text-xs text-muted-foreground">Attachments related to this record.</p>
-        <Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30"><Upload className="mr-1.5 h-3.5 w-3.5" />Upload</Button>
+        <Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30" onClick={onUpload}><Upload className="mr-1.5 h-3.5 w-3.5" />Upload</Button>
       </div>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {docs.map((d) => (

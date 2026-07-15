@@ -142,7 +142,7 @@ function Documents() {
           </div>
         </div>
 
-        <DataTable title="Document Vault" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} />
+        <DataTable title="Document Vault" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} hideToolbar />
       </div>
 
       <DocumentDrawer doc={drawerDoc} onClose={() => setDrawerDoc(null)} />

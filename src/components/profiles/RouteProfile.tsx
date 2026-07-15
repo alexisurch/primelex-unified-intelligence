@@ -1,11 +1,10 @@
-import { Route as RouteIcon, MapPin, Package, Users, Truck as TruckIcon, ShieldAlert, Fuel, TrendingUp, Circle, Clock, CircleCheck as CheckCircle2, Activity, DollarSign, Building2 } from "lucide-react";
+import { Route as RouteIcon, MapPin, Users, Truck as TruckIcon, ShieldAlert, Fuel, TrendingUp, Circle, Clock, Activity, DollarSign, Wrench } from "lucide-react";
 import { Pill } from "@/components/shared/Cards";
-import { routes, trips, incidents, tripFuelHistory, clients, getRouteById, drivers } from "@/lib/mock-data";
+import { routes, trips, incidents, tripFuelHistory, clients, getRouteById, drivers, getPreferredTrucks, getPreferredDrivers, getRouteHealthScore, getRouteMaintenanceSummary, getRouteFuelSummary } from "@/lib/mock-data";
 import type { ProfileTarget } from "@/lib/profile-drawer";
-import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, type Tone } from "./ProfileShell";
+import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, type Tone } from "./ProfileShell";
 import { useState } from "react";
 import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
-import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -31,6 +30,11 @@ export function RouteProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
   const totalDist = routeFuel.reduce((s, h) => s + h.distanceKm, 0);
   const avgLpk = totalDist ? totalFuelL / totalDist : 0;
   const avgFuel = routeFuel.length ? Math.round(totalFuelL / routeFuel.length) : 0;
+  const healthScore = getRouteHealthScore(rt.id);
+  const maintSummary = getRouteMaintenanceSummary(rt.id);
+  const fuelSummary = getRouteFuelSummary(rt.id);
+  const preferredTrucks = getPreferredTrucks(rt.id);
+  const preferredDrivers = getPreferredDrivers(rt.id);
 
   const statusTone: Tone = "info";
 
@@ -84,6 +88,46 @@ export function RouteProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
                 <StatTile label="Total Distance" value={`${totalDist.toLocaleString()} km`} icon={RouteIcon} />
                 <StatTile label="Total Fuel Cost" value={naira(totalFuelCost)} icon={DollarSign} />
                 <StatTile label="Total Trips" value={String(routeTrips.length)} icon={Activity} />
+                <StatTile label="Route Health Score" value={`${healthScore}/100`} icon={Activity} />
+              </div>
+            </ProfileSection>
+            <ProfileSection title="Preferred Trucks" icon={TruckIcon}>
+              <div className="flex flex-wrap gap-2">
+                {preferredTrucks.length === 0 && <p className="text-xs text-muted-foreground">No truck data yet.</p>}
+                {preferredTrucks.map((truckId) => (
+                  <button key={truckId} onClick={() => onOpen({ kind: "truck", id: truckId })} className="flex items-center gap-2 rounded-lg border border-border/60 bg-background/30 px-3 py-2 text-xs hover:border-primary/40">
+                    <TruckIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="font-medium text-primary">{truckId}</span>
+                  </button>
+                ))}
+              </div>
+            </ProfileSection>
+            <ProfileSection title="Preferred Drivers" icon={Users}>
+              <div className="flex flex-wrap gap-2">
+                {preferredDrivers.length === 0 && <p className="text-xs text-muted-foreground">No driver data yet.</p>}
+                {preferredDrivers.map((name) => {
+                  const drv = drivers.find((d) => d.name === name);
+                  return (
+                    <button key={name} onClick={() => drv && onOpen({ kind: "driver", id: drv.id })} className="flex items-center gap-2 rounded-lg border border-border/60 bg-background/30 px-3 py-2 text-xs hover:border-primary/40">
+                      <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="font-medium text-primary">{name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </ProfileSection>
+            <ProfileSection title="Maintenance Summary" icon={Wrench}>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                <StatTile label="Total Maintenance Events" value={String(maintSummary.totalEvents)} icon={Wrench} />
+                <StatTile label="Maintenance Spend" value={naira(maintSummary.totalSpend)} icon={DollarSign} />
+                <StatTile label="Downtime (hours)" value={String(maintSummary.downtimeHours)} icon={Clock} />
+              </div>
+            </ProfileSection>
+            <ProfileSection title="Fuel Summary" icon={Fuel}>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                <StatTile label="Total Fuel Assigned" value={`${fuelSummary.totalFuel.toLocaleString()} L`} icon={Fuel} />
+                <StatTile label="Avg Fuel Per Trip" value={`${fuelSummary.avgFuelPerTrip} L`} icon={Fuel} />
+                <StatTile label="Average L/km" value={fuelSummary.avgLkm.toFixed(2)} icon={Fuel} />
               </div>
             </ProfileSection>
           </>
@@ -144,14 +188,7 @@ export function RouteProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
             empty="No clients on this route."
           />
         )},
-        { value: "timeline", label: "Timeline", content: (
-          <TimelineList events={[
-            { time: rt.createdAt, label: "Route Created", detail: rt.name, tone: "info" },
-            ...completed.slice(0, 8).map((t) => ({ time: "Completed", label: `Trip ${t.id}`, detail: `${t.customer} · ${t.truck}`, tone: "success" as const })),
-          ]} />
-        )},
         { value: "notes", label: "Notes", content: <CollaborationPanel entityType="route" entityId={id} className="px-1 py-2" /> },
-        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="route" entityId={id} className="px-1 py-2" /> },
       ]} />
     </>
   );

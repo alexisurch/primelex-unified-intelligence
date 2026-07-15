@@ -10,9 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { DataTable, type Column } from "@/components/shared/DataTable";
 import { maintenanceRecords, trucks, getMaintenanceSpend, getAvgDowntime, getAvgRepairCost, exportCSV, type MaintenanceRecord } from "@/lib/mock-data";
 import { useProfileDrawer } from "@/lib/profile-drawer";
-import {
-  Calendar, Wrench, AlertTriangle, DollarSign, Clock, ShieldCheck, Plus, MoreVertical, Eye, Truck as TruckIcon, ChevronDown, Search as SearchIcon, Download,
-} from "lucide-react";
+import { Calendar, Wrench, TriangleAlert as AlertTriangle, DollarSign, Clock, ShieldCheck, Plus, MoveVertical as MoreVertical, Eye, Truck as TruckIcon, ChevronDown, Search as SearchIcon, Download } from "lucide-react";
 import {
   ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Tooltip, XAxis, YAxis, CartesianGrid,
 } from "recharts";
@@ -413,7 +411,7 @@ function RecordsTable({ rows }: { rows: MaintenanceRecord[] }) {
           <Download className="mr-1.5 h-3.5 w-3.5" />Export CSV
         </Button>
       </div>
-      <DataTable title="Maintenance Records" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} />
+      <DataTable title="Maintenance Records" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} hideToolbar />
     </div>
   );
 }

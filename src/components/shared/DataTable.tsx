@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Search, Filter, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ListFilter as Filter, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { GlassCard } from "./Cards";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,10 +19,11 @@ interface DataTableProps<T> {
   searchKeys?: (keyof T)[];
   pageSize?: number;
   actions?: ReactNode;
+  hideToolbar?: boolean;
 }
 
 export function DataTable<T extends { id: string }>({
-  title, columns, rows, searchKeys, pageSize = 8, actions,
+  title, columns, rows, searchKeys, pageSize = 8, actions, hideToolbar,
 }: DataTableProps<T>) {
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
@@ -41,17 +42,21 @@ export function DataTable<T extends { id: string }>({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
         {title && <h3 className="text-[15px] font-semibold">{title}</h3>}
         <div className="ml-auto flex items-center gap-2">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={q}
-              onChange={(e) => { setQ(e.target.value); setPage(1); }}
-              placeholder="Search…"
-              className="h-9 w-56 border-border bg-elevated/60 pl-8 text-xs"
-            />
-          </div>
-          <Button variant="outline" size="sm" className="h-9 border-border bg-elevated/60"><Filter className="mr-1.5 h-3.5 w-3.5"/>Filter</Button>
-          <Button variant="outline" size="sm" className="h-9 border-border bg-elevated/60"><Download className="mr-1.5 h-3.5 w-3.5"/>Export</Button>
+          {!hideToolbar && (
+            <>
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={q}
+                  onChange={(e) => { setQ(e.target.value); setPage(1); }}
+                  placeholder="Search…"
+                  className="h-9 w-56 border-border bg-elevated/60 pl-8 text-xs"
+                />
+              </div>
+              <Button variant="outline" size="sm" className="h-9 border-border bg-elevated/60"><Filter className="mr-1.5 h-3.5 w-3.5"/>Filter</Button>
+              <Button variant="outline" size="sm" className="h-9 border-border bg-elevated/60"><Download className="mr-1.5 h-3.5 w-3.5"/>Export</Button>
+            </>
+          )}
           {actions}
         </div>
       </div>

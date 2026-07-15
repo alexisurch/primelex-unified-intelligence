@@ -279,7 +279,7 @@ function TransactionsTable({ rows }: { rows: FuelTransaction[] }) {
           <Download className="mr-1.5 h-3.5 w-3.5" />Export CSV
         </Button>
       </div>
-      <DataTable title="Recent Fuel Transactions" columns={cols} rows={filtered} searchKeys={[]} pageSize={8} />
+      <DataTable title="Recent Fuel Transactions" columns={cols} rows={filtered} searchKeys={[]} pageSize={8} hideToolbar />
     </div>
   );
 }

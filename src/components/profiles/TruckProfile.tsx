@@ -1,14 +1,16 @@
-import { Truck as TruckIcon, CircleUser as UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CircleCheck as CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog } from "lucide-react";
+import { Truck as TruckIcon, CircleUser as UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CircleCheck as CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog, Pencil } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
-import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor } from "@/lib/mock-data";
+import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend } from "@/lib/mock-data";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
-import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
+import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, DocumentsGrid, initials, type Tone } from "./ProfileShell";
 import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
-import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
+import { DocumentUploadDialog, EditProfileDialog } from "./ProfileDialogs";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
@@ -17,6 +19,8 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
   const { getManagerForTruck } = useFleetManagers();
   const isManual = trackingMode === "manual";
   const t = trucks.find((x) => x.id === id);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   if (!t) return <div className="p-6 text-sm text-muted-foreground">Truck not found.</div>;
   const fleetManager = getManagerForTruck(t.id);
 
@@ -30,14 +34,18 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
   const totalTrips = truckTrips.length + 40;
   const totalDist = totalTrips * 240;
   const totalFuel = Math.round(totalDist * 0.32);
+  const avgLkm = getTruckAvgLkm(t.id);
 
   const overviewTab = (
     <>
-      <ProfileSection title="Vehicle Information" icon={TruckIcon}>
+      <ProfileSection title="Vehicle Information" icon={TruckIcon} action={
+        <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => setEditOpen(true)}><Pencil className="mr-1 h-3 w-3" />Edit</Button>
+      }>
         <InfoGrid items={[
           ["Truck Number", t.id], ["Registration", t.plate], ["Model", t.model],
           ["Manufacturer", t.model.split(" ")[0]], ["Odometer", `${t.odometer.toLocaleString()} km`],
           ["Fuel Level", `${t.fuel}%`], ["GPS", t.gps], ["Last Service", t.lastService],
+          ["Tracking Number", t.trackingNumber || "Not Available"],
           ["Tracking Source", isManual ? "Manual" : "GPS"],
           ["Fleet Manager", fleetManager ? <button key="fm" onClick={() => onOpen({ kind: "fleet-manager", id: fleetManager.id })} className="text-primary hover:underline inline-flex items-center gap-1"><UserCog className="h-3 w-3" />{fleetManager.name}</button> : "—"],
         ]} />
@@ -77,11 +85,20 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
           <StatTile label="Total Trips" value={String(totalTrips)} icon={RouteIcon} />
           <StatTile label="Total Distance" value={`${(totalDist/1000).toFixed(1)}k km`} icon={Activity} />
           <StatTile label="Fuel Assigned" value={`${totalFuel.toLocaleString()} L`} icon={Fuel} />
+          <StatTile label="Avg L/km" value={avgLkm ? avgLkm.toFixed(2) : "—"} icon={Fuel} />
           <StatTile label="Fuel Cost" value={naira(totalFuel * 980)} icon={DollarSign} />
           <StatTile label="Incidents" value={String(truckIncidents.length)} icon={ShieldAlert} />
           <StatTile label="Maintenance Records" value={String(truckMaint.length)} icon={Wrench} />
-          <StatTile label="Operational Status" value={t.status} icon={CheckCircle2} />
           <StatTile label="Engine Health" value={`${t.engineHealth}%`} icon={Gauge} />
+        </div>
+      </ProfileSection>
+      <ProfileSection title="Maintenance Intelligence" icon={Wrench}>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <StatTile label="Truck Health Score" value={`${getTruckHealthScore(t.id)}/100`} icon={Gauge} />
+          <StatTile label="Avg Downtime" value={`${getAvgDowntime(t.id)}h`} icon={Clock} />
+          <StatTile label="Avg Repair Cost" value={naira(getAvgRepairCost(t.id))} icon={DollarSign} />
+          <StatTile label="MTBR" value={`${getMTBR(t.id)}d`} icon={Wrench} />
+          <StatTile label="Maintenance Spend" value={naira(getMaintenanceSpend(t.id))} icon={DollarSign} />
         </div>
       </ProfileSection>
     </>
@@ -113,19 +130,6 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
         </tbody>
       </table>
     </div>
-  );
-
-  const timeline = (
-    <TimelineList events={[
-      { time: "2026-01-04", label: "Truck Registered", detail: `${t.model} added to fleet`, tone: "info" },
-      { time: "2026-03-10", label: "Driver Assigned", detail: t.driver, tone: "info" },
-      ...(active ? [
-        { time: "Today 08:22", label: "Trip Assigned", detail: `${active.id} · ${active.customer}`, tone: "success" as const },
-        { time: "Today · 12m ago", label: "Location Updated", detail: lastLoc, tone: "info" as const },
-      ] : []),
-      ...truckIncidents.slice(0, 3).map((i) => ({ time: i.date, label: `Incident: ${i.type}`, detail: `${i.location} · ${i.severity}`, tone: "danger" as const })),
-      ...truckMaint.slice(0, 3).map((m) => ({ time: m.date, label: `Maintenance: ${m.service}`, detail: m.status, tone: "warning" as const })),
-    ]} />
   );
 
   const maintTab = (
@@ -180,15 +184,23 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
         { value: "trips", label: "Trip History", content: tripsTab },
         { value: "maintenance", label: "Maintenance", content: maintTab },
         { value: "incidents", label: "Incidents", content: incidentsTab },
-        { value: "timeline", label: "Timeline", content: timeline },
         { value: "documents", label: "Documents", content: <DocumentsGrid docs={[
           { name: "Vehicle Registration", expiry: "2027-03-14", status: "Valid" },
           { name: "Insurance Certificate", expiry: "2026-11-02", status: "Expiring" },
           { name: "Road Worthiness", expiry: "2026-09-30", status: "Valid" },
           { name: "Inspection Certificate", expiry: "2026-08-18", status: "Valid" },
-        ]} /> },
+        ]} onUpload={() => setUploadOpen(true)} /> },
         { value: "notes", label: "Notes", content: <CollaborationPanel entityType="truck" entityId={id} className="px-1 py-2" /> },
-        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="truck" entityId={id} className="px-1 py-2" /> },
+      ]} />
+
+      <DocumentUploadDialog open={uploadOpen} onOpenChange={setUploadOpen} entityType="truck" />
+      <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} fields={[
+        { key: "id", label: "Truck Number", value: t.id },
+        { key: "plate", label: "Registration", value: t.plate },
+        { key: "model", label: "Model", value: t.model },
+        { key: "odometer", label: "Odometer (km)", value: String(t.odometer) },
+        { key: "trackingNumber", label: "Tracking Number", value: t.trackingNumber || "" },
+        { key: "lastService", label: "Last Service", value: t.lastService },
       ]} />
     </>
   );

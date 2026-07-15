@@ -1,17 +1,20 @@
-import { CircleUser as UserCircle2, IdCard, ClipboardList, TrendingUp, Activity, CircleCheck as CheckCircle2, Fuel, Clock, Route as RouteIcon, ShieldAlert, Circle } from "lucide-react";
+import { CircleUser as UserCircle2, IdCard, ClipboardList, TrendingUp, Activity, CircleCheck as CheckCircle2, Fuel, Clock, Route as RouteIcon, ShieldAlert, Circle, Pencil } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
-import { drivers, trucks, trips, incidents } from "@/lib/mock-data";
+import { drivers, trucks, trips, incidents, getDriverAvgLkm } from "@/lib/mock-data";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
-import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, initials, type Tone } from "./ProfileShell";
+import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, DocumentsGrid, initials, type Tone } from "./ProfileShell";
 import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
-import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
+import { DocumentUploadDialog, EditProfileDialog } from "./ProfileDialogs";
+import { useState } from "react";
 
 export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const { getManagerForTruck } = useFleetManagers();
   const d = drivers.find((x) => x.id === id) ?? drivers.find((x) => x.name === id);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   if (!d) return <div className="p-6 text-sm text-muted-foreground">Driver not found.</div>;
   const truck = trucks.find((t) => t.driver === d.name);
   const driverTrips = trips.filter((t) => t.driver === d.name);
@@ -19,6 +22,7 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
   const driverIncidents = incidents.filter((i) => i.driver === d.name);
   const statusTone: Tone = d.status === "Active" ? "success" : d.status === "On Leave" ? "warning" : "danger";
   const fleetManager = truck ? getManagerForTruck(truck.id) : undefined;
+  const avgLkm = getDriverAvgLkm(d.name);
 
   return (
     <>
@@ -33,7 +37,9 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
       <ProfileTabs defaultValue="overview" tabs={[
         { value: "overview", label: "Overview", content: (
           <>
-            <ProfileSection title="Personal Information" icon={UserCircle2}>
+            <ProfileSection title="Personal Information" icon={UserCircle2} action={
+              <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => setEditOpen(true)}><Pencil className="mr-1 h-3 w-3" />Edit</Button>
+            }>
               <InfoGrid items={[
                 ["Name", d.name], ["Driver ID", d.id],
                 ["Phone", "+234 803 000 0000"],
@@ -69,6 +75,7 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
                 <StatTile label="Active Trips" value={String(active ? 1 : 0)} icon={Activity} />
                 <StatTile label="Total Distance" value={`${(driverTrips.reduce((s,t)=>s+t.distance,0)).toLocaleString()} km`} icon={RouteIcon} />
                 <StatTile label="Fuel Assigned" value={`${(driverTrips.reduce((s,t)=>s+t.distance,0)*0.32|0).toLocaleString()} L`} icon={Fuel} />
+                <StatTile label="Avg L/km" value={avgLkm ? avgLkm.toFixed(2) : "—"} icon={Fuel} />
                 <StatTile label="Violations" value={String(d.violations)} icon={ShieldAlert} />
                 <StatTile label="Incidents" value={String(driverIncidents.length)} icon={ShieldAlert} />
               </div>
@@ -108,21 +115,22 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
             ))}
           </div>
         )},
-        { value: "timeline", label: "Timeline", content: (
-          <TimelineList events={[
-            { time: "2025-08-01", label: "Onboarded", detail: `Licence ${d.license} verified`, tone: "info" },
-            { time: "2026-04-14", label: "Truck Assigned", detail: truck?.id ?? "—", tone: "info" },
-            ...(active ? [{ time: "Today", label: "Trip Assigned", detail: active.id, tone: "success" as const }] : []),
-            ...driverIncidents.slice(0, 3).map((i) => ({ time: i.date, label: `Incident: ${i.type}`, detail: i.location, tone: "danger" as const })),
-          ]} />
-        )},
         { value: "documents", label: "Documents", content: <DocumentsGrid docs={[
           { name: "Driver's Licence", expiry: d.licenseExpiry, status: "Valid" },
           { name: "Medical Certificate", expiry: d.medicalExpiry, status: "Valid" },
           { name: "Training Records" },
-        ]} /> },
+        ]} onUpload={() => setUploadOpen(true)} /> },
         { value: "notes", label: "Notes", content: <CollaborationPanel entityType="driver" entityId={id} className="px-1 py-2" /> },
-        { value: "audit", label: "Audit Trail", content: <AuditTrailPanel entityType="driver" entityId={id} className="px-1 py-2" /> },
+      ]} />
+
+      <DocumentUploadDialog open={uploadOpen} onOpenChange={setUploadOpen} entityType="driver" />
+      <EditProfileDialog open={editOpen} onOpenChange={setEditOpen} fields={[
+        { key: "name", label: "Name", value: d.name },
+        { key: "phone", label: "Phone", value: "+234 803 000 0000" },
+        { key: "address", label: "Address", value: "12 Adeola Odeku St., Lagos" },
+        { key: "license", label: "Licence Number", value: d.license },
+        { key: "licenseExpiry", label: "Licence Expiry", value: d.licenseExpiry },
+        { key: "medicalExpiry", label: "Medical Expiry", value: d.medicalExpiry },
       ]} />
     </>
   );

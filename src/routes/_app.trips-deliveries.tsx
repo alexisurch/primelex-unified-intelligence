@@ -125,7 +125,7 @@ function TripsDeliveries() {
           </Button>
         </div>
 
-        <DataTable title="Trips" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} />
+        <DataTable title="Trips" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} hideToolbar />
       </div>
     </>
   );

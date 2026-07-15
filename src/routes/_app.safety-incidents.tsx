@@ -111,7 +111,7 @@ function SafetyIncidents() {
           </div>
         </div>
 
-        <DataTable title="Incident Register" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} />
+        <DataTable title="Incident Register" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} hideToolbar />
       </div>
     </>
   );
