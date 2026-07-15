@@ -275,11 +275,14 @@ function DetailRow({ icon: Icon, label, value }: { icon: typeof Bell; label: str
 /* ------------------------------------------------------------------ */
 
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 
 function Dashboard() {
   const { open } = useProfileDrawer();
   const [activeNotification, setActiveNotification] = useState<NotificationRecord | null>(null);
+  const [allAlertsOpen, setAllAlertsOpen] = useState(false);
+  const [allPrioritiesOpen, setAllPrioritiesOpen] = useState(false);
 
   function openNotification(record: NotificationRecord) {
     setActiveNotification(record);
@@ -308,12 +311,12 @@ function Dashboard() {
         {/* Second row */}
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           {/* Fleet at a Glance */}
-          <SectionCard title="Fleet at a Glance" action={<button className="text-xs text-primary hover:underline flex items-center gap-1">View Fleet Map <ArrowRight className="h-3 w-3" /></button>}>
+          <SectionCard title="Fleet at a Glance" >
             <div className="flex items-center gap-4">
-              <div className="relative h-[180px] w-[180px]">
+              <div className="relative h-[180px] w-[180px] shrink-0">
                 <ResponsiveContainer>
                   <PieChart>
-                    <Pie data={fleetBreakdown} innerRadius={60} outerRadius={82} paddingAngle={2} dataKey="value">
+                    <Pie data={fleetBreakdown} innerRadius={60} outerRadius={82} paddingAngle={2.5} dataKey="value">
                       {fleetBreakdown.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                   </PieChart>
@@ -380,14 +383,13 @@ function Dashboard() {
               <div><div className="text-[11px] uppercase tracking-wider text-muted-foreground">On-Time</div><div className="mt-1 text-xl font-semibold text-success">131</div></div>
               <div><div className="text-[11px] uppercase tracking-wider text-muted-foreground">Delayed</div><div className="mt-1 text-xl font-semibold text-danger">11</div></div>
             </div>
-            <button className="mt-4 flex items-center gap-1 text-xs text-primary hover:underline">View Delivery Performance <ArrowRight className="h-3 w-3" /></button>
           </SectionCard>
         </div>
 
         {/* Third row */}
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           {/* Alerts */}
-          <SectionCard title="Alerts & Notifications" action={<button className="text-xs text-primary hover:underline">View all (8)</button>}>
+          <SectionCard title="Alerts & Notifications" action={<button className="text-xs text-primary hover:underline" onClick={() => setAllAlertsOpen(true)}>View all (8)</button>}>
             <div className="space-y-2">
               {alerts.map((a) => {
                 const Icon = alertIcons[a.icon];
@@ -413,11 +415,11 @@ function Dashboard() {
                 );
               })}
             </div>
-            <button className="mt-3 flex items-center gap-1 text-xs text-primary hover:underline">View all alerts <ArrowRight className="h-3 w-3" /></button>
+            <button className="mt-3 flex items-center gap-1 text-xs text-primary hover:underline" onClick={() => setAllAlertsOpen(true)}>View all alerts <ArrowRight className="h-3 w-3" /></button>
           </SectionCard>
 
           {/* Priorities */}
-          <SectionCard title="Top Priorities" action={<button className="text-xs text-primary hover:underline">View all</button>}>
+          <SectionCard title="Top Priorities" action={<button className="text-xs text-primary hover:underline" onClick={() => setAllPrioritiesOpen(true)}>View all</button>}>
             <div className="space-y-2">
               {priorities.map((p) => {
                 const Icon = priorityIcons[p.icon];
@@ -443,11 +445,11 @@ function Dashboard() {
                 );
               })}
             </div>
-            <button className="mt-3 flex items-center gap-1 text-xs text-primary hover:underline">View all priorities <ArrowRight className="h-3 w-3" /></button>
+            <button className="mt-3 flex items-center gap-1 text-xs text-primary hover:underline" onClick={() => setAllPrioritiesOpen(true)}>View all priorities <ArrowRight className="h-3 w-3" /></button>
           </SectionCard>
 
           {/* Cost Summary */}
-          <SectionCard title="Cost Summary (This Month)" action={<button className="text-xs text-primary hover:underline">View Cost Analysis</button>}>
+          <SectionCard title="Cost Summary (This Month)" >
             <div className="flex items-center gap-4">
               <div>
                 <div className="text-3xl font-semibold">₦1.42B</div>
@@ -459,7 +461,7 @@ function Dashboard() {
               <div className="relative h-[140px] w-[140px] shrink-0">
                 <ResponsiveContainer>
                   <PieChart>
-                    <Pie data={costBreakdown} innerRadius={44} outerRadius={64} paddingAngle={2} dataKey="value">
+                    <Pie data={costBreakdown} innerRadius={44} outerRadius={64} paddingAngle={2.5} dataKey="value">
                       {costBreakdown.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                   </PieChart>
@@ -495,6 +497,58 @@ function Dashboard() {
           )}
         </SheetContent>
       </Sheet>
+
+      <Dialog open={allAlertsOpen} onOpenChange={setAllAlertsOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>All Alerts ({alerts.length})</DialogTitle></DialogHeader>
+          <div className="space-y-2 pt-2">
+            {alerts.map((a) => {
+              const Icon = alertIcons[a.icon];
+              const tone = a.type === "danger" ? "text-danger bg-danger/15" : a.type === "warning" ? "text-warning bg-warning/15" : a.type === "purple" ? "text-purple bg-purple/15" : "text-info bg-info/15";
+              return (
+                <button
+                  key={a.id}
+                  className="flex w-full items-start gap-3 rounded-lg border border-border/60 bg-background/30 p-3 text-left hover:border-primary/40"
+                  onClick={() => { setAllAlertsOpen(false); openNotification(ALERT_RECORDS[`alert-${a.id}`]); }}
+                >
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tone}`}><Icon className="h-4 w-4" /></span>
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold">{a.title}</div>
+                    <div className="text-xs text-muted-foreground">{a.detail}</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">{a.time}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={allPrioritiesOpen} onOpenChange={setAllPrioritiesOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>All Priorities ({priorities.length})</DialogTitle></DialogHeader>
+          <div className="space-y-2 pt-2">
+            {priorities.map((p) => {
+              const Icon = priorityIcons[p.icon];
+              const tone = p.color === "danger" ? "text-danger bg-danger/15" : p.color === "warning" ? "text-warning bg-warning/15" : p.color === "success" ? "text-success bg-success/15" : "text-info bg-info/15";
+              return (
+                <button
+                  key={p.id}
+                  className="flex w-full items-start gap-3 rounded-lg border border-border/60 bg-background/30 p-3 text-left hover:border-primary/40"
+                  onClick={() => { setAllPrioritiesOpen(false); openNotification(PRIORITY_RECORDS[`pri-${p.id}`]); }}
+                >
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tone}`}><Icon className="h-4 w-4" /></span>
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold">{p.title}</div>
+                    <div className="text-xs text-muted-foreground">{p.detail}</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">{p.time}</div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
