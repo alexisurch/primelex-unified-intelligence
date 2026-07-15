@@ -1,11 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
 import { GlassCard, KPICard, SectionCard, Pill } from "@/components/shared/Cards";
-import {
-  Truck, TruckIcon, Package, Clock, Gauge, Wallet, ArrowRight,
-  AlertTriangle, Wrench, IdCard, ShieldAlert, Flame, ShieldCheck,
-  TrendingDown, Bell, CalendarDays, User, Route as RouteIcon, Package as PackageIcon, Building2, Satellite,
-} from "lucide-react";
+import { Truck, Truck as TruckIcon, Package, Clock, Gauge, Wallet, ArrowRight, TriangleAlert as AlertTriangle, Wrench, IdCard, ShieldAlert, Flame, ShieldCheck, TrendingDown, Bell, CalendarDays, User, Route as RouteIcon, Package as PackageIcon, Building2, Satellite } from "lucide-react";
 import { alerts, priorities, fleetBreakdown, costBreakdown, kpis } from "@/lib/mock-data";
 import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { useProfileDrawer } from "@/lib/profile-drawer";
@@ -312,28 +308,28 @@ function Dashboard() {
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           {/* Fleet at a Glance */}
           <SectionCard title="Fleet at a Glance" >
-            <div className="flex items-center gap-4">
-              <div className="relative h-[180px] w-[180px] shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="relative h-[140px] w-[140px] shrink-0">
                 <ResponsiveContainer>
                   <PieChart>
-                    <Pie data={fleetBreakdown} innerRadius={60} outerRadius={82} paddingAngle={2.5} dataKey="value">
+                    <Pie data={fleetBreakdown} innerRadius={44} outerRadius={62} paddingAngle={2.5} dataKey="value">
                       {fleetBreakdown.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-2xl font-semibold">128</div>
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Total</div>
+                  <div className="text-xl font-semibold">128</div>
+                  <div className="text-[9px] uppercase tracking-wider text-muted-foreground">Total</div>
                 </div>
               </div>
-              <div className="flex-1 space-y-2.5">
+              <div className="flex-1 min-w-0 space-y-2">
                 {fleetBreakdown.map((f) => (
-                  <div key={f.name} className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-sm" style={{ background: f.color }} />
-                      <span className="text-muted-foreground">{f.name}</span>
+                  <div key={f.name} className="flex items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="h-2 w-2 shrink-0 rounded-sm" style={{ background: f.color }} />
+                      <span className="truncate text-muted-foreground">{f.name}</span>
                     </div>
-                    <span className="font-medium text-foreground">{f.value} ({((f.value/128)*100).toFixed(1)}%)</span>
+                    <span className="shrink-0 font-medium text-foreground">{f.value} ({((f.value/128)*100).toFixed(1)}%)</span>
                   </div>
                 ))}
               </div>
