@@ -104,8 +104,8 @@ function ReportReader({ report, onClose, onDownload }: {
 
   return (
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogHeader className="flex-row items-center justify-between border-b border-border/60 px-6 py-4">
+      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col overflow-hidden p-0 gap-0">
+        <DialogHeader className="flex-row shrink-0 items-center justify-between border-b border-border/60 px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15"><FileText className="h-5 w-5 text-primary" /></div>
             <div>
@@ -120,7 +120,7 @@ function ReportReader({ report, onClose, onDownload }: {
           </div>
         </DialogHeader>
 
-        <div className="space-y-5 px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           {/* Meta bar */}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 rounded-lg border border-border/60 bg-elevated/40 px-4 py-2.5 text-xs text-muted-foreground">
             <span>Report ID: <span className="font-medium text-foreground">{report.id}</span></span>
