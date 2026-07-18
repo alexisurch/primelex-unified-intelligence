@@ -32,7 +32,6 @@ import { useProfileDrawer } from "@/lib/profile-drawer";
 import { usePreferences } from "@/lib/preferences";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { trucks, drivers, type Truck as TruckType } from "@/lib/mock-data";
-import { TruckImage } from "@/components/shared/TruckImage";
 
 export const Route = createFileRoute("/organisation/$orgSlug/_workspace/dispatch-center")({
   component: DispatchCenter,
@@ -265,8 +264,8 @@ function DispatchCenter() {
                         "flex w-full items-start gap-3 rounded-xl border p-3 text-left transition",
                         isSelected ? "border-primary bg-primary/10" : "border-border bg-elevated/40 hover:border-primary/40 hover:bg-elevated/60",
                       ].join(" ")}>
-                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-elevated/60 p-1">
-                          <TruckImage className="h-full w-full" />
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-elevated/60">
+                          <img src="/truck.png" alt="Truck" className="h-full w-full object-contain" />
                         </div>
                         <div className="flex min-w-0 flex-1 flex-col gap-1">
                           <div className="flex items-center justify-between gap-2">
@@ -306,8 +305,8 @@ function DispatchCenter() {
               ) : (
                 <div className="flex flex-col gap-4">
                   <GlassCard hover={false} className="flex items-center gap-4">
-                    <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-elevated/60 p-1.5">
-                      <TruckImage className="h-full w-full" />
+                    <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-elevated/60">
+                      <img src="/truck.png" alt="Truck" className="h-full w-full object-contain" />
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <span className="truncate text-lg font-semibold text-foreground">{selectedTruck.plate}</span>
@@ -340,6 +339,3 @@ function DispatchCenter() {
     </>
   );
 }
-
-
-export { Route }
