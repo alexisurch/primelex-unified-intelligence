@@ -9,7 +9,7 @@ import {
   Bell, Palette, Satellite, Sun, Moon, MonitorSmartphone, Hand, Zap,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_app/system-settings")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/system-settings")({
   component: SystemSettings,
 });
 

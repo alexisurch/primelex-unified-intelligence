@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useBranding } from "@/lib/branding";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +7,7 @@ import { ArrowLeft, ArrowRight, Check, Upload, Route as RouteIcon, Sparkles, Che
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { createTenant, tenantExists } from "@/lib/tenants";
 
 export const Route = createFileRoute("/register")({
   component: RegisterWizard,
@@ -34,7 +34,6 @@ function slugify(s: string) {
 }
 
 function RegisterWizard() {
-  const branding = useBranding();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [provisioning, setProvisioning] = useState(false);
@@ -88,9 +87,14 @@ function RegisterWizard() {
   }, [form.companyName]);
 
   const provision = () => {
+    if (tenantExists(form.workspaceSlug)) {
+      toast.error("That workspace slug is already taken. Please choose another.");
+      setStep(3);
+      return;
+    }
     setProvisioning(true);
-    // apply branding
-    branding.update({
+    createTenant({
+      slug: form.workspaceSlug,
       companyName: form.companyName,
       companyShort: form.companyShort || form.companyName.split(" ")[0].toUpperCase(),
       industry: form.industry,
@@ -99,13 +103,12 @@ function RegisterWizard() {
       logoDataUrl: form.logoDataUrl,
       primaryColor: form.primaryColor,
       secondaryColor: form.secondaryColor,
-      workspaceSlug: form.workspaceSlug,
       adminName: form.adminName,
       adminEmail: form.adminEmail,
     });
     setTimeout(() => {
-      toast.success(`Workspace ${form.workspaceSlug}.primelex.app is ready`);
-      navigate({ to: "/" });
+      toast.success(`Workspace /organisation/${form.workspaceSlug}/login is ready`);
+      navigate({ to: `/organisation/${form.workspaceSlug}/login` });
     }, 4200);
   };
 
@@ -120,7 +123,7 @@ function RegisterWizard() {
           </Link>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <RouteIcon className="h-4 w-4" />
-            PrimeLex UIS
+            PrimeLex LIS
           </div>
         </div>
 
@@ -180,7 +183,7 @@ function StepCompany({ form, set }: any) {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold">Tell us about your company</h2>
-        <p className="mt-1 text-sm text-muted-foreground">We'll use this to personalize your UIS workspace.</p>
+        <p className="mt-1 text-sm text-muted-foreground">We'll use this to personalize your LIS workspace.</p>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Field label="Company name" required>
@@ -296,7 +299,7 @@ function StepBranding({ form, set, onFile, fileRef, onLogoChange }: any) {
           )}
           <div className="flex-1">
             <div className="text-sm font-semibold">{form.companyName || "Your Company"}</div>
-            <div className="text-[11px] text-muted-foreground">Unified Intelligence System</div>
+            <div className="text-[11px] text-muted-foreground">Logistics Intelligence System</div>
           </div>
           <button className="rounded-md px-3 py-1.5 text-xs font-medium text-white" style={{ background: form.primaryColor }}>
             Sample button
@@ -314,8 +317,11 @@ function StepWorkspace({ form, set }: any) {
         <h2 className="text-xl font-semibold">Claim your workspace URL</h2>
         <p className="mt-1 text-sm text-muted-foreground">This is where your team will sign in every day.</p>
       </div>
-      <Field label="Workspace URL" required>
+      <Field label="Workspace slug" required>
         <div className="flex items-center overflow-hidden rounded-md border border-border bg-elevated/40 focus-within:border-primary">
+          <span className="whitespace-nowrap bg-elevated/70 px-3 py-2 text-xs text-muted-foreground">
+            /organisation/
+          </span>
           <Input
             value={form.workspaceSlug}
             onChange={(e) => set("workspaceSlug", slugify(e.target.value))}
@@ -323,14 +329,14 @@ function StepWorkspace({ form, set }: any) {
             placeholder="acme-logistics"
           />
           <span className="whitespace-nowrap border-l border-border bg-elevated/70 px-3 py-2 text-xs text-muted-foreground">
-            .primelex.app
+            /login
           </span>
         </div>
       </Field>
       <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
         <div className="text-xs uppercase tracking-widest text-muted-foreground">Your workspace URL</div>
         <div className="mt-1 font-mono text-sm text-primary">
-          https://{form.workspaceSlug || "your-workspace"}.primelex.app
+          /organisation/{form.workspaceSlug || "your-workspace"}/login
         </div>
       </div>
       <Field label="Region">
@@ -392,7 +398,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
 function ProvisioningScreen({ slug, companyName, primaryColor }: { slug: string; companyName: string; primaryColor: string }) {
   const stages = [
     "Reserving workspace URL...",
-    "Provisioning tenant database...",
+    "Provisioning tenant workspace...",
     "Configuring fleet modules...",
     "Applying branding & permissions...",
     "Finalizing your dashboard...",
@@ -439,7 +445,7 @@ function ProvisioningScreen({ slug, companyName, primaryColor }: { slug: string;
 
           <div className="w-full rounded-lg border border-primary/20 bg-primary/5 p-3 text-center">
             <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Workspace URL</div>
-            <div className="mt-1 font-mono text-xs text-primary">{slug}.primelex.app</div>
+            <div className="mt-1 font-mono text-xs text-primary">/organisation/{slug}/login</div>
           </div>
         </div>
       </div>

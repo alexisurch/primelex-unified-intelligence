@@ -3,10 +3,10 @@ import { useState, useEffect, useCallback } from "react";
 import { History, RefreshCw, ListFilter as Filter } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { KPICard, SectionCard, Pill } from "@/components/shared/Cards";
-import { fetchAuditTrail, type DbAuditEntry } from "@/lib/supabase";
+import { fetchAuditTrail, type DbAuditEntry } from "@/lib/local-store";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/_app/audit-trail")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/audit-trail")({
   component: AuditTrailPage,
 });
 

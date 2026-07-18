@@ -1,15 +1,31 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useParams, useNavigate } from "@tanstack/react-router";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { usePreferences } from "@/lib/preferences";
 import { ProfileDrawerProvider } from "@/lib/profile-drawer";
 import { FleetManagersProvider } from "@/lib/fleet-managers-store";
+import { useAuth } from "@/lib/auth";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/_app")({
-  component: AppLayout,
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace")({
+  component: WorkspaceLayout,
 });
 
-function AppLayout() {
+function WorkspaceLayout() {
   const { resolvedTheme } = usePreferences();
+  const { orgSlug } = useParams({ from: "/organisation/$orgSlug/_workspace" });
+  const { getSessionForOrg } = useAuth();
+  const navigate = useNavigate();
+
+  const hasSession = getSessionForOrg(orgSlug);
+
+  useEffect(() => {
+    if (!hasSession) {
+      navigate({ to: `/organisation/${orgSlug}/login` });
+    }
+  }, [hasSession, orgSlug, navigate]);
+
+  if (!hasSession) return null;
+
   return (
     <FleetManagersProvider>
       <ProfileDrawerProvider>

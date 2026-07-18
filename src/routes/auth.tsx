@@ -1,135 +1,108 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useBranding } from "@/lib/branding";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowRight, ShieldCheck, Route as RouteIcon, Sparkles, Building2 } from "lucide-react";
+import { listTenants, DEFAULT_TENANT_SLUG } from "@/lib/tenants";
+import { ArrowRight, Search, Building2, Route as RouteIcon, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
-  component: AuthLanding,
+  component: AuthPortal,
 });
 
-function AuthLanding() {
-  const { companyName, companyShort, logoDataUrl, primaryColor, adminEmail, workspaceSlug } = useBranding();
+function AuthPortal() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState(adminEmail);
-  const [password, setPassword] = useState("••••••••");
+  const tenants = listTenants();
+  const [query, setQuery] = useState("");
 
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      toast.error("Enter your email and password");
-      return;
-    }
-    toast.success(`Welcome back to ${companyName}`);
-    navigate({ to: "/" });
-  };
+  const matches = tenants.filter(
+    (t) =>
+      t.slug.includes(query.toLowerCase()) ||
+      t.companyName.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  const goTo = (slug: string) => navigate({ to: `/organisation/${slug}/login` });
 
   return (
-    <div className="grid min-h-screen grid-cols-1 bg-background lg:grid-cols-2">
-      {/* Left: brand panel */}
-      <div
-        className="relative hidden overflow-hidden p-12 lg:flex lg:flex-col lg:justify-between"
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f172a 60%, #020617 100%)` }}
-      >
-        <div className="relative z-10 flex items-center gap-3">
-          {logoDataUrl ? (
-            <img src={logoDataUrl} alt="" className="h-11 w-11 rounded-xl object-cover ring-2 ring-white/20" />
-          ) : (
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 ring-2 ring-white/20 backdrop-blur">
-              <RouteIcon className="h-6 w-6 text-white" />
+    <div className="flex min-h-screen flex-col bg-background">
+      {/* Top bar */}
+      <header className="border-b border-border/60 px-8 py-5">
+        <div className="mx-auto flex max-w-3xl items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+              <RouteIcon className="h-5 w-5 text-white" />
             </div>
-          )}
-          <div>
-            <div className="text-sm font-bold tracking-wide text-white">{companyShort}</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Unified Intelligence System</div>
+            <span className="text-sm font-bold tracking-wide">PrimeLex Tech</span>
           </div>
-        </div>
-
-        <div className="relative z-10 space-y-6">
-          <h1 className="text-4xl font-semibold leading-tight text-white">
-            Command every truck, driver and route from one intelligent console.
-          </h1>
-          <p className="max-w-md text-sm text-white/70">
-            {companyName} UIS unifies dispatch, fuel intelligence, compliance, and executive reporting into a single decision-grade platform.
-          </p>
-          <div className="grid grid-cols-3 gap-4 pt-4">
-            {[
-              { icon: ShieldCheck, label: "Enterprise-grade" },
-              { icon: Sparkles, label: "AI insights" },
-              { icon: Building2, label: "Multi-tenant" },
-            ].map((f) => (
-              <div key={f.label} className="flex flex-col gap-2 rounded-lg border border-white/10 bg-white/5 p-3 backdrop-blur">
-                <f.icon className="h-4 w-4 text-white" />
-                <span className="text-[11px] font-medium text-white/80">{f.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative z-10 text-xs text-white/50">
-          © 2026 {companyName}. All rights reserved.
-        </div>
-      </div>
-
-      {/* Right: auth panel */}
-      <div className="flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
-          <div className="lg:hidden">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: primaryColor }}>
-                <RouteIcon className="h-5 w-5 text-white" />
-              </div>
-              <div className="text-lg font-bold">{companyShort}</div>
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground">Sign in to your workspace</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Continue to <span className="font-medium text-foreground">{workspaceSlug}.primelex.app</span>
-            </p>
-          </div>
-
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Work email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <button type="button" className="text-xs text-primary hover:underline">Forgot?</button>
-              </div>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <Button type="submit" className="w-full" style={{ background: primaryColor }}>
-              Sign in
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">New to UIS?</span>
-            </div>
-          </div>
-
-          <Link
-            to="/register"
-            className="flex w-full items-center justify-center rounded-md border border-border bg-elevated/60 px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/40"
-          >
+          <Link to="/register" className="text-xs font-medium text-primary hover:underline">
             Create a company account
           </Link>
+        </div>
+      </header>
 
-          <p className="text-center text-xs text-muted-foreground">
-            By continuing, you agree to our Terms and Privacy Policy.
+      <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-6 py-16">
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl font-semibold text-foreground">Find your workspace</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Enter your organisation name or slug to sign in to your Logistics Intelligence System workspace.
           </p>
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-8">
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && matches[0]) goTo(matches[0].slug);
+            }}
+            placeholder="Search organisations…"
+            className="w-full rounded-lg border border-border bg-elevated/40 py-3 pl-11 pr-4 text-sm outline-none focus:border-primary/60"
+          />
+        </div>
+
+        {/* Tenant list */}
+        <div className="space-y-2">
+          {matches.map((t) => (
+            <button
+              key={t.slug}
+              onClick={() => goTo(t.slug)}
+              className="flex w-full items-center gap-4 rounded-xl border border-border bg-elevated/40 px-5 py-4 text-left transition-all hover:border-primary/40 hover:bg-elevated/60"
+            >
+              {t.logoDataUrl ? (
+                <img src={t.logoDataUrl} alt="" className="h-11 w-11 rounded-xl object-cover" />
+              ) : (
+                <div
+                  className="flex h-11 w-11 items-center justify-center rounded-xl"
+                  style={{ background: `linear-gradient(135deg, ${t.primaryColor}, ${t.secondaryColor})` }}
+                >
+                  <Building2 className="h-5 w-5 text-white" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold text-foreground">{t.companyName}</div>
+                <div className="font-mono text-xs text-muted-foreground">/organisation/{t.slug}/login</div>
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+          ))}
+          {matches.length === 0 && (
+            <div className="rounded-xl border border-dashed border-border px-5 py-10 text-center">
+              <p className="text-sm text-muted-foreground">No organisation matches "{query}".</p>
+              <Link to="/register" className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+                <Sparkles className="h-3.5 w-3.5" /> Create a new workspace
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Quick access */}
+        <div className="mt-10 text-center text-xs text-muted-foreground">
+          Default workspace:
+          <button
+            onClick={() => goTo(DEFAULT_TENANT_SLUG)}
+            className="ml-1.5 font-medium text-primary hover:underline"
+          >
+            PrimeLex Logistics
+          </button>
         </div>
       </div>
     </div>

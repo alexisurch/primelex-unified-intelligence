@@ -11,23 +11,26 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppIndexRouteImport } from './routes/_app.index'
-import { Route as AppUsersAccessRouteImport } from './routes/_app.users-access'
-import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
-import { Route as AppSystemSettingsRouteImport } from './routes/_app.system-settings'
-import { Route as AppSafetyIncidentsRouteImport } from './routes/_app.safety-incidents'
-import { Route as AppRouteIntelligenceRouteImport } from './routes/_app.route-intelligence'
-import { Route as AppReportsRouteImport } from './routes/_app.reports'
-import { Route as AppOrganisationRouteImport } from './routes/_app.organisation'
-import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
-import { Route as AppKpiScorecardRouteImport } from './routes/_app.kpi-scorecard'
-import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
-import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
-import { Route as AppDocumentsRouteImport } from './routes/_app.documents'
-import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
-import { Route as AppAuditTrailRouteImport } from './routes/_app.audit-trail'
-import { Route as AppActionCenterRouteImport } from './routes/_app.action-center'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as OrganisationOrgSlugRouteImport } from './routes/organisation.$orgSlug'
+import { Route as OrganisationOrgSlugLoginRouteImport } from './routes/organisation.$orgSlug.login'
+import { Route as OrganisationOrgSlugWorkspaceRouteImport } from './routes/organisation.$orgSlug._workspace'
+import { Route as OrganisationOrgSlugWorkspaceIndexRouteImport } from './routes/organisation.$orgSlug._workspace.index'
+import { Route as OrganisationOrgSlugWorkspaceUsersAccessRouteImport } from './routes/organisation.$orgSlug._workspace.users-access'
+import { Route as OrganisationOrgSlugWorkspaceTripsDeliveriesRouteImport } from './routes/organisation.$orgSlug._workspace.trips-deliveries'
+import { Route as OrganisationOrgSlugWorkspaceSystemSettingsRouteImport } from './routes/organisation.$orgSlug._workspace.system-settings'
+import { Route as OrganisationOrgSlugWorkspaceSafetyIncidentsRouteImport } from './routes/organisation.$orgSlug._workspace.safety-incidents'
+import { Route as OrganisationOrgSlugWorkspaceRouteIntelligenceRouteImport } from './routes/organisation.$orgSlug._workspace.route-intelligence'
+import { Route as OrganisationOrgSlugWorkspaceReportsRouteImport } from './routes/organisation.$orgSlug._workspace.reports'
+import { Route as OrganisationOrgSlugWorkspaceOrganisationRouteImport } from './routes/organisation.$orgSlug._workspace.organisation'
+import { Route as OrganisationOrgSlugWorkspaceMaintenanceRouteImport } from './routes/organisation.$orgSlug._workspace.maintenance'
+import { Route as OrganisationOrgSlugWorkspaceKpiScorecardRouteImport } from './routes/organisation.$orgSlug._workspace.kpi-scorecard'
+import { Route as OrganisationOrgSlugWorkspaceFuelIntelligenceRouteImport } from './routes/organisation.$orgSlug._workspace.fuel-intelligence'
+import { Route as OrganisationOrgSlugWorkspaceFleetOperationsRouteImport } from './routes/organisation.$orgSlug._workspace.fleet-operations'
+import { Route as OrganisationOrgSlugWorkspaceDocumentsRouteImport } from './routes/organisation.$orgSlug._workspace.documents'
+import { Route as OrganisationOrgSlugWorkspaceDispatchCenterRouteImport } from './routes/organisation.$orgSlug._workspace.dispatch-center'
+import { Route as OrganisationOrgSlugWorkspaceAuditTrailRouteImport } from './routes/organisation.$orgSlug._workspace.audit-trail'
+import { Route as OrganisationOrgSlugWorkspaceActionCenterRouteImport } from './routes/organisation.$orgSlug._workspace.action-center'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -39,152 +42,193 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppIndexRoute = AppIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppUsersAccessRoute = AppUsersAccessRouteImport.update({
-  id: '/users-access',
-  path: '/users-access',
-  getParentRoute: () => AppRoute,
+const OrganisationOrgSlugRoute = OrganisationOrgSlugRouteImport.update({
+  id: '/organisation/$orgSlug',
+  path: '/organisation/$orgSlug',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppTripsDeliveriesRoute = AppTripsDeliveriesRouteImport.update({
-  id: '/trips-deliveries',
-  path: '/trips-deliveries',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppSystemSettingsRoute = AppSystemSettingsRouteImport.update({
-  id: '/system-settings',
-  path: '/system-settings',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppSafetyIncidentsRoute = AppSafetyIncidentsRouteImport.update({
-  id: '/safety-incidents',
-  path: '/safety-incidents',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppRouteIntelligenceRoute = AppRouteIntelligenceRouteImport.update({
-  id: '/route-intelligence',
-  path: '/route-intelligence',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppReportsRoute = AppReportsRouteImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppOrganisationRoute = AppOrganisationRouteImport.update({
-  id: '/organisation',
-  path: '/organisation',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
-  id: '/maintenance',
-  path: '/maintenance',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppKpiScorecardRoute = AppKpiScorecardRouteImport.update({
-  id: '/kpi-scorecard',
-  path: '/kpi-scorecard',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFuelIntelligenceRoute = AppFuelIntelligenceRouteImport.update({
-  id: '/fuel-intelligence',
-  path: '/fuel-intelligence',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFleetOperationsRoute = AppFleetOperationsRouteImport.update({
-  id: '/fleet-operations',
-  path: '/fleet-operations',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDocumentsRoute = AppDocumentsRouteImport.update({
-  id: '/documents',
-  path: '/documents',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
-  id: '/dispatch-center',
-  path: '/dispatch-center',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAuditTrailRoute = AppAuditTrailRouteImport.update({
-  id: '/audit-trail',
-  path: '/audit-trail',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppActionCenterRoute = AppActionCenterRouteImport.update({
-  id: '/action-center',
-  path: '/action-center',
-  getParentRoute: () => AppRoute,
-} as any)
+const OrganisationOrgSlugLoginRoute =
+  OrganisationOrgSlugLoginRouteImport.update({
+    id: '/login',
+    path: '/login',
+    getParentRoute: () => OrganisationOrgSlugRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceRoute =
+  OrganisationOrgSlugWorkspaceRouteImport.update({
+    id: '/_workspace',
+    getParentRoute: () => OrganisationOrgSlugRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceIndexRoute =
+  OrganisationOrgSlugWorkspaceIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceUsersAccessRoute =
+  OrganisationOrgSlugWorkspaceUsersAccessRouteImport.update({
+    id: '/users-access',
+    path: '/users-access',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceTripsDeliveriesRoute =
+  OrganisationOrgSlugWorkspaceTripsDeliveriesRouteImport.update({
+    id: '/trips-deliveries',
+    path: '/trips-deliveries',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceSystemSettingsRoute =
+  OrganisationOrgSlugWorkspaceSystemSettingsRouteImport.update({
+    id: '/system-settings',
+    path: '/system-settings',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceSafetyIncidentsRoute =
+  OrganisationOrgSlugWorkspaceSafetyIncidentsRouteImport.update({
+    id: '/safety-incidents',
+    path: '/safety-incidents',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceRouteIntelligenceRoute =
+  OrganisationOrgSlugWorkspaceRouteIntelligenceRouteImport.update({
+    id: '/route-intelligence',
+    path: '/route-intelligence',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceReportsRoute =
+  OrganisationOrgSlugWorkspaceReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceOrganisationRoute =
+  OrganisationOrgSlugWorkspaceOrganisationRouteImport.update({
+    id: '/organisation',
+    path: '/organisation',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceMaintenanceRoute =
+  OrganisationOrgSlugWorkspaceMaintenanceRouteImport.update({
+    id: '/maintenance',
+    path: '/maintenance',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceKpiScorecardRoute =
+  OrganisationOrgSlugWorkspaceKpiScorecardRouteImport.update({
+    id: '/kpi-scorecard',
+    path: '/kpi-scorecard',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceFuelIntelligenceRoute =
+  OrganisationOrgSlugWorkspaceFuelIntelligenceRouteImport.update({
+    id: '/fuel-intelligence',
+    path: '/fuel-intelligence',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceFleetOperationsRoute =
+  OrganisationOrgSlugWorkspaceFleetOperationsRouteImport.update({
+    id: '/fleet-operations',
+    path: '/fleet-operations',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceDocumentsRoute =
+  OrganisationOrgSlugWorkspaceDocumentsRouteImport.update({
+    id: '/documents',
+    path: '/documents',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceDispatchCenterRoute =
+  OrganisationOrgSlugWorkspaceDispatchCenterRouteImport.update({
+    id: '/dispatch-center',
+    path: '/dispatch-center',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceAuditTrailRoute =
+  OrganisationOrgSlugWorkspaceAuditTrailRouteImport.update({
+    id: '/audit-trail',
+    path: '/audit-trail',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
+const OrganisationOrgSlugWorkspaceActionCenterRoute =
+  OrganisationOrgSlugWorkspaceActionCenterRouteImport.update({
+    id: '/action-center',
+    path: '/action-center',
+    getParentRoute: () => OrganisationOrgSlugWorkspaceRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/register': typeof RegisterRoute
-  '/action-center': typeof AppActionCenterRoute
-  '/audit-trail': typeof AppAuditTrailRoute
-  '/dispatch-center': typeof AppDispatchCenterRoute
-  '/documents': typeof AppDocumentsRoute
-  '/fleet-operations': typeof AppFleetOperationsRoute
-  '/fuel-intelligence': typeof AppFuelIntelligenceRoute
-  '/kpi-scorecard': typeof AppKpiScorecardRoute
-  '/maintenance': typeof AppMaintenanceRoute
-  '/organisation': typeof AppOrganisationRoute
-  '/reports': typeof AppReportsRoute
-  '/route-intelligence': typeof AppRouteIntelligenceRoute
-  '/safety-incidents': typeof AppSafetyIncidentsRoute
-  '/system-settings': typeof AppSystemSettingsRoute
-  '/trips-deliveries': typeof AppTripsDeliveriesRoute
-  '/users-access': typeof AppUsersAccessRoute
+  '/organisation/$orgSlug': typeof OrganisationOrgSlugRouteWithChildren
+  '/organisation/$orgSlug/login': typeof OrganisationOrgSlugLoginRoute
+  '/organisation/$orgSlug/action-center': typeof OrganisationOrgSlugWorkspaceActionCenterRoute
+  '/organisation/$orgSlug/audit-trail': typeof OrganisationOrgSlugWorkspaceAuditTrailRoute
+  '/organisation/$orgSlug/dispatch-center': typeof OrganisationOrgSlugWorkspaceDispatchCenterRoute
+  '/organisation/$orgSlug/documents': typeof OrganisationOrgSlugWorkspaceDocumentsRoute
+  '/organisation/$orgSlug/fleet-operations': typeof OrganisationOrgSlugWorkspaceFleetOperationsRoute
+  '/organisation/$orgSlug/fuel-intelligence': typeof OrganisationOrgSlugWorkspaceFuelIntelligenceRoute
+  '/organisation/$orgSlug/kpi-scorecard': typeof OrganisationOrgSlugWorkspaceKpiScorecardRoute
+  '/organisation/$orgSlug/maintenance': typeof OrganisationOrgSlugWorkspaceMaintenanceRoute
+  '/organisation/$orgSlug/organisation': typeof OrganisationOrgSlugWorkspaceOrganisationRoute
+  '/organisation/$orgSlug/reports': typeof OrganisationOrgSlugWorkspaceReportsRoute
+  '/organisation/$orgSlug/route-intelligence': typeof OrganisationOrgSlugWorkspaceRouteIntelligenceRoute
+  '/organisation/$orgSlug/safety-incidents': typeof OrganisationOrgSlugWorkspaceSafetyIncidentsRoute
+  '/organisation/$orgSlug/system-settings': typeof OrganisationOrgSlugWorkspaceSystemSettingsRoute
+  '/organisation/$orgSlug/trips-deliveries': typeof OrganisationOrgSlugWorkspaceTripsDeliveriesRoute
+  '/organisation/$orgSlug/users-access': typeof OrganisationOrgSlugWorkspaceUsersAccessRoute
+  '/organisation/$orgSlug/': typeof OrganisationOrgSlugWorkspaceIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/register': typeof RegisterRoute
-  '/action-center': typeof AppActionCenterRoute
-  '/audit-trail': typeof AppAuditTrailRoute
-  '/dispatch-center': typeof AppDispatchCenterRoute
-  '/documents': typeof AppDocumentsRoute
-  '/fleet-operations': typeof AppFleetOperationsRoute
-  '/fuel-intelligence': typeof AppFuelIntelligenceRoute
-  '/kpi-scorecard': typeof AppKpiScorecardRoute
-  '/maintenance': typeof AppMaintenanceRoute
-  '/organisation': typeof AppOrganisationRoute
-  '/reports': typeof AppReportsRoute
-  '/route-intelligence': typeof AppRouteIntelligenceRoute
-  '/safety-incidents': typeof AppSafetyIncidentsRoute
-  '/system-settings': typeof AppSystemSettingsRoute
-  '/trips-deliveries': typeof AppTripsDeliveriesRoute
-  '/users-access': typeof AppUsersAccessRoute
-  '/': typeof AppIndexRoute
+  '/organisation/$orgSlug': typeof OrganisationOrgSlugWorkspaceIndexRoute
+  '/organisation/$orgSlug/login': typeof OrganisationOrgSlugLoginRoute
+  '/organisation/$orgSlug/action-center': typeof OrganisationOrgSlugWorkspaceActionCenterRoute
+  '/organisation/$orgSlug/audit-trail': typeof OrganisationOrgSlugWorkspaceAuditTrailRoute
+  '/organisation/$orgSlug/dispatch-center': typeof OrganisationOrgSlugWorkspaceDispatchCenterRoute
+  '/organisation/$orgSlug/documents': typeof OrganisationOrgSlugWorkspaceDocumentsRoute
+  '/organisation/$orgSlug/fleet-operations': typeof OrganisationOrgSlugWorkspaceFleetOperationsRoute
+  '/organisation/$orgSlug/fuel-intelligence': typeof OrganisationOrgSlugWorkspaceFuelIntelligenceRoute
+  '/organisation/$orgSlug/kpi-scorecard': typeof OrganisationOrgSlugWorkspaceKpiScorecardRoute
+  '/organisation/$orgSlug/maintenance': typeof OrganisationOrgSlugWorkspaceMaintenanceRoute
+  '/organisation/$orgSlug/organisation': typeof OrganisationOrgSlugWorkspaceOrganisationRoute
+  '/organisation/$orgSlug/reports': typeof OrganisationOrgSlugWorkspaceReportsRoute
+  '/organisation/$orgSlug/route-intelligence': typeof OrganisationOrgSlugWorkspaceRouteIntelligenceRoute
+  '/organisation/$orgSlug/safety-incidents': typeof OrganisationOrgSlugWorkspaceSafetyIncidentsRoute
+  '/organisation/$orgSlug/system-settings': typeof OrganisationOrgSlugWorkspaceSystemSettingsRoute
+  '/organisation/$orgSlug/trips-deliveries': typeof OrganisationOrgSlugWorkspaceTripsDeliveriesRoute
+  '/organisation/$orgSlug/users-access': typeof OrganisationOrgSlugWorkspaceUsersAccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_app': typeof AppRouteWithChildren
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/register': typeof RegisterRoute
-  '/_app/action-center': typeof AppActionCenterRoute
-  '/_app/audit-trail': typeof AppAuditTrailRoute
-  '/_app/dispatch-center': typeof AppDispatchCenterRoute
-  '/_app/documents': typeof AppDocumentsRoute
-  '/_app/fleet-operations': typeof AppFleetOperationsRoute
-  '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
-  '/_app/kpi-scorecard': typeof AppKpiScorecardRoute
-  '/_app/maintenance': typeof AppMaintenanceRoute
-  '/_app/organisation': typeof AppOrganisationRoute
-  '/_app/reports': typeof AppReportsRoute
-  '/_app/route-intelligence': typeof AppRouteIntelligenceRoute
-  '/_app/safety-incidents': typeof AppSafetyIncidentsRoute
-  '/_app/system-settings': typeof AppSystemSettingsRoute
-  '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
-  '/_app/users-access': typeof AppUsersAccessRoute
-  '/_app/': typeof AppIndexRoute
+  '/organisation/$orgSlug': typeof OrganisationOrgSlugRouteWithChildren
+  '/organisation/$orgSlug/_workspace': typeof OrganisationOrgSlugWorkspaceRouteWithChildren
+  '/organisation/$orgSlug/login': typeof OrganisationOrgSlugLoginRoute
+  '/organisation/$orgSlug/_workspace/action-center': typeof OrganisationOrgSlugWorkspaceActionCenterRoute
+  '/organisation/$orgSlug/_workspace/audit-trail': typeof OrganisationOrgSlugWorkspaceAuditTrailRoute
+  '/organisation/$orgSlug/_workspace/dispatch-center': typeof OrganisationOrgSlugWorkspaceDispatchCenterRoute
+  '/organisation/$orgSlug/_workspace/documents': typeof OrganisationOrgSlugWorkspaceDocumentsRoute
+  '/organisation/$orgSlug/_workspace/fleet-operations': typeof OrganisationOrgSlugWorkspaceFleetOperationsRoute
+  '/organisation/$orgSlug/_workspace/fuel-intelligence': typeof OrganisationOrgSlugWorkspaceFuelIntelligenceRoute
+  '/organisation/$orgSlug/_workspace/kpi-scorecard': typeof OrganisationOrgSlugWorkspaceKpiScorecardRoute
+  '/organisation/$orgSlug/_workspace/maintenance': typeof OrganisationOrgSlugWorkspaceMaintenanceRoute
+  '/organisation/$orgSlug/_workspace/organisation': typeof OrganisationOrgSlugWorkspaceOrganisationRoute
+  '/organisation/$orgSlug/_workspace/reports': typeof OrganisationOrgSlugWorkspaceReportsRoute
+  '/organisation/$orgSlug/_workspace/route-intelligence': typeof OrganisationOrgSlugWorkspaceRouteIntelligenceRoute
+  '/organisation/$orgSlug/_workspace/safety-incidents': typeof OrganisationOrgSlugWorkspaceSafetyIncidentsRoute
+  '/organisation/$orgSlug/_workspace/system-settings': typeof OrganisationOrgSlugWorkspaceSystemSettingsRoute
+  '/organisation/$orgSlug/_workspace/trips-deliveries': typeof OrganisationOrgSlugWorkspaceTripsDeliveriesRoute
+  '/organisation/$orgSlug/_workspace/users-access': typeof OrganisationOrgSlugWorkspaceUsersAccessRoute
+  '/organisation/$orgSlug/_workspace/': typeof OrganisationOrgSlugWorkspaceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -192,68 +236,77 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/register'
-    | '/action-center'
-    | '/audit-trail'
-    | '/dispatch-center'
-    | '/documents'
-    | '/fleet-operations'
-    | '/fuel-intelligence'
-    | '/kpi-scorecard'
-    | '/maintenance'
-    | '/organisation'
-    | '/reports'
-    | '/route-intelligence'
-    | '/safety-incidents'
-    | '/system-settings'
-    | '/trips-deliveries'
-    | '/users-access'
+    | '/organisation/$orgSlug'
+    | '/organisation/$orgSlug/login'
+    | '/organisation/$orgSlug/action-center'
+    | '/organisation/$orgSlug/audit-trail'
+    | '/organisation/$orgSlug/dispatch-center'
+    | '/organisation/$orgSlug/documents'
+    | '/organisation/$orgSlug/fleet-operations'
+    | '/organisation/$orgSlug/fuel-intelligence'
+    | '/organisation/$orgSlug/kpi-scorecard'
+    | '/organisation/$orgSlug/maintenance'
+    | '/organisation/$orgSlug/organisation'
+    | '/organisation/$orgSlug/reports'
+    | '/organisation/$orgSlug/route-intelligence'
+    | '/organisation/$orgSlug/safety-incidents'
+    | '/organisation/$orgSlug/system-settings'
+    | '/organisation/$orgSlug/trips-deliveries'
+    | '/organisation/$orgSlug/users-access'
+    | '/organisation/$orgSlug/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/auth'
     | '/register'
-    | '/action-center'
-    | '/audit-trail'
-    | '/dispatch-center'
-    | '/documents'
-    | '/fleet-operations'
-    | '/fuel-intelligence'
-    | '/kpi-scorecard'
-    | '/maintenance'
-    | '/organisation'
-    | '/reports'
-    | '/route-intelligence'
-    | '/safety-incidents'
-    | '/system-settings'
-    | '/trips-deliveries'
-    | '/users-access'
-    | '/'
+    | '/organisation/$orgSlug'
+    | '/organisation/$orgSlug/login'
+    | '/organisation/$orgSlug/action-center'
+    | '/organisation/$orgSlug/audit-trail'
+    | '/organisation/$orgSlug/dispatch-center'
+    | '/organisation/$orgSlug/documents'
+    | '/organisation/$orgSlug/fleet-operations'
+    | '/organisation/$orgSlug/fuel-intelligence'
+    | '/organisation/$orgSlug/kpi-scorecard'
+    | '/organisation/$orgSlug/maintenance'
+    | '/organisation/$orgSlug/organisation'
+    | '/organisation/$orgSlug/reports'
+    | '/organisation/$orgSlug/route-intelligence'
+    | '/organisation/$orgSlug/safety-incidents'
+    | '/organisation/$orgSlug/system-settings'
+    | '/organisation/$orgSlug/trips-deliveries'
+    | '/organisation/$orgSlug/users-access'
   id:
     | '__root__'
-    | '/_app'
+    | '/'
     | '/auth'
     | '/register'
-    | '/_app/action-center'
-    | '/_app/audit-trail'
-    | '/_app/dispatch-center'
-    | '/_app/documents'
-    | '/_app/fleet-operations'
-    | '/_app/fuel-intelligence'
-    | '/_app/kpi-scorecard'
-    | '/_app/maintenance'
-    | '/_app/organisation'
-    | '/_app/reports'
-    | '/_app/route-intelligence'
-    | '/_app/safety-incidents'
-    | '/_app/system-settings'
-    | '/_app/trips-deliveries'
-    | '/_app/users-access'
-    | '/_app/'
+    | '/organisation/$orgSlug'
+    | '/organisation/$orgSlug/_workspace'
+    | '/organisation/$orgSlug/login'
+    | '/organisation/$orgSlug/_workspace/action-center'
+    | '/organisation/$orgSlug/_workspace/audit-trail'
+    | '/organisation/$orgSlug/_workspace/dispatch-center'
+    | '/organisation/$orgSlug/_workspace/documents'
+    | '/organisation/$orgSlug/_workspace/fleet-operations'
+    | '/organisation/$orgSlug/_workspace/fuel-intelligence'
+    | '/organisation/$orgSlug/_workspace/kpi-scorecard'
+    | '/organisation/$orgSlug/_workspace/maintenance'
+    | '/organisation/$orgSlug/_workspace/organisation'
+    | '/organisation/$orgSlug/_workspace/reports'
+    | '/organisation/$orgSlug/_workspace/route-intelligence'
+    | '/organisation/$orgSlug/_workspace/safety-incidents'
+    | '/organisation/$orgSlug/_workspace/system-settings'
+    | '/organisation/$orgSlug/_workspace/trips-deliveries'
+    | '/organisation/$orgSlug/_workspace/users-access'
+    | '/organisation/$orgSlug/_workspace/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AppRoute: typeof AppRouteWithChildren
+  IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   RegisterRoute: typeof RegisterRoute
+  OrganisationOrgSlugRoute: typeof OrganisationOrgSlugRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -272,172 +325,228 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_app/': {
-      id: '/_app/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_app/users-access': {
-      id: '/_app/users-access'
+    '/organisation/$orgSlug': {
+      id: '/organisation/$orgSlug'
+      path: '/organisation/$orgSlug'
+      fullPath: '/organisation/$orgSlug'
+      preLoaderRoute: typeof OrganisationOrgSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organisation/$orgSlug/login': {
+      id: '/organisation/$orgSlug/login'
+      path: '/login'
+      fullPath: '/organisation/$orgSlug/login'
+      preLoaderRoute: typeof OrganisationOrgSlugLoginRouteImport
+      parentRoute: typeof OrganisationOrgSlugRoute
+    }
+    '/organisation/$orgSlug/_workspace': {
+      id: '/organisation/$orgSlug/_workspace'
+      path: ''
+      fullPath: '/organisation/$orgSlug'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceRouteImport
+      parentRoute: typeof OrganisationOrgSlugRoute
+    }
+    '/organisation/$orgSlug/_workspace/': {
+      id: '/organisation/$orgSlug/_workspace/'
+      path: '/'
+      fullPath: '/organisation/$orgSlug/'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceIndexRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
+    }
+    '/organisation/$orgSlug/_workspace/users-access': {
+      id: '/organisation/$orgSlug/_workspace/users-access'
       path: '/users-access'
-      fullPath: '/users-access'
-      preLoaderRoute: typeof AppUsersAccessRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/users-access'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceUsersAccessRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/trips-deliveries': {
-      id: '/_app/trips-deliveries'
+    '/organisation/$orgSlug/_workspace/trips-deliveries': {
+      id: '/organisation/$orgSlug/_workspace/trips-deliveries'
       path: '/trips-deliveries'
-      fullPath: '/trips-deliveries'
-      preLoaderRoute: typeof AppTripsDeliveriesRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/trips-deliveries'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceTripsDeliveriesRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/system-settings': {
-      id: '/_app/system-settings'
+    '/organisation/$orgSlug/_workspace/system-settings': {
+      id: '/organisation/$orgSlug/_workspace/system-settings'
       path: '/system-settings'
-      fullPath: '/system-settings'
-      preLoaderRoute: typeof AppSystemSettingsRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/system-settings'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceSystemSettingsRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/safety-incidents': {
-      id: '/_app/safety-incidents'
+    '/organisation/$orgSlug/_workspace/safety-incidents': {
+      id: '/organisation/$orgSlug/_workspace/safety-incidents'
       path: '/safety-incidents'
-      fullPath: '/safety-incidents'
-      preLoaderRoute: typeof AppSafetyIncidentsRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/safety-incidents'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceSafetyIncidentsRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/route-intelligence': {
-      id: '/_app/route-intelligence'
+    '/organisation/$orgSlug/_workspace/route-intelligence': {
+      id: '/organisation/$orgSlug/_workspace/route-intelligence'
       path: '/route-intelligence'
-      fullPath: '/route-intelligence'
-      preLoaderRoute: typeof AppRouteIntelligenceRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/route-intelligence'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceRouteIntelligenceRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/reports': {
-      id: '/_app/reports'
+    '/organisation/$orgSlug/_workspace/reports': {
+      id: '/organisation/$orgSlug/_workspace/reports'
       path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof AppReportsRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/reports'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceReportsRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/organisation': {
-      id: '/_app/organisation'
+    '/organisation/$orgSlug/_workspace/organisation': {
+      id: '/organisation/$orgSlug/_workspace/organisation'
       path: '/organisation'
-      fullPath: '/organisation'
-      preLoaderRoute: typeof AppOrganisationRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/organisation'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceOrganisationRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/maintenance': {
-      id: '/_app/maintenance'
+    '/organisation/$orgSlug/_workspace/maintenance': {
+      id: '/organisation/$orgSlug/_workspace/maintenance'
       path: '/maintenance'
-      fullPath: '/maintenance'
-      preLoaderRoute: typeof AppMaintenanceRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/maintenance'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceMaintenanceRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/kpi-scorecard': {
-      id: '/_app/kpi-scorecard'
+    '/organisation/$orgSlug/_workspace/kpi-scorecard': {
+      id: '/organisation/$orgSlug/_workspace/kpi-scorecard'
       path: '/kpi-scorecard'
-      fullPath: '/kpi-scorecard'
-      preLoaderRoute: typeof AppKpiScorecardRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/kpi-scorecard'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceKpiScorecardRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/fuel-intelligence': {
-      id: '/_app/fuel-intelligence'
+    '/organisation/$orgSlug/_workspace/fuel-intelligence': {
+      id: '/organisation/$orgSlug/_workspace/fuel-intelligence'
       path: '/fuel-intelligence'
-      fullPath: '/fuel-intelligence'
-      preLoaderRoute: typeof AppFuelIntelligenceRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/fuel-intelligence'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceFuelIntelligenceRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/fleet-operations': {
-      id: '/_app/fleet-operations'
+    '/organisation/$orgSlug/_workspace/fleet-operations': {
+      id: '/organisation/$orgSlug/_workspace/fleet-operations'
       path: '/fleet-operations'
-      fullPath: '/fleet-operations'
-      preLoaderRoute: typeof AppFleetOperationsRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/fleet-operations'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceFleetOperationsRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/documents': {
-      id: '/_app/documents'
+    '/organisation/$orgSlug/_workspace/documents': {
+      id: '/organisation/$orgSlug/_workspace/documents'
       path: '/documents'
-      fullPath: '/documents'
-      preLoaderRoute: typeof AppDocumentsRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/documents'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceDocumentsRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/dispatch-center': {
-      id: '/_app/dispatch-center'
+    '/organisation/$orgSlug/_workspace/dispatch-center': {
+      id: '/organisation/$orgSlug/_workspace/dispatch-center'
       path: '/dispatch-center'
-      fullPath: '/dispatch-center'
-      preLoaderRoute: typeof AppDispatchCenterRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/dispatch-center'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceDispatchCenterRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/audit-trail': {
-      id: '/_app/audit-trail'
+    '/organisation/$orgSlug/_workspace/audit-trail': {
+      id: '/organisation/$orgSlug/_workspace/audit-trail'
       path: '/audit-trail'
-      fullPath: '/audit-trail'
-      preLoaderRoute: typeof AppAuditTrailRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/audit-trail'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceAuditTrailRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
-    '/_app/action-center': {
-      id: '/_app/action-center'
+    '/organisation/$orgSlug/_workspace/action-center': {
+      id: '/organisation/$orgSlug/_workspace/action-center'
       path: '/action-center'
-      fullPath: '/action-center'
-      preLoaderRoute: typeof AppActionCenterRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/organisation/$orgSlug/action-center'
+      preLoaderRoute: typeof OrganisationOrgSlugWorkspaceActionCenterRouteImport
+      parentRoute: typeof OrganisationOrgSlugWorkspaceRoute
     }
   }
 }
 
-interface AppRouteChildren {
-  AppActionCenterRoute: typeof AppActionCenterRoute
-  AppAuditTrailRoute: typeof AppAuditTrailRoute
-  AppDispatchCenterRoute: typeof AppDispatchCenterRoute
-  AppDocumentsRoute: typeof AppDocumentsRoute
-  AppFleetOperationsRoute: typeof AppFleetOperationsRoute
-  AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
-  AppKpiScorecardRoute: typeof AppKpiScorecardRoute
-  AppMaintenanceRoute: typeof AppMaintenanceRoute
-  AppOrganisationRoute: typeof AppOrganisationRoute
-  AppReportsRoute: typeof AppReportsRoute
-  AppRouteIntelligenceRoute: typeof AppRouteIntelligenceRoute
-  AppSafetyIncidentsRoute: typeof AppSafetyIncidentsRoute
-  AppSystemSettingsRoute: typeof AppSystemSettingsRoute
-  AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
-  AppUsersAccessRoute: typeof AppUsersAccessRoute
-  AppIndexRoute: typeof AppIndexRoute
+interface OrganisationOrgSlugWorkspaceRouteChildren {
+  OrganisationOrgSlugWorkspaceActionCenterRoute: typeof OrganisationOrgSlugWorkspaceActionCenterRoute
+  OrganisationOrgSlugWorkspaceAuditTrailRoute: typeof OrganisationOrgSlugWorkspaceAuditTrailRoute
+  OrganisationOrgSlugWorkspaceDispatchCenterRoute: typeof OrganisationOrgSlugWorkspaceDispatchCenterRoute
+  OrganisationOrgSlugWorkspaceDocumentsRoute: typeof OrganisationOrgSlugWorkspaceDocumentsRoute
+  OrganisationOrgSlugWorkspaceFleetOperationsRoute: typeof OrganisationOrgSlugWorkspaceFleetOperationsRoute
+  OrganisationOrgSlugWorkspaceFuelIntelligenceRoute: typeof OrganisationOrgSlugWorkspaceFuelIntelligenceRoute
+  OrganisationOrgSlugWorkspaceKpiScorecardRoute: typeof OrganisationOrgSlugWorkspaceKpiScorecardRoute
+  OrganisationOrgSlugWorkspaceMaintenanceRoute: typeof OrganisationOrgSlugWorkspaceMaintenanceRoute
+  OrganisationOrgSlugWorkspaceOrganisationRoute: typeof OrganisationOrgSlugWorkspaceOrganisationRoute
+  OrganisationOrgSlugWorkspaceReportsRoute: typeof OrganisationOrgSlugWorkspaceReportsRoute
+  OrganisationOrgSlugWorkspaceRouteIntelligenceRoute: typeof OrganisationOrgSlugWorkspaceRouteIntelligenceRoute
+  OrganisationOrgSlugWorkspaceSafetyIncidentsRoute: typeof OrganisationOrgSlugWorkspaceSafetyIncidentsRoute
+  OrganisationOrgSlugWorkspaceSystemSettingsRoute: typeof OrganisationOrgSlugWorkspaceSystemSettingsRoute
+  OrganisationOrgSlugWorkspaceTripsDeliveriesRoute: typeof OrganisationOrgSlugWorkspaceTripsDeliveriesRoute
+  OrganisationOrgSlugWorkspaceUsersAccessRoute: typeof OrganisationOrgSlugWorkspaceUsersAccessRoute
+  OrganisationOrgSlugWorkspaceIndexRoute: typeof OrganisationOrgSlugWorkspaceIndexRoute
 }
 
-const AppRouteChildren: AppRouteChildren = {
-  AppActionCenterRoute: AppActionCenterRoute,
-  AppAuditTrailRoute: AppAuditTrailRoute,
-  AppDispatchCenterRoute: AppDispatchCenterRoute,
-  AppDocumentsRoute: AppDocumentsRoute,
-  AppFleetOperationsRoute: AppFleetOperationsRoute,
-  AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
-  AppKpiScorecardRoute: AppKpiScorecardRoute,
-  AppMaintenanceRoute: AppMaintenanceRoute,
-  AppOrganisationRoute: AppOrganisationRoute,
-  AppReportsRoute: AppReportsRoute,
-  AppRouteIntelligenceRoute: AppRouteIntelligenceRoute,
-  AppSafetyIncidentsRoute: AppSafetyIncidentsRoute,
-  AppSystemSettingsRoute: AppSystemSettingsRoute,
-  AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
-  AppUsersAccessRoute: AppUsersAccessRoute,
-  AppIndexRoute: AppIndexRoute,
+const OrganisationOrgSlugWorkspaceRouteChildren: OrganisationOrgSlugWorkspaceRouteChildren =
+  {
+    OrganisationOrgSlugWorkspaceActionCenterRoute:
+      OrganisationOrgSlugWorkspaceActionCenterRoute,
+    OrganisationOrgSlugWorkspaceAuditTrailRoute:
+      OrganisationOrgSlugWorkspaceAuditTrailRoute,
+    OrganisationOrgSlugWorkspaceDispatchCenterRoute:
+      OrganisationOrgSlugWorkspaceDispatchCenterRoute,
+    OrganisationOrgSlugWorkspaceDocumentsRoute:
+      OrganisationOrgSlugWorkspaceDocumentsRoute,
+    OrganisationOrgSlugWorkspaceFleetOperationsRoute:
+      OrganisationOrgSlugWorkspaceFleetOperationsRoute,
+    OrganisationOrgSlugWorkspaceFuelIntelligenceRoute:
+      OrganisationOrgSlugWorkspaceFuelIntelligenceRoute,
+    OrganisationOrgSlugWorkspaceKpiScorecardRoute:
+      OrganisationOrgSlugWorkspaceKpiScorecardRoute,
+    OrganisationOrgSlugWorkspaceMaintenanceRoute:
+      OrganisationOrgSlugWorkspaceMaintenanceRoute,
+    OrganisationOrgSlugWorkspaceOrganisationRoute:
+      OrganisationOrgSlugWorkspaceOrganisationRoute,
+    OrganisationOrgSlugWorkspaceReportsRoute:
+      OrganisationOrgSlugWorkspaceReportsRoute,
+    OrganisationOrgSlugWorkspaceRouteIntelligenceRoute:
+      OrganisationOrgSlugWorkspaceRouteIntelligenceRoute,
+    OrganisationOrgSlugWorkspaceSafetyIncidentsRoute:
+      OrganisationOrgSlugWorkspaceSafetyIncidentsRoute,
+    OrganisationOrgSlugWorkspaceSystemSettingsRoute:
+      OrganisationOrgSlugWorkspaceSystemSettingsRoute,
+    OrganisationOrgSlugWorkspaceTripsDeliveriesRoute:
+      OrganisationOrgSlugWorkspaceTripsDeliveriesRoute,
+    OrganisationOrgSlugWorkspaceUsersAccessRoute:
+      OrganisationOrgSlugWorkspaceUsersAccessRoute,
+    OrganisationOrgSlugWorkspaceIndexRoute:
+      OrganisationOrgSlugWorkspaceIndexRoute,
+  }
+
+const OrganisationOrgSlugWorkspaceRouteWithChildren =
+  OrganisationOrgSlugWorkspaceRoute._addFileChildren(
+    OrganisationOrgSlugWorkspaceRouteChildren,
+  )
+
+interface OrganisationOrgSlugRouteChildren {
+  OrganisationOrgSlugWorkspaceRoute: typeof OrganisationOrgSlugWorkspaceRouteWithChildren
+  OrganisationOrgSlugLoginRoute: typeof OrganisationOrgSlugLoginRoute
 }
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+const OrganisationOrgSlugRouteChildren: OrganisationOrgSlugRouteChildren = {
+  OrganisationOrgSlugWorkspaceRoute:
+    OrganisationOrgSlugWorkspaceRouteWithChildren,
+  OrganisationOrgSlugLoginRoute: OrganisationOrgSlugLoginRoute,
+}
+
+const OrganisationOrgSlugRouteWithChildren =
+  OrganisationOrgSlugRoute._addFileChildren(OrganisationOrgSlugRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  AppRoute: AppRouteWithChildren,
+  IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   RegisterRoute: RegisterRoute,
+  OrganisationOrgSlugRoute: OrganisationOrgSlugRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

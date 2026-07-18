@@ -16,7 +16,7 @@ import { useBranding } from "@/lib/branding";
 import { exportCSV } from "@/lib/mock-data";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_app/users-access")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/users-access")({
   component: UsersAccess,
 });
 

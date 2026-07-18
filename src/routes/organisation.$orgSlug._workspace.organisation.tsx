@@ -1,22 +1,24 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
-import { GlassCard, SectionCard, Pill } from "@/components/shared/Cards";
+import { SectionCard, Pill } from "@/components/shared/Cards";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useBranding } from "@/lib/branding";
+import { updateTenant } from "@/lib/tenants";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import {
   Building2, Upload, Palette, Globe, Mail, Phone, MapPin, Save, RotateCcw, Image as ImageIcon,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_app/organisation")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/organisation")({
   component: Organisation,
 });
 
 function Organisation() {
   const branding = useBranding();
+  const { orgSlug } = useParams({ from: "/organisation/$orgSlug/_workspace/organisation" });
   const [form, setForm] = useState({
     companyName: branding.companyName,
     companyShort: branding.companyShort,
@@ -25,32 +27,16 @@ function Organisation() {
     phone: branding.phone,
     primaryColor: branding.primaryColor,
     secondaryColor: branding.secondaryColor,
-    workspaceSlug: branding.workspaceSlug,
     adminName: branding.adminName,
     adminEmail: branding.adminEmail,
+    region: branding.region,
   });
   const fileRef = useRef<HTMLInputElement>(null);
 
   const save = () => {
+    updateTenant(orgSlug, form);
     branding.update(form);
     toast.success("Organisation profile updated");
-  };
-
-  const reset = () => {
-    branding.reset();
-    setForm({
-      companyName: "PrimeLex Logistics",
-      companyShort: "PRIMELEX",
-      industry: "Logistics & Transportation",
-      businessEmail: "ops@primelex.com",
-      phone: "+234 800 000 0000",
-      primaryColor: "#3b82f6",
-      secondaryColor: "#8b5cf6",
-      workspaceSlug: "primelex-logistics",
-      adminName: "Adeleke Oladipo",
-      adminEmail: "adeleke@primelex.com",
-    });
-    toast.success("Reset to defaults");
   };
 
   const onLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +48,9 @@ function Organisation() {
     }
     const reader = new FileReader();
     reader.onload = () => {
-      branding.update({ logoDataUrl: reader.result as string });
+      const dataUrl = reader.result as string;
+      updateTenant(orgSlug, { logoDataUrl: dataUrl });
+      branding.update({ logoDataUrl: dataUrl });
       toast.success("Logo updated");
     };
     reader.readAsDataURL(file);
@@ -70,7 +58,7 @@ function Organisation() {
 
   return (
     <>
-      <Header title="Organisation" subtitle="Company profile, branding and general configuration" showExport={false} />
+      <Header title="Organisation" subtitle="Company profile, branding and general configuration" />
       <div className="space-y-6 p-8">
         {/* Company Profile Card */}
         <SectionCard title="Company Profile" action={<Pill tone="success">Active</Pill>}>
@@ -114,7 +102,7 @@ function Organisation() {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">Workspace Slug</Label>
-                <Input value={form.workspaceSlug} onChange={(e) => setForm({ ...form, workspaceSlug: e.target.value })} className="bg-elevated/60" />
+                <Input value={orgSlug} readOnly className="bg-elevated/60 font-mono text-muted-foreground" />
               </div>
             </div>
           </div>
@@ -122,14 +110,9 @@ function Organisation() {
 
         {/* Branding */}
         <SectionCard title="Brand Identity" action={
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" className="border-border bg-elevated/60" onClick={reset}>
-              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />Reset
-            </Button>
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={save}>
-              <Save className="mr-1.5 h-3.5 w-3.5" />Save Changes
-            </Button>
-          </div>
+          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={save}>
+            <Save className="mr-1.5 h-3.5 w-3.5" />Save Changes
+          </Button>
         }>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
@@ -162,12 +145,12 @@ function Organisation() {
           </div>
         </SectionCard>
 
-        {/* General Settings (moved from System Settings) */}
+        {/* General Settings */}
         <SectionCard title="General Settings">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-xs flex items-center gap-1.5"><Globe className="h-3 w-3" />Workspace URL</Label>
-              <Input value={`https://${form.workspaceSlug}.primelex.app`} readOnly className="bg-elevated/60 font-mono text-xs" />
+              <Input value={`/organisation/${orgSlug}/login`} readOnly className="bg-elevated/60 font-mono text-xs" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs flex items-center gap-1.5"><Mail className="h-3 w-3" />Admin Email</Label>
@@ -179,7 +162,7 @@ function Organisation() {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs flex items-center gap-1.5"><MapPin className="h-3 w-3" />Region</Label>
-              <Input defaultValue="Nigeria" className="bg-elevated/60" />
+              <Input value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} className="bg-elevated/60" />
             </div>
           </div>
         </SectionCard>

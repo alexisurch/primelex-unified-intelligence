@@ -6,7 +6,7 @@ import { alerts, priorities, fleetBreakdown, costBreakdown, kpis } from "@/lib/m
 import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 
-export const Route = createFileRoute("/_app/")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/")({
   component: Dashboard,
 });
 

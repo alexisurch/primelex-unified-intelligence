@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_app/reports")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/reports")({
   component: Reports,
 });
 

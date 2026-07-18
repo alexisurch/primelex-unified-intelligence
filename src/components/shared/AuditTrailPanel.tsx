@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { History, Search, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { fetchAuditTrail, type DbAuditEntry } from "@/lib/supabase";
+import { fetchAuditTrail, type DbAuditEntry } from "@/lib/local-store";
 
 const ACTION_TONE: Record<string, string> = {
   Created: "text-success",

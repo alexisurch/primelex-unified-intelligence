@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Bell, Moon, Sun, Settings as SettingsIcon, LogOut, CircleUser as UserCircle, CheckCheck, TriangleAlert as AlertTriangle, Wrench, IdCard, ShieldAlert, Flame, Clock, ShieldCheck } from "lucide-react";
 import { usePreferences } from "@/lib/preferences";
 import { useBranding } from "@/lib/branding";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth";
+import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,15 +14,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import { alerts, priorities } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   title: string;
   subtitle?: string;
-  showDate?: boolean;
-  showExport?: boolean;
   actions?: React.ReactNode;
 }
 
@@ -60,7 +58,7 @@ const NOTIFICATIONS: NotificationItem[] = [
     detail: a.detail,
     time: a.time,
     icon: ALERT_ICONS[a.icon] ?? Bell,
-    route: "/action-center",
+    route: "action-center",
   })),
   ...priorities.map((p) => ({
     id: p.id + 100,
@@ -70,21 +68,24 @@ const NOTIFICATIONS: NotificationItem[] = [
     detail: p.detail,
     time: p.time,
     icon: PRIORITY_ICONS[p.icon] ?? Bell,
-    route: "/action-center",
+    route: "action-center",
   })),
 ];
 
 export function Header({ title, subtitle, actions }: HeaderProps) {
   const { resolvedTheme, toggleTheme } = usePreferences();
   const { adminName, logoDataUrl, primaryColor } = useBranding();
+  const { signOut } = useAuth();
   const navigate = useNavigate();
+  const { orgSlug } = useParams({ from: "/organisation/$orgSlug/_workspace" });
   const isDark = resolvedTheme === "dark";
 
   const [readIds, setReadIds] = useState<Set<number>>(new Set());
   const [notifOpen, setNotifOpen] = useState(false);
 
+  const base = `/organisation/${orgSlug}`;
   const unreadCount = NOTIFICATIONS.length - readIds.size;
-  const handleLogout = () => navigate({ to: "/auth" });
+  const handleLogout = () => { signOut(); navigate({ to: `${base}/login` }); };
   const markAllRead = () => setReadIds(new Set(NOTIFICATIONS.map((n) => n.id)));
   const markRead = (id: number) => setReadIds((prev) => new Set(prev).add(id));
 
@@ -156,7 +157,7 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
                     return (
                       <Link
                         key={n.id}
-                        to={n.route}
+                        to={`${base}/${n.route}`}
                         onClick={() => markRead(n.id)}
                         className={cn(
                           "flex items-start gap-3 border-b border-border/40 px-4 py-3 transition-colors hover:bg-elevated/60",
@@ -183,7 +184,7 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
               {/* Footer */}
               <div className="border-t border-border/60 px-4 py-2.5">
                 <Link
-                  to="/action-center"
+                  to={`${base}/action-center`}
                   onClick={() => setNotifOpen(false)}
                   className="block text-center text-xs font-medium text-primary hover:underline"
                 >
@@ -221,13 +222,13 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/users-access" className="cursor-pointer">
+                <Link to={`${base}/users-access`} className="cursor-pointer">
                   <UserCircle className="mr-2 h-4 w-4" />
                   Account & Access
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to="/system-settings" className="cursor-pointer">
+                <Link to={`${base}/system-settings`} className="cursor-pointer">
                   <SettingsIcon className="mr-2 h-4 w-4" />
                   Settings
                 </Link>

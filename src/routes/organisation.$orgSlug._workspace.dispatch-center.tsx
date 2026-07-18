@@ -16,7 +16,7 @@ import {
   Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog, Building2, ArrowUpDown,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_app/dispatch-center")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/dispatch-center")({
   component: DispatchCenter,
 });
 

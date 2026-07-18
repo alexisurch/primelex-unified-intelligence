@@ -15,7 +15,7 @@ import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { Truck as TruckIcon, Activity, Wrench, Package, MapPin, Satellite, Clock, CircleCheck as CheckCircle2, TriangleAlert as AlertTriangle, Search, Download, ListFilter as Filter } from "lucide-react";
 
-export const Route = createFileRoute("/_app/fleet-operations")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/fleet-operations")({
   component: FleetOperations,
 });
 

@@ -18,7 +18,7 @@ import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell,
 } from "recharts";
 
-export const Route = createFileRoute("/_app/fuel-intelligence")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/fuel-intelligence")({
   component: FuelIntelligence,
 });
 

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Route as RouteIcon, Package, Clock, TriangleAlert as AlertTriangle, Download, Search, ListFilter as Filter } from "lucide-react";
 
-export const Route = createFileRoute("/_app/trips-deliveries")({
+export const Route = createFileRoute("/organisation/$orgSlug/_workspace/trips-deliveries")({
   component: TripsDeliveries,
 });
 
