@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as AuthRouteImport } from './routes/auth'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OrganisationOrgSlugRouteImport } from './routes/organisation.$orgSlug'
 import { Route as OrganisationOrgSlugLoginRouteImport } from './routes/organisation.$orgSlug.login'
@@ -37,9 +37,9 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -162,7 +162,7 @@ const OrganisationOrgSlugWorkspaceActionCenterRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/organisation/$orgSlug': typeof OrganisationOrgSlugRouteWithChildren
   '/organisation/$orgSlug/login': typeof OrganisationOrgSlugLoginRoute
@@ -185,7 +185,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/organisation/$orgSlug': typeof OrganisationOrgSlugWorkspaceIndexRoute
   '/organisation/$orgSlug/login': typeof OrganisationOrgSlugLoginRoute
@@ -208,7 +208,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/organisation/$orgSlug': typeof OrganisationOrgSlugRouteWithChildren
   '/organisation/$orgSlug/_workspace': typeof OrganisationOrgSlugWorkspaceRouteWithChildren
@@ -234,7 +234,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
+    | '/login'
     | '/register'
     | '/organisation/$orgSlug'
     | '/organisation/$orgSlug/login'
@@ -257,7 +257,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
+    | '/login'
     | '/register'
     | '/organisation/$orgSlug'
     | '/organisation/$orgSlug/login'
@@ -279,7 +279,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/auth'
+    | '/login'
     | '/register'
     | '/organisation/$orgSlug'
     | '/organisation/$orgSlug/_workspace'
@@ -304,7 +304,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRoute
+  LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   OrganisationOrgSlugRoute: typeof OrganisationOrgSlugRouteWithChildren
 }
@@ -318,11 +318,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -544,7 +544,7 @@ const OrganisationOrgSlugRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRoute: AuthRoute,
+  LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   OrganisationOrgSlugRoute: OrganisationOrgSlugRouteWithChildren,
 }

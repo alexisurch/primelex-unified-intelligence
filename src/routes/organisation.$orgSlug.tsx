@@ -24,8 +24,8 @@ function OrgLayout() {
             The organisation <span className="font-mono font-medium">{orgSlug}</span> does not exist.
           </p>
         </div>
-        <Link to="/auth" className="rounded-lg border border-border bg-elevated/60 px-4 py-2 text-sm font-medium text-foreground hover:border-primary/40">
-          Find your workspace
+        <Link to="/login" className="rounded-lg border border-border bg-elevated/60 px-4 py-2 text-sm font-medium text-foreground hover:border-primary/40">
+          Administrator login
         </Link>
       </div>
     );
