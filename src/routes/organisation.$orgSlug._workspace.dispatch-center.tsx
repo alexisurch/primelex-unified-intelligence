@@ -10,6 +10,8 @@ import {
   Fuel,
   Wrench,
   AlertTriangle,
+  Building2,
+  Plus,
   type LucideProps,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -28,10 +30,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { usePreferences } from "@/lib/preferences";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
-import { trucks, drivers, type Truck as TruckType } from "@/lib/mock-data";
+import { trucks, drivers, clients, type Truck as TruckType, type Client } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/organisation/$orgSlug/_workspace/dispatch-center")({
   component: DispatchCenter,
@@ -83,6 +95,8 @@ const TRUCK_TYPES: { value: TruckTypeFilter; label: string }[] = [
   { value: "Heavy Duty", label: "Heavy Duty" },
   { value: "Medium Duty", label: "Medium Duty" },
 ];
+
+const ADD_NEW_CLIENT = "__add_new_client__";
 
 function distanceFor(truckId: string): number {
   let hash = 0;
@@ -182,8 +196,41 @@ function DispatchCenter() {
   const [pickupLocation, setPickupLocation] = useState<string>("Lagos");
   const [truckType, setTruckType] = useState<TruckTypeFilter>("all");
   const [selectedTruckId, setSelectedTruckId] = useState<string | null>(null);
+  const [clientList, setClientList] = useState<Client[]>(clients);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(clients[0]?.id ?? null);
+  const [addClientOpen, setAddClientOpen] = useState(false);
+  const [newClient, setNewClient] = useState({ name: "", contact: "", phone: "", email: "", address: "", industry: "" });
 
   const isAutomated = trackingMode === "automated";
+
+  const selectedClient = useMemo(
+    () => clientList.find((c) => c.id === selectedClientId) ?? null,
+    [clientList, selectedClientId],
+  );
+
+  function handleAddClient() {
+    if (!newClient.name.trim()) {
+      toast.error("Company name is required");
+      return;
+    }
+    const id = `CLI-${300 + clientList.length + 1}`;
+    const created: Client = {
+      id,
+      name: newClient.name.trim(),
+      contact: newClient.contact.trim() || "—",
+      phone: newClient.phone.trim() || "—",
+      email: newClient.email.trim() || "—",
+      address: newClient.address.trim() || "—",
+      industry: newClient.industry.trim() || "General",
+      since: new Date().toISOString().slice(0, 10),
+      status: "Active",
+    };
+    setClientList((prev) => [...prev, created]);
+    setSelectedClientId(id);
+    setAddClientOpen(false);
+    setNewClient({ name: "", contact: "", phone: "", email: "", address: "", industry: "" });
+    toast.success("Client added", { description: `${created.name} is now available for dispatch.` });
+  }
 
   const nearbyTrucks: NearbyTruck[] = useMemo(() => {
     const filtered = trucks.filter((t) => {
@@ -214,7 +261,7 @@ function DispatchCenter() {
   function handleDispatch() {
     if (!selectedTruck) return;
     toast.success("Truck dispatched", {
-      description: `${selectedTruck.plate} (${selectedTruck.model}) assigned to ${pickupLocation || "the requested location"}.`,
+      description: `${selectedTruck.plate} (${selectedTruck.model}) assigned to ${pickupLocation || "the requested location"}${selectedClient ? ` for ${selectedClient.name}` : ""}.`,
     });
   }
 
@@ -248,8 +295,71 @@ function DispatchCenter() {
                     <SelectContent>{TRUCK_TYPES.map((opt) => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="client-select" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Client / Company</label>
+                  <Select value={selectedClientId ?? undefined} onValueChange={(v) => v === ADD_NEW_CLIENT ? setAddClientOpen(true) : setSelectedClientId(v)}>
+                    <SelectTrigger id="client-select"><SelectValue placeholder="Select a client" /></SelectTrigger>
+                    <SelectContent>
+                      {clientList.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                      <SelectItem value={ADD_NEW_CLIENT}>
+                        <span className="flex items-center gap-2 text-primary"><Plus className="h-3.5 w-3.5" strokeWidth={2.5} />Add new client…</span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {selectedClient && (
+                    <div className="flex items-start gap-2 rounded-md border border-border/60 bg-elevated/40 px-3 py-2 text-xs text-muted-foreground">
+                      <Building2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" strokeWidth={2} />
+                      <div className="min-w-0">
+                        <div className="truncate font-medium text-foreground">{selectedClient.name}</div>
+                        <div className="truncate">{selectedClient.industry} · {selectedClient.contact}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </SectionCard>
+
+            <Dialog open={addClientOpen} onOpenChange={setAddClientOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Add new client / company</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3 py-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="nc-name">Company name</Label>
+                    <Input id="nc-name" value={newClient.name} onChange={(e) => setNewClient((s) => ({ ...s, name: e.target.value }))} placeholder="e.g. Acme Logistics" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="nc-contact">Contact person</Label>
+                      <Input id="nc-contact" value={newClient.contact} onChange={(e) => setNewClient((s) => ({ ...s, contact: e.target.value }))} placeholder="Full name" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="nc-industry">Industry</Label>
+                      <Input id="nc-industry" value={newClient.industry} onChange={(e) => setNewClient((s) => ({ ...s, industry: e.target.value }))} placeholder="Retail, FMCG…" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="nc-phone">Phone</Label>
+                      <Input id="nc-phone" value={newClient.phone} onChange={(e) => setNewClient((s) => ({ ...s, phone: e.target.value }))} placeholder="+234…" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="nc-email">Email</Label>
+                      <Input id="nc-email" type="email" value={newClient.email} onChange={(e) => setNewClient((s) => ({ ...s, email: e.target.value }))} placeholder="contact@company.ng" />
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="nc-address">Address</Label>
+                    <Input id="nc-address" value={newClient.address} onChange={(e) => setNewClient((s) => ({ ...s, address: e.target.value }))} placeholder="Warehouse Rd, Ikeja" />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setAddClientOpen(false)}>Cancel</Button>
+                  <Button onClick={handleAddClient}><Plus className="mr-1.5 h-4 w-4" strokeWidth={2.5} />Add client</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <SectionCard title="Step 2 · Available Trucks Near This Location" action={<span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-primary">2</span>}>
               {nearbyTrucks.length === 0 ? (
@@ -265,7 +375,7 @@ function DispatchCenter() {
                         isSelected ? "border-primary bg-primary/10" : "border-border bg-elevated/40 hover:border-primary/40 hover:bg-elevated/60",
                       ].join(" ")}>
                         <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-elevated/60">
-                          <img src="/truck.png" alt="Truck" className="h-full w-full object-contain" />
+                          <img src="/truck.jpg" alt="Truck" className="h-full w-full object-cover" />
                         </div>
                         <div className="flex min-w-0 flex-1 flex-col gap-1">
                           <div className="flex items-center justify-between gap-2">
@@ -306,7 +416,7 @@ function DispatchCenter() {
                 <div className="flex flex-col gap-4">
                   <GlassCard hover={false} className="flex items-center gap-4">
                     <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-elevated/60">
-                      <img src="/truck.png" alt="Truck" className="h-full w-full object-contain" />
+                      <img src="/truck.jpg" alt="Truck" className="h-full w-full object-cover" />
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <span className="truncate text-lg font-semibold text-foreground">{selectedTruck.plate}</span>
