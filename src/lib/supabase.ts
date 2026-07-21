@@ -1,11 +1,11 @@
 /**
- * Frontend-only data layer for collaboration comments and audit trail.
- * All data lives in-memory on the client; resets on page reload.
- * Swap with real backend calls when backend integration begins.
+ * Mock data layer — replaces Supabase for UI development.
+ * When backend integration is ready, swap these implementations
+ * with real supabase-js calls. Component signatures stay identical.
  */
 
 /* ------------------------------------------------------------------ */
-/* Types                                                                */
+/* Types (mirror what the real DB schema would produce)                */
 /* ------------------------------------------------------------------ */
 
 export interface DbComment {
@@ -46,7 +46,7 @@ export interface DbAuditEntry {
 }
 
 /* ------------------------------------------------------------------ */
-/* In-memory stores (survive the session, reset on page reload)        */
+/* In-memory stores (survive the session, reset on page reload)       */
 /* ------------------------------------------------------------------ */
 
 function daysFromNow(n: number): string {
@@ -124,7 +124,7 @@ const _auditEntries: DbAuditEntry[] = [
 ];
 
 /* ------------------------------------------------------------------ */
-/* Comment helpers                                                      */
+/* Comment helpers                                                     */
 /* ------------------------------------------------------------------ */
 
 function commentsKey(entityType: string, entityId: string) {
@@ -153,7 +153,7 @@ export async function addComment(
 }
 
 /* ------------------------------------------------------------------ */
-/* Audit trail helpers                                                  */
+/* Audit trail helpers                                                 */
 /* ------------------------------------------------------------------ */
 
 export async function fetchAuditTrail(
@@ -180,3 +180,4 @@ export async function appendAudit(
     created_at: new Date().toISOString(),
   });
 }
+

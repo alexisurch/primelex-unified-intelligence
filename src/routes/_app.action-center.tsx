@@ -9,9 +9,9 @@ import {
   type ActionItem,
 } from "@/lib/action-items";
 import { useProfileDrawer } from "@/lib/profile-drawer";
-import { appendAudit } from "@/lib/local-store";
+import { appendAudit } from "@/lib/supabase";
 
-export const Route = createFileRoute("/organisation/$orgSlug/_workspace/action-center")({
+export const Route = createFileRoute("/_app/action-center")({
   component: ActionCenter,
 });
 

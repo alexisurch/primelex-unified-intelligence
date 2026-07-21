@@ -3,7 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { KPICard, SectionCard } from "@/components/shared/Cards";
 import { TrendingUp, Clock, Package, Fuel, TrendingDown, TriangleAlert as AlertTriangle, ShieldCheck, Activity, CircleCheck as CheckCircle2, Gauge, Wrench, CalendarClock } from "lucide-react";
 
-export const Route = createFileRoute("/organisation/$orgSlug/_workspace/kpi-scorecard")({
+export const Route = createFileRoute("/_app/kpi-scorecard")({
   component: KPIScorecard,
 });
 

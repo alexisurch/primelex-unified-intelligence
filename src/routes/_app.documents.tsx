@@ -14,7 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/organisation/$orgSlug/_workspace/documents")({
+export const Route = createFileRoute("/_app/documents")({
   component: Documents,
 });
 

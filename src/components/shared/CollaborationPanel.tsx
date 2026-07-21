@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import {
   fetchComments, addComment,
   type DbComment, type DbAttachment,
-} from "@/lib/local-store";
+} from "@/lib/supabase";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { fleetManagers } from "@/lib/mock-data";
 

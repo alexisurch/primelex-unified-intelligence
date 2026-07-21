@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/organisation/$orgSlug/_workspace/safety-incidents")({
+export const Route = createFileRoute("/_app/safety-incidents")({
   component: SafetyIncidents,
 });
 

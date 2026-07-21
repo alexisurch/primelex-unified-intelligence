@@ -11,7 +11,7 @@ import { routes, trips, incidents, tripFuelHistory, exportCSV, type RouteEntity 
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/organisation/$orgSlug/_workspace/route-intelligence")({
+export const Route = createFileRoute("/_app/route-intelligence")({
   component: RouteIntelligence,
 });
 

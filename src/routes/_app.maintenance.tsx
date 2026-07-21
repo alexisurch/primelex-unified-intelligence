@@ -17,7 +17,7 @@ import {
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/organisation/$orgSlug/_workspace/maintenance")({
+export const Route = createFileRoute("/_app/maintenance")({
   component: Maintenance,
 });
 

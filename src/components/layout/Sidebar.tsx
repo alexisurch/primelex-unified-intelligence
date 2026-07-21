@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { LayoutDashboard, Truck, Radio, Route as RouteIcon, Wrench, Fuel, ShieldAlert, FileText, ChartBar as BarChart3, Target, UserCog, Settings, Building2, PanelLeftClose, ChevronRight, Zap, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useBranding } from "@/lib/branding";
@@ -7,52 +7,49 @@ import { useState } from "react";
 const groups = [
   {
     label: null,
-    items: [{ to: "", label: "Overview", icon: LayoutDashboard }],
+    items: [{ to: "/", label: "Overview", icon: LayoutDashboard }],
   },
   {
     label: "OPERATIONS",
     items: [
-      { to: "action-center", label: "Action Center", icon: Zap },
-      { to: "fleet-operations", label: "Fleet Operations", icon: Truck },
-      { to: "dispatch-center", label: "Dispatch Center", icon: Radio },
-      { to: "trips-deliveries", label: "Trips & Deliveries", icon: RouteIcon },
-      { to: "route-intelligence", label: "Route Intelligence", icon: RouteIcon },
-      { to: "maintenance", label: "Maintenance", icon: Wrench },
-      { to: "fuel-intelligence", label: "Fuel Intelligence", icon: Fuel },
+      { to: "/action-center", label: "Action Center", icon: Zap },
+      { to: "/fleet-operations", label: "Fleet Operations", icon: Truck },
+      { to: "/dispatch-center", label: "Dispatch Center", icon: Radio },
+      { to: "/trips-deliveries", label: "Trips & Deliveries", icon: RouteIcon },
+      { to: "/route-intelligence", label: "Route Intelligence", icon: RouteIcon },
+      { to: "/maintenance", label: "Maintenance", icon: Wrench },
+      { to: "/fuel-intelligence", label: "Fuel Intelligence", icon: Fuel },
     ],
   },
   {
     label: "COMPLIANCE",
     items: [
-      { to: "safety-incidents", label: "Safety & Incidents", icon: ShieldAlert },
-      { to: "documents", label: "Documents", icon: FileText },
+      { to: "/safety-incidents", label: "Safety & Incidents", icon: ShieldAlert },
+      { to: "/documents", label: "Documents", icon: FileText },
     ],
   },
   {
     label: "ANALYTICS",
     items: [
-      { to: "reports", label: "Reports", icon: BarChart3 },
-      { to: "kpi-scorecard", label: "KPI Scorecard", icon: Target },
-      { to: "audit-trail", label: "Audit Trail", icon: History },
+      { to: "/reports", label: "Reports", icon: BarChart3 },
+      { to: "/kpi-scorecard", label: "KPI Scorecard", icon: Target },
+      { to: "/audit-trail", label: "Audit Trail", icon: History },
     ],
   },
   {
     label: "SETTINGS",
     items: [
-      { to: "users-access", label: "Users & Access", icon: UserCog },
-      { to: "organisation", label: "Organisation", icon: Building2 },
-      { to: "system-settings", label: "System Settings", icon: Settings },
+      { to: "/users-access", label: "Users & Access", icon: UserCog },
+      { to: "/organisation", label: "Organisation", icon: Building2 },
+      { to: "/system-settings", label: "System Settings", icon: Settings },
     ],
   },
 ] as const;
 
 export function Sidebar() {
   const { pathname } = useLocation();
-  const { orgSlug } = useParams({ from: "/organisation/$orgSlug/_workspace" });
   const { companyName, companyShort, logoDataUrl, primaryColor } = useBranding();
   const [collapsed, setCollapsed] = useState(false);
-
-  const base = `/organisation/${orgSlug}`;
 
   return (
     <aside
@@ -76,7 +73,7 @@ export function Sidebar() {
         {!collapsed && (
           <div className="min-w-0">
             <div className="truncate text-[13px] font-bold tracking-wide">{companyShort}</div>
-            <div className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Logistics Intelligence System</div>
+            <div className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Unified Intelligence System</div>
           </div>
         )}
       </div>
@@ -91,13 +88,12 @@ export function Sidebar() {
             )}
             <div className="space-y-0.5">
               {group.items.map((item) => {
-                const fullPath = `${base}/${item.to}`;
-                const active = pathname === fullPath;
+                const active = pathname === item.to;
                 const Icon = item.icon;
                 return (
                   <Link
                     key={item.to}
-                    to={fullPath}
+                    to={item.to}
                     className={cn(
                       "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all",
                       active

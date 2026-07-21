@@ -1,7 +1,5 @@
-import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useBranding } from "@/lib/branding";
-import { useAuth } from "@/lib/auth";
-import { getTenant } from "@/lib/tenants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,19 +7,15 @@ import { ArrowRight, ShieldCheck, Route as RouteIcon, Sparkles, Building2 } from
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/organisation/$orgSlug/login")({
-  component: OrgLogin,
+export const Route = createFileRoute("/auth")({
+  component: AuthLanding,
 });
 
-function OrgLogin() {
-  const { orgSlug } = useParams({ from: "/organisation/$orgSlug/login" });
-  const { companyName, companyShort, logoDataUrl, primaryColor, adminEmail, adminName } = useBranding();
-  const { signIn, getSessionForOrg } = useAuth();
+function AuthLanding() {
+  const { companyName, companyShort, logoDataUrl, primaryColor, adminEmail, workspaceSlug } = useBranding();
   const navigate = useNavigate();
   const [email, setEmail] = useState(adminEmail);
   const [password, setPassword] = useState("••••••••");
-
-  const workspaceBase = `/organisation/${orgSlug}`;
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,16 +23,9 @@ function OrgLogin() {
       toast.error("Enter your email and password");
       return;
     }
-    signIn(orgSlug, email, adminName);
     toast.success(`Welcome back to ${companyName}`);
-    navigate({ to: `${workspaceBase}/` });
+    navigate({ to: "/" });
   };
-
-  // Already signed in to this org — skip login
-  if (getSessionForOrg(orgSlug)) {
-    navigate({ to: `${workspaceBase}/` });
-    return null;
-  }
 
   return (
     <div className="grid min-h-screen grid-cols-1 bg-background lg:grid-cols-2">
@@ -57,7 +44,7 @@ function OrgLogin() {
           )}
           <div>
             <div className="text-sm font-bold tracking-wide text-white">{companyShort}</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Logistics Intelligence System</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Unified Intelligence System</div>
           </div>
         </div>
 
@@ -66,7 +53,7 @@ function OrgLogin() {
             Command every truck, driver and route from one intelligent console.
           </h1>
           <p className="max-w-md text-sm text-white/70">
-            {companyName} workspace — unifies dispatch, fuel intelligence, compliance, and executive reporting into a single decision-grade platform.
+            {companyName} UIS unifies dispatch, fuel intelligence, compliance, and executive reporting into a single decision-grade platform.
           </p>
           <div className="grid grid-cols-3 gap-4 pt-4">
             {[
@@ -83,7 +70,7 @@ function OrgLogin() {
         </div>
 
         <div className="relative z-10 text-xs text-white/50">
-          © 2026 {companyName}. Powered by PrimeLex Tech.
+          © 2026 {companyName}. All rights reserved.
         </div>
       </div>
 
@@ -102,7 +89,7 @@ function OrgLogin() {
           <div>
             <h2 className="text-2xl font-semibold text-foreground">Sign in to your workspace</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Continue to <span className="font-mono font-medium text-foreground">/organisation/{orgSlug}</span>
+              Continue to <span className="font-medium text-foreground">{workspaceSlug}.primelex.app</span>
             </p>
           </div>
 
@@ -129,7 +116,7 @@ function OrgLogin() {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">New to PrimeLex?</span>
+              <span className="bg-background px-2 text-muted-foreground">New to UIS?</span>
             </div>
           </div>
 
@@ -148,6 +135,3 @@ function OrgLogin() {
     </div>
   );
 }
-
-// Re-export for convenience — keep getTenant reference for tree-shaking friendliness
-export { getTenant };
