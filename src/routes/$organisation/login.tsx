@@ -106,7 +106,7 @@ function WorkspaceLogin() {
           <div>
             <h2 className="text-2xl font-semibold text-foreground">Sign in to your workspace</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Continue to <span className="font-medium text-foreground">{org.slug}.primelex.app</span>
+              Continue to <span className="font-medium text-foreground">{typeof window !== "undefined" ? window.location.origin : "yourdomain.com"}/{org.slug}/login</span>
             </p>
           </div>
 

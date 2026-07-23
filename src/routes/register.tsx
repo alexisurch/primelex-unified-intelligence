@@ -119,7 +119,7 @@ function RegisterWizard() {
     };
     saveOrganisation(org);
     setTimeout(() => {
-      toast.success(`Workspace ${form.workspaceSlug}.primelex.app is ready`);
+      toast.success(`Workspace is ready — your team can sign in at /${form.workspaceSlug}/login`);
       setProvisioning(false);
       setProvisionedSlug(form.workspaceSlug);
     }, 4200);
@@ -331,23 +331,18 @@ function StepWorkspace({ form, set }: any) {
         <h2 className="text-xl font-semibold">Claim your workspace URL</h2>
         <p className="mt-1 text-sm text-muted-foreground">This is where your team will sign in every day.</p>
       </div>
-      <Field label="Workspace URL" required>
-        <div className="flex items-center overflow-hidden rounded-md border border-border bg-elevated/40 focus-within:border-primary">
-          <Input
-            value={form.workspaceSlug}
-            onChange={(e) => set("workspaceSlug", slugify(e.target.value))}
-            className="border-0 bg-transparent focus-visible:ring-0"
-            placeholder="acme-logistics"
-          />
-          <span className="whitespace-nowrap border-l border-border bg-elevated/70 px-3 py-2 text-xs text-muted-foreground">
-            .primelex.app
-          </span>
-        </div>
+      <Field label="Workspace name" required>
+        <Input
+          value={form.workspaceSlug}
+          onChange={(e) => set("workspaceSlug", slugify(e.target.value))}
+          placeholder="acme-logistics"
+        />
+        <p className="text-xs text-muted-foreground">This becomes part of your workspace sign-in address.</p>
       </Field>
       <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-        <div className="text-xs uppercase tracking-widest text-muted-foreground">Your workspace URL</div>
-        <div className="mt-1 font-mono text-sm text-primary">
-          https://{form.workspaceSlug || "your-workspace"}.primelex.app
+        <div className="text-xs uppercase tracking-widest text-muted-foreground">Your workspace sign-in address</div>
+        <div className="mt-1 break-all font-mono text-sm text-primary">
+          {typeof window !== "undefined" ? window.location.origin : "https://yourdomain.com"}/{form.workspaceSlug || "your-workspace"}/login
         </div>
       </div>
       <Field label="Region">
@@ -455,8 +450,8 @@ function ProvisioningScreen({ slug, companyName, primaryColor }: { slug: string;
           </div>
 
           <div className="w-full rounded-lg border border-primary/20 bg-primary/5 p-3 text-center">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Workspace URL</div>
-            <div className="mt-1 font-mono text-xs text-primary">{slug}.primelex.app</div>
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Workspace sign-in address</div>
+            <div className="mt-1 break-all font-mono text-xs text-primary">{typeof window !== "undefined" ? window.location.origin : "https://yourdomain.com"}/{slug}/login</div>
           </div>
         </div>
       </div>
