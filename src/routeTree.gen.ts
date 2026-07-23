@@ -10,9 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
-import { Route as AuthRouteImport } from './routes/auth'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as AppIndexRouteImport } from './routes/_app.index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppUsersAccessRouteImport } from './routes/_app.users-access'
 import { Route as AppTripsDeliveriesRouteImport } from './routes/_app.trips-deliveries'
 import { Route as AppSystemSettingsRouteImport } from './routes/_app.system-settings'
@@ -26,27 +26,29 @@ import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-inte
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
 import { Route as AppDocumentsRouteImport } from './routes/_app.documents'
 import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppAuditTrailRouteImport } from './routes/_app.audit-trail'
 import { Route as AppActionCenterRouteImport } from './routes/_app.action-center'
+import { Route as OrganisationLoginRouteImport } from './routes/$organisation/login'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AppRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppUsersAccessRoute = AppUsersAccessRouteImport.update({
   id: '/users-access',
@@ -113,6 +115,11 @@ const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
   path: '/dispatch-center',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAuditTrailRoute = AppAuditTrailRouteImport.update({
   id: '/audit-trail',
   path: '/audit-trail',
@@ -123,13 +130,20 @@ const AppActionCenterRoute = AppActionCenterRouteImport.update({
   path: '/action-center',
   getParentRoute: () => AppRoute,
 } as any)
+const OrganisationLoginRoute = OrganisationLoginRouteImport.update({
+  id: '/$organisation/login',
+  path: '/$organisation/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
-  '/auth': typeof AuthRoute
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/$organisation/login': typeof OrganisationLoginRoute
   '/action-center': typeof AppActionCenterRoute
   '/audit-trail': typeof AppAuditTrailRoute
+  '/dashboard': typeof AppDashboardRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
@@ -145,10 +159,13 @@ export interface FileRoutesByFullPath {
   '/users-access': typeof AppUsersAccessRoute
 }
 export interface FileRoutesByTo {
-  '/auth': typeof AuthRoute
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/$organisation/login': typeof OrganisationLoginRoute
   '/action-center': typeof AppActionCenterRoute
   '/audit-trail': typeof AppAuditTrailRoute
+  '/dashboard': typeof AppDashboardRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
@@ -162,15 +179,17 @@ export interface FileRoutesByTo {
   '/system-settings': typeof AppSystemSettingsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/users-access': typeof AppUsersAccessRoute
-  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/$organisation/login': typeof OrganisationLoginRoute
   '/_app/action-center': typeof AppActionCenterRoute
   '/_app/audit-trail': typeof AppAuditTrailRoute
+  '/_app/dashboard': typeof AppDashboardRoute
   '/_app/dispatch-center': typeof AppDispatchCenterRoute
   '/_app/documents': typeof AppDocumentsRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
@@ -184,16 +203,17 @@ export interface FileRoutesById {
   '/_app/system-settings': typeof AppSystemSettingsRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/_app/users-access': typeof AppUsersAccessRoute
-  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
+    | '/login'
     | '/register'
+    | '/$organisation/login'
     | '/action-center'
     | '/audit-trail'
+    | '/dashboard'
     | '/dispatch-center'
     | '/documents'
     | '/fleet-operations'
@@ -209,10 +229,13 @@ export interface FileRouteTypes {
     | '/users-access'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/auth'
+    | '/'
+    | '/login'
     | '/register'
+    | '/$organisation/login'
     | '/action-center'
     | '/audit-trail'
+    | '/dashboard'
     | '/dispatch-center'
     | '/documents'
     | '/fleet-operations'
@@ -226,14 +249,16 @@ export interface FileRouteTypes {
     | '/system-settings'
     | '/trips-deliveries'
     | '/users-access'
-    | '/'
   id:
     | '__root__'
+    | '/'
     | '/_app'
-    | '/auth'
+    | '/login'
     | '/register'
+    | '/$organisation/login'
     | '/_app/action-center'
     | '/_app/audit-trail'
+    | '/_app/dashboard'
     | '/_app/dispatch-center'
     | '/_app/documents'
     | '/_app/fleet-operations'
@@ -247,13 +272,14 @@ export interface FileRouteTypes {
     | '/_app/system-settings'
     | '/_app/trips-deliveries'
     | '/_app/users-access'
-    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  OrganisationLoginRoute: typeof OrganisationLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -265,11 +291,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -279,12 +305,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/': {
-      id: '/_app/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/users-access': {
       id: '/_app/users-access'
@@ -377,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDispatchCenterRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/audit-trail': {
       id: '/_app/audit-trail'
       path: '/audit-trail'
@@ -391,12 +424,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppActionCenterRouteImport
       parentRoute: typeof AppRoute
     }
+    '/$organisation/login': {
+      id: '/$organisation/login'
+      path: '/$organisation/login'
+      fullPath: '/$organisation/login'
+      preLoaderRoute: typeof OrganisationLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AppRouteChildren {
   AppActionCenterRoute: typeof AppActionCenterRoute
   AppAuditTrailRoute: typeof AppAuditTrailRoute
+  AppDashboardRoute: typeof AppDashboardRoute
   AppDispatchCenterRoute: typeof AppDispatchCenterRoute
   AppDocumentsRoute: typeof AppDocumentsRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
@@ -410,12 +451,12 @@ interface AppRouteChildren {
   AppSystemSettingsRoute: typeof AppSystemSettingsRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
   AppUsersAccessRoute: typeof AppUsersAccessRoute
-  AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppActionCenterRoute: AppActionCenterRoute,
   AppAuditTrailRoute: AppAuditTrailRoute,
+  AppDashboardRoute: AppDashboardRoute,
   AppDispatchCenterRoute: AppDispatchCenterRoute,
   AppDocumentsRoute: AppDocumentsRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,
@@ -429,15 +470,16 @@ const AppRouteChildren: AppRouteChildren = {
   AppSystemSettingsRoute: AppSystemSettingsRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
   AppUsersAccessRoute: AppUsersAccessRoute,
-  AppIndexRoute: AppIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  AuthRoute: AuthRoute,
+  LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  OrganisationLoginRoute: OrganisationLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

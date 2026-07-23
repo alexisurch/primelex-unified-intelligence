@@ -1,4 +1,4 @@
-import { Bell, Calendar, ChevronDown, Moon, Sun, Settings as SettingsIcon, LogOut, UserCircle } from "lucide-react";
+import { Bell, Calendar, ChevronDown, Moon, Sun, Settings as SettingsIcon, LogOut, CircleUser as UserCircle } from "lucide-react";
 import { usePreferences } from "@/lib/preferences";
 import { useBranding } from "@/lib/branding";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -26,7 +26,7 @@ export function Header({ title, subtitle, showDate = true, actions }: HeaderProp
   const isDark = resolvedTheme === "dark";
 
   const handleLogout = () => {
-    navigate({ to: "/auth" });
+    navigate({ to: "/login" });
   };
 
   return (

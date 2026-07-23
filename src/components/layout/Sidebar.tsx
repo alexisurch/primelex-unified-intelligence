@@ -7,7 +7,7 @@ import { useState } from "react";
 const groups = [
   {
     label: null,
-    items: [{ to: "/", label: "Overview", icon: LayoutDashboard }],
+    items: [{ to: "/dashboard", label: "Overview", icon: LayoutDashboard }],
   },
   {
     label: "OPERATIONS",

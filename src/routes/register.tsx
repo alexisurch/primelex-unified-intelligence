@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, ArrowRight, Check, Upload, Route as RouteIcon, Sparkles, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Upload, Route as RouteIcon, Sparkles, CheckCircle2, Loader2, Link2, Copy } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { saveOrganisation, type OrganisationRecord } from "@/lib/organisations-store";
 
 export const Route = createFileRoute("/register")({
   component: RegisterWizard,
@@ -38,6 +39,7 @@ function RegisterWizard() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [provisioning, setProvisioning] = useState(false);
+  const [provisionedSlug, setProvisionedSlug] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     companyName: "",
@@ -103,19 +105,34 @@ function RegisterWizard() {
       adminName: form.adminName,
       adminEmail: form.adminEmail,
     });
+    const org: OrganisationRecord = {
+      slug: form.workspaceSlug,
+      companyName: form.companyName,
+      companyShort: form.companyShort || form.companyName.split(" ")[0].toUpperCase(),
+      industry: form.industry,
+      logoDataUrl: form.logoDataUrl,
+      primaryColor: form.primaryColor,
+      secondaryColor: form.secondaryColor,
+      adminName: form.adminName,
+      adminEmail: form.adminEmail,
+      createdAt: new Date().toISOString(),
+    };
+    saveOrganisation(org);
     setTimeout(() => {
       toast.success(`Workspace ${form.workspaceSlug}.primelex.app is ready`);
-      navigate({ to: "/" });
+      setProvisioning(false);
+      setProvisionedSlug(form.workspaceSlug);
     }, 4200);
   };
 
   if (provisioning) return <ProvisioningScreen slug={form.workspaceSlug} companyName={form.companyName} primaryColor={form.primaryColor} />;
+  if (provisionedSlug) return <WorkspaceReadyScreen slug={provisionedSlug} companyName={form.companyName} primaryColor={form.primaryColor} navigate={navigate} />;
 
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="mb-8 flex items-center justify-between">
-          <Link to="/auth" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+          <Link to="/login" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" /> Back to sign in
           </Link>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -441,6 +458,62 @@ function ProvisioningScreen({ slug, companyName, primaryColor }: { slug: string;
             <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Workspace URL</div>
             <div className="mt-1 font-mono text-xs text-primary">{slug}.primelex.app</div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WorkspaceReadyScreen({ slug, companyName, primaryColor, navigate }: { slug: string; companyName: string; primaryColor: string; navigate: (to: string) => void }) {
+  const [copied, setCopied] = useState(false);
+  const workspaceUrl = `${window.location.origin}/${slug}/login`;
+
+  const copyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(workspaceUrl);
+      setCopied(true);
+      toast.success("Workspace link copied");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Couldn't copy — select and copy manually");
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+      <div className="w-full max-w-lg rounded-2xl border border-border bg-elevated/60 p-10 backdrop-blur">
+        <div className="flex flex-col items-center gap-6 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-success/15">
+            <CheckCircle2 className="h-8 w-8 text-success" />
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold">{companyName} is ready</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Your Logistics Intelligence System workspace is live.</p>
+          </div>
+
+          <div className="w-full space-y-3 text-left">
+            <div className="text-xs uppercase tracking-widest text-muted-foreground">Share this link with your employees</div>
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-background p-3">
+              <Link2 className="h-4 w-4 shrink-0 text-primary" />
+              <span className="flex-1 truncate font-mono text-sm text-foreground">{workspaceUrl}</span>
+              <button onClick={copyUrl} className="inline-flex items-center gap-1.5 rounded-md bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/20">
+                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              This is the dedicated sign-in address for {companyName}. Employees use it to access your workspace — no searching required.
+            </p>
+          </div>
+
+          <button
+            onClick={() => navigate("/login")}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            style={{ background: primaryColor }}
+          >
+            Continue to Administrator Login
+            <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </div>

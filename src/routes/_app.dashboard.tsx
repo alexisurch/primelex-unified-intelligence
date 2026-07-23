@@ -1,16 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
 import { GlassCard, KPICard, SectionCard, Pill } from "@/components/shared/Cards";
-import {
-  Truck, TruckIcon, Package, Clock, Gauge, Wallet, ArrowRight,
-  AlertTriangle, Wrench, IdCard, ShieldAlert, Flame, ShieldCheck,
-  TrendingDown, Bell, CalendarDays, User, Route as RouteIcon, Package as PackageIcon, Building2, Satellite,
-} from "lucide-react";
+import { Truck, Truck as TruckIcon, Package, Clock, Gauge, Wallet, ArrowRight, TriangleAlert as AlertTriangle, Wrench, IdCard, ShieldAlert, Flame, ShieldCheck, TrendingDown, Bell, CalendarDays, User, Route as RouteIcon, Package as PackageIcon, Building2, Satellite } from "lucide-react";
 import { alerts, priorities, fleetBreakdown, costBreakdown, kpis } from "@/lib/mock-data";
 import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 
-export const Route = createFileRoute("/_app/")({
+export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
 });
 
