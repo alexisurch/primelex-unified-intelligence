@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, ArrowRight, Check, Upload, Route as RouteIcon, Sparkles, CheckCircle2, Loader2, Link2, Copy } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Upload, Route as RouteIcon, Sparkles, CircleCheck as CheckCircle2, Loader as Loader2, Link2, Copy } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
