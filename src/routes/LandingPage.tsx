@@ -471,15 +471,15 @@ function CtaSection() {
         </div>
 
         {/* Right: truck image fading in from right edge */}
-        <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[30%] lg:block">
+        <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[38%] lg:block">
           <img
-            src="/truck.png"
+            src="https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&w=900&h=400&fit=crop"
             alt=""
             aria-hidden="true"
-            className="h-full w-full object-cover object-left"
+            className="h-full w-full object-cover object-center"
             style={{
-              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 30%, black 60%)",
-              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 30%, black 60%)",
+              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 18%, black 40%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 18%, black 40%)",
             }}
           />
         </div>
