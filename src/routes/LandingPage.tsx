@@ -432,24 +432,56 @@ function BenefitsSection() {
 function CtaSection() {
   return (
     <section className="mx-6 my-12 overflow-hidden rounded-2xl lg:mx-auto lg:max-w-7xl">
-      <div className="relative flex min-h-[220px] items-center overflow-hidden" style={{ background: "linear-gradient(100deg, oklch(0.22 0.055 258) 0%, oklch(0.28 0.07 258) 50%, oklch(0.2 0.04 260) 100%)" }}>
-        <div className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "repeating-linear-gradient(0deg,oklch(1 0 0) 0 1px,transparent 1px 40px),repeating-linear-gradient(90deg,oklch(1 0 0) 0 1px,transparent 1px 40px)" }} />
-        <div className="relative z-10 flex-1 px-10 py-10">
-          <h2 className="max-w-sm text-[1.65rem] font-bold leading-tight tracking-tight text-foreground">Ready to Modernize Your Logistics Operations?</h2>
-          <p className="mt-2 max-w-xs text-[13px] leading-relaxed text-muted-foreground">Create your organisation and start running your operations smarter, faster and more profitably.</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a href="#" className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90">
-              <User className="h-4 w-4" />
+      {/* Single horizontal strip — title | buttons | truck image */}
+      <div
+        className="relative flex min-h-[130px] items-center overflow-hidden"
+        style={{ background: "linear-gradient(100deg, #0b1528 0%, #0d1e3a 45%, #101f3c 75%, #0a1626 100%)" }}
+      >
+        {/* Left: title + subtitle */}
+        <div className="relative z-10 shrink-0 px-10 py-8 lg:w-[45%]">
+          <h2 className="text-[1.45rem] font-bold leading-snug tracking-tight text-white lg:text-[1.55rem]">
+            Ready to Modernize Your Logistics Operations?
+          </h2>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-white/50">
+            Create your organisation and start running your operations smarter, faster and more profitably.
+          </p>
+          {/* Buttons on mobile — stacked under text */}
+          <div className="mt-5 flex flex-wrap gap-3 lg:hidden">
+            <a href="#" className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white transition-colors hover:bg-[#1d4ed8]">
+              <User className="h-[15px] w-[15px]" />
               Create Organisation
             </a>
-            <a href="#" className="inline-flex items-center gap-2 rounded-md border border-white/[0.2] bg-white/[0.06] px-5 py-2.5 text-sm font-semibold text-foreground transition-all hover:border-white/30 hover:bg-white/[0.1]">
-              <Lock className="h-4 w-4" />
+            <a href="#" className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
+              <Lock className="h-[15px] w-[15px]" />
               Administrator Sign In
             </a>
           </div>
         </div>
-        <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[42%] lg:block">
-          <img src="https://images.pexels.com/photos/1121123/pexels-photo-1121123.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" aria-hidden="true" className="h-full w-full object-cover object-left" style={{ maskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)" }} />
+
+        {/* Centre: buttons on desktop */}
+        <div className="relative z-10 hidden shrink-0 items-center gap-3 px-8 lg:flex">
+          <a href="#" className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white shadow-md shadow-blue-900/50 transition-colors hover:bg-[#1d4ed8]">
+            <User className="h-[15px] w-[15px]" />
+            Create Organisation
+          </a>
+          <a href="#" className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
+            <Lock className="h-[15px] w-[15px]" />
+            Administrator Sign In
+          </a>
+        </div>
+
+        {/* Right: truck image fading in from right edge */}
+        <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[30%] lg:block">
+          <img
+            src="/truck.png"
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover object-left"
+            style={{
+              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 30%, black 60%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 30%, black 60%)",
+            }}
+          />
         </div>
       </div>
     </section>
