@@ -34,21 +34,26 @@ const FOOTER_COLS = [
   { heading: "Legal", links: ["Privacy Policy", "Terms of Service", "Cookie Policy"] },
 ];
 
-export default function LandingPage() {
+interface LandingPageProps {
+  onCreateOrganisation: () => void;
+  onSignIn: () => void;
+}
+
+export default function LandingPage({ onCreateOrganisation, onSignIn }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SiteNav />
-      <Hero />
+      <SiteNav onSignIn={onSignIn} />
+      <Hero onCreateOrganisation={onCreateOrganisation} onSignIn={onSignIn} />
       <ModulesSection />
       <BenefitsSection />
-      <CtaSection />
+      <CtaSection onCreateOrganisation={onCreateOrganisation} onSignIn={onSignIn} />
       <SiteFooter />
     </div>
   );
 }
 
 /* ── Navigation ─────────────────────────────────────────────────────────── */
-function SiteNav() {
+function SiteNav({ onSignIn }: { onSignIn: () => void }) {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[oklch(0.16_0.028_260)]/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center gap-8 px-6 py-4 lg:px-8">
@@ -74,17 +79,20 @@ function SiteNav() {
           ))}
         </nav>
 
-        <a href="#" className="hidden shrink-0 items-center gap-2 rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex">
+        <button
+          onClick={onSignIn}
+          className="hidden shrink-0 items-center gap-2 rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex"
+        >
           <User className="h-[15px] w-[15px]" />
           Sign In
-        </a>
+        </button>
       </div>
     </header>
   );
 }
 
 /* ── Hero ────────────────────────────────────────────────────────────────── */
-function Hero() {
+function Hero({ onCreateOrganisation, onSignIn }: { onCreateOrganisation: () => void; onSignIn: () => void }) {
   return (
     <section className="relative overflow-hidden bg-[oklch(0.16_0.028_260)]">
       <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 55% 70% at 10% 50%, oklch(0.55 0.2 258 / 0.18) 0%, transparent 65%)" }} />
@@ -107,14 +115,14 @@ function Hero() {
               Manage your fleet, dispatch, trips, fuel, maintenance, routes and operations from one intelligent platform. Optimize performance. Reduce costs. Deliver more.
             </p>
             <div className="mt-8 flex items-center gap-3">
-              <a href="#" className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90">
+              <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90">
                 <User className="h-4 w-4" />
                 Create Organisation
-              </a>
-              <a href="#" className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-6 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]">
+              </button>
+              <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-6 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]">
                 <Lock className="h-4 w-4" />
                 Administrator Sign In
-              </a>
+              </button>
             </div>
             <div className="mt-10">
               <p className="mb-4 text-[13px] text-muted-foreground">Trusted by forward-thinking logistics companies</p>
@@ -149,14 +157,14 @@ function Hero() {
             Manage your fleet, dispatch, trips, fuel, maintenance, routes and operations from one intelligent platform. Optimize performance. Reduce costs. Deliver more.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#" className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90">
+            <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90">
               <User className="h-4 w-4" />
               Create Organisation
-            </a>
-            <a href="#" className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-5 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35">
+            </button>
+            <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-5 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35">
               <Lock className="h-4 w-4" />
               Administrator Sign In
-            </a>
+            </button>
           </div>
           <div className="mt-8">
             <p className="mb-4 text-[13px] text-muted-foreground">Trusted by forward-thinking logistics companies</p>
@@ -429,7 +437,7 @@ function BenefitsSection() {
 }
 
 /* ── CTA Banner ──────────────────────────────────────────────────────────── */
-function CtaSection() {
+function CtaSection({ onCreateOrganisation, onSignIn }: { onCreateOrganisation: () => void; onSignIn: () => void }) {
   return (
     <section className="mx-6 my-12 overflow-hidden rounded-2xl lg:mx-auto lg:max-w-7xl">
       {/* Single horizontal strip — title | buttons | truck image */}
@@ -447,27 +455,27 @@ function CtaSection() {
           </p>
           {/* Buttons on mobile — stacked under text */}
           <div className="mt-5 flex flex-wrap gap-3 lg:hidden">
-            <a href="#" className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white transition-colors hover:bg-[#1d4ed8]">
+            <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white transition-colors hover:bg-[#1d4ed8]">
               <User className="h-[15px] w-[15px]" />
               Create Organisation
-            </a>
-            <a href="#" className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
+            </button>
+            <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
               <Lock className="h-[15px] w-[15px]" />
               Administrator Sign In
-            </a>
+            </button>
           </div>
         </div>
 
         {/* Centre: buttons on desktop */}
         <div className="relative z-10 hidden shrink-0 items-center gap-3 px-8 lg:flex">
-          <a href="#" className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white shadow-md shadow-blue-900/50 transition-colors hover:bg-[#1d4ed8]">
+          <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white shadow-md shadow-blue-900/50 transition-colors hover:bg-[#1d4ed8]">
             <User className="h-[15px] w-[15px]" />
             Create Organisation
-          </a>
-          <a href="#" className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
+          </button>
+          <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
             <Lock className="h-[15px] w-[15px]" />
             Administrator Sign In
-          </a>
+          </button>
         </div>
 
         {/* Right: truck image fading in from right edge */}
