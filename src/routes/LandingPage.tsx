@@ -1,338 +1,379 @@
-import { useState } from "react";
-import {
-  Hexagon,
-  ChevronDown,
-  User,
-  Lock,
-  ArrowRight,
-  Play,
-  Truck,
-  TrendingUp,
-  Route as RouteIcon,
-  Users,
-  ShieldCheck,
-  Zap,
-  Check,
-} from "lucide-react";
+import { Truck, MapPin, Fuel, Route as RouteIcon, Wrench, ShieldCheck, ChartBar as BarChart3, ChartPie as PieChart, ChevronDown, User, Lock, Linkedin, Twitter, Facebook, Youtube, DollarSign, Zap, Shield, BrainCircuit, Radio, Search, Bell, Settings, TrendingUp, TrendingDown, CircleDot, Navigation, Clock, Gauge } from "lucide-react";
 
-export default function LandingPage() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+const NAV_LINKS = [
+  { label: "Product", dropdown: true },
+  { label: "Solutions", dropdown: true },
+  { label: "Resources", dropdown: true },
+  { label: "Company", dropdown: false },
+  { label: "Pricing", dropdown: false },
+];
 
+const MODULES = [
+  { icon: Truck, label: "Fleet\nOperations" },
+  { icon: Radio, label: "Dispatch\nCenter" },
+  { icon: Fuel, label: "Fuel\nIntelligence" },
+  { icon: RouteIcon, label: "Route\nIntelligence" },
+  { icon: Wrench, label: "Maintenance\nManagement" },
+  { icon: ShieldCheck, label: "Safety &\nIncidents" },
+  { icon: BarChart3, label: "Reports &\nAnalytics" },
+  { icon: PieChart, label: "Executive\nDashboard" },
+];
+
+const BENEFITS = [
+  { icon: DollarSign, title: "Reduce Costs", description: "Identify inefficiencies and reduce fuel waste across your fleet." },
+  { icon: Truck, title: "Improve Efficiency", description: "Increase fleet utilization and optimize operational workflows." },
+  { icon: Shield, title: "Improve Safety", description: "Reduce incidents and ensure driver and asset safety." },
+  { icon: BrainCircuit, title: "Smarter Decisions", description: "Real-time data and AI-powered insights for better decision-making." },
+];
+
+const FOOTER_COLS = [
+  { heading: "Product", links: ["Features", "Modules", "Integrations", "Security"] },
+  { heading: "Solutions", links: ["Fleet Management", "Dispatch Management", "Fuel Management", "Operations Intelligence"] },
+  { heading: "Resources", links: ["Documentation", "Help Center", "Blog", "API Reference"] },
+  { heading: "Company", links: ["About Us", "Careers", "Partners", "Contact Us"] },
+  { heading: "Legal", links: ["Privacy Policy", "Terms of Service", "Cookie Policy"] },
+];
+
+interface LandingPageProps {
+  onCreateOrganisation: () => void;
+  onSignIn: () => void;
+}
+
+export default function LandingPage({ onCreateOrganisation, onSignIn }: LandingPageProps) {
   return (
-    <div className="min-h-screen bg-[oklch(0.165_0.028_258)] text-white">
-      <Nav mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
-      <Hero />
-      <TrustBar />
-      <StatsBar />
-      <Features />
-      <CTA />
-      <Footer />
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteNav onSignIn={onSignIn} />
+      <Hero onCreateOrganisation={onCreateOrganisation} onSignIn={onSignIn} />
+      <ModulesSection />
+      <BenefitsSection />
+      <CtaSection onCreateOrganisation={onCreateOrganisation} onSignIn={onSignIn} />
+      <SiteFooter />
     </div>
   );
 }
 
-/* ───────────────────────────  NAV  ─────────────────────────── */
-
-function Nav({
-  mobileOpen,
-  setMobileOpen,
-}: {
-  mobileOpen: boolean;
-  setMobileOpen: (v: boolean) => void;
-}) {
-  const navLinks = [
-    { label: "Product", icon: true },
-    { label: "Solutions", icon: true },
-    { label: "Resources", icon: true },
-    { label: "Company", icon: false },
-    { label: "Pricing", icon: false },
-  ];
-
+/* ── Navigation ─────────────────────────────────────────────────────────── */
+function SiteNav({ onSignIn }: { onSignIn: () => void }) {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[oklch(0.16_0.028_260)]/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        {/* Logo */}
+      <div className="mx-auto flex max-w-7xl items-center gap-8 px-6 py-4 lg:px-8">
         <a href="#" className="flex shrink-0 items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center">
-            <Hexagon className="h-9 w-9 fill-[#1d6ff4] text-[#1d6ff4]" strokeWidth={1.5} />
-          </div>
-          <div className="leading-tight">
-            <div className="text-[15px] font-extrabold tracking-tight">PRIMELEX</div>
-            <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-white/50">
-              Technologies
+          <div className="relative h-10 w-10 shrink-0">
+            <div className="absolute inset-0 bg-primary" style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }} />
+            <div className="relative z-10 flex h-full w-full items-center justify-center">
+              <RouteIcon className="h-[18px] w-[18px] text-white" />
             </div>
+          </div>
+          <div className="leading-none">
+            <div className="text-[17px] font-black tracking-[0.06em] text-foreground">PRIMELEX</div>
+            <div className="mt-0.5 text-[9px] font-medium tracking-[0.22em] text-muted-foreground">TECHNOLOGIES</div>
           </div>
         </a>
 
-        {/* Desktop nav links */}
-        <nav className="hidden items-center gap-1 lg:flex">
-          {navLinks.map((l) => (
-            <a
-              key={l.label}
-              href="#"
-              className="flex items-center gap-1 rounded-lg px-4 py-2 text-[14px] font-medium text-white/70 transition-colors hover:bg-white/[0.04] hover:text-white"
-            >
-              {l.label}
-              {l.icon && <ChevronDown className="h-3.5 w-3.5 opacity-60" />}
-            </a>
+        <nav className="ml-auto hidden items-center lg:flex">
+          {NAV_LINKS.map((n) => (
+            <button key={n.label} className="inline-flex items-center gap-1.5 rounded-md px-4 py-2.5 text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground">
+              {n.label}
+              {n.dropdown && <ChevronDown className="h-[14px] w-[14px]" />}
+            </button>
           ))}
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="hidden items-center gap-3 lg:flex">
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-medium text-white transition-all hover:border-white/40 hover:bg-white/[0.04]"
-          >
-            <User className="h-[15px] w-[15px]" />
-            Sign In
-          </a>
-        </div>
-
-        {/* Mobile toggle */}
         <button
-          className="lg:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Menu"
+          onClick={onSignIn}
+          className="hidden shrink-0 items-center gap-2 rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex"
         >
-          <div className="space-y-1.5">
-            <span className="block h-0.5 w-6 bg-white" />
-            <span className="block h-0.5 w-6 bg-white" />
-            <span className="block h-0.5 w-6 bg-white" />
-          </div>
+          <User className="h-[15px] w-[15px]" />
+          Sign In
         </button>
       </div>
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="border-t border-white/[0.06] bg-[oklch(0.16_0.028_260)] px-6 py-4 lg:hidden">
-          <nav className="flex flex-col gap-1">
-            {navLinks.map((l) => (
-              <a
-                key={l.label}
-                href="#"
-                className="flex items-center justify-between rounded-lg px-4 py-3 text-[15px] font-medium text-white/80 transition-colors hover:bg-white/[0.04]"
-              >
-                {l.label}
-                {l.icon && <ChevronDown className="h-4 w-4 opacity-60" />}
-              </a>
-            ))}
-            <a
-              href="#"
-              className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg border border-white/[0.22] px-5 py-3 text-[14px] font-medium text-white"
-            >
-              <User className="h-[15px] w-[15px]" />
-              Sign In
-            </a>
-          </nav>
-        </div>
-      )}
     </header>
   );
 }
 
-/* ───────────────────────────  HERO  ─────────────────────────── */
-
-function Hero() {
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+function Hero({ onCreateOrganisation, onSignIn }: { onCreateOrganisation: () => void; onSignIn: () => void }) {
   return (
     <section className="relative overflow-hidden bg-[oklch(0.16_0.028_260)]">
-      {/* Ambient glows */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-10 h-[420px] w-[420px] rounded-full bg-[#1d6ff4]/20 blur-[120px]" />
-        <div className="absolute right-0 top-40 h-[380px] w-[380px] rounded-full bg-[#1d6ff4]/10 blur-[120px]" />
-      </div>
+      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 55% 70% at 10% 50%, oklch(0.55 0.2 258 / 0.18) 0%, transparent 65%)" }} />
 
-      {/* Subtle grid */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.035]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-        }}
-      />
-
-      <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 pb-24 pt-20 lg:grid-cols-2 lg:px-8 lg:pb-32 lg:pt-28">
-        {/* Left column */}
-        <div>
-          {/* Badge pill */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#1d6ff4]/30 bg-[#1d6ff4]/10 px-4 py-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1d6ff4] opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#1d6ff4]" />
-            </span>
-            <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#5b9dff]">
+      <div className="relative mx-auto max-w-7xl px-6 pb-14 pt-14 lg:px-8">
+        {/* Desktop: two columns */}
+        <div className="hidden lg:grid lg:grid-cols-[42%_58%] lg:items-center lg:gap-10">
+          <div className="flex flex-col">
+            <div className="mb-5 inline-flex w-fit items-center rounded-full border border-primary/40 bg-primary/[0.08] px-4 py-[6px] text-[11px] font-semibold uppercase tracking-[0.13em] text-primary/90">
               Logistics Intelligence System (LIS)
-            </span>
+            </div>
+            <h1 className="text-[3.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
+              The Operating System
+              <br />
+              for <span className="text-primary">Modern Logistics</span>
+              <br />
+              Companies
+            </h1>
+            <p className="mt-5 max-w-[380px] text-[15px] leading-[1.65] text-muted-foreground">
+              Manage your fleet, dispatch, trips, fuel, maintenance, routes and operations from one intelligent platform. Optimize performance. Reduce costs. Deliver more.
+            </p>
+            <div className="mt-8 flex items-center gap-3">
+              <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90">
+                <User className="h-4 w-4" />
+                Create Organisation
+              </button>
+              <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-6 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]">
+                <Lock className="h-4 w-4" />
+                Administrator Sign In
+              </button>
+            </div>
+            <div className="mt-10">
+              <p className="mb-4 text-[13px] text-muted-foreground">Trusted by forward-thinking logistics companies</p>
+              <div className="flex flex-wrap items-center gap-7">
+                <span className="text-[13px] font-black italic tracking-wide text-white/40">MIKANO</span>
+                <span className="text-[13px] font-black tracking-wide text-white/40">DANGOTE</span>
+                <span className="text-[12px] font-bold tracking-[0.08em] text-white/40">SIFAX GROUP</span>
+                <span className="text-[12px] font-bold tracking-[0.06em] text-white/40">WAECORP</span>
+                <span className="text-[13px] font-semibold tracking-wide text-white/40">ABC <span className="font-light">Logistics</span></span>
+              </div>
+            </div>
           </div>
 
-          {/* Heading */}
-          <h1 className="mt-6 text-[44px] font-extrabold leading-[1.07] tracking-tight text-white sm:text-[52px] lg:text-[56px]">
-            The Operating System for
-            <br />
-            <span className="text-[#1d6ff4]">Modern Logistics</span> Companies
-          </h1>
-
-          {/* Subtitle */}
-          <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-white/60">
-            Streamline operations with AI-driven route optimization, real-time fleet tracking, and
-            automated workflows. Everything you need to run a logistics business — in one platform.
-          </p>
-
-          {/* CTAs */}
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <a
-              href="#"
-              className="group inline-flex items-center gap-2 rounded-lg bg-[#1d6ff4] px-6 py-3 text-[15px] font-semibold text-white shadow-lg shadow-[#1d6ff4]/30 transition-all hover:bg-[#155fd0] hover:shadow-[#1d6ff4]/40"
-            >
-              <User className="h-[17px] w-[17px]" />
-              Create Organisation
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
-            <a
-              href="#"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.03] px-6 py-3 text-[15px] font-semibold text-white transition-all hover:border-white/35 hover:bg-white/[0.07]"
-            >
-              <Lock className="h-[17px] w-[17px]" />
-              Administrator Sign In
-            </a>
-          </div>
-
-          {/* Sub link */}
-          <div className="mt-7">
-            <a
-              href="#"
-              className="group inline-flex items-center gap-2 text-[14px] font-medium text-white/50 transition-colors hover:text-white/80"
-            >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 transition-colors group-hover:border-white/30">
-                <Play className="h-3 w-3 translate-x-[1px] fill-current" />
-              </span>
-              Watch 2-min product tour
-            </a>
+          <div className="flex items-center justify-end">
+            <DashboardMockup />
           </div>
         </div>
 
-        {/* Right column — dashboard mockup */}
-        <div className="relative">
-          <DashboardMockup />
+        {/* Mobile/tablet single column */}
+        <div className="flex flex-col lg:hidden">
+          <div className="mb-5 inline-flex w-fit items-center rounded-full border border-primary/40 bg-primary/[0.08] px-4 py-[6px] text-[11px] font-semibold uppercase tracking-[0.13em] text-primary/90">
+            Logistics Intelligence System (LIS)
+          </div>
+          <h1 className="text-[2.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
+            The Operating System
+            <br />
+            for <span className="text-primary">Modern Logistics</span>
+            <br />
+            Companies
+          </h1>
+          <p className="mt-5 text-[15px] leading-[1.65] text-muted-foreground">
+            Manage your fleet, dispatch, trips, fuel, maintenance, routes and operations from one intelligent platform. Optimize performance. Reduce costs. Deliver more.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90">
+              <User className="h-4 w-4" />
+              Create Organisation
+            </button>
+            <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-5 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35">
+              <Lock className="h-4 w-4" />
+              Administrator Sign In
+            </button>
+          </div>
+          <div className="mt-8">
+            <p className="mb-4 text-[13px] text-muted-foreground">Trusted by forward-thinking logistics companies</p>
+            <div className="flex flex-wrap items-center gap-5">
+              <span className="text-[12px] font-black italic text-white/40">MIKANO</span>
+              <span className="text-[12px] font-black text-white/40">DANGOTE</span>
+              <span className="text-[11px] font-bold text-white/40">SIFAX GROUP</span>
+              <span className="text-[11px] font-bold text-white/40">WAECORP</span>
+              <span className="text-[12px] font-semibold text-white/40">ABC Logistics</span>
+            </div>
+          </div>
+          <div className="mt-8">
+            <DashboardMockup />
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
+/* ── Dashboard Mockup (coded, matches the approved design) ─────────────────── */
 function DashboardMockup() {
   return (
-    <div className="relative">
-      {/* Floating glow behind frame */}
-      <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-[#1d6ff4]/20 via-transparent to-transparent blur-2xl" />
+    <div className="w-full overflow-hidden rounded-[14px] border border-white/[0.1] bg-[oklch(0.19_0.03_258)]" style={{ boxShadow: "0 0 0 1px oklch(1 0 0 / 0.04), 0 40px 100px -20px oklch(0 0 0 / 0.7), 0 8px 32px -8px oklch(0 0 0 / 0.5)" }}>
+      {/* Top bar */}
+      <div className="flex items-center gap-3 border-b border-white/[0.07] px-4 py-3">
+        <div className="flex items-center gap-2">
+          <div className="h-3 w-3 rounded-full bg-[oklch(0.66_0.2_25)]" />
+          <div className="h-3 w-3 rounded-full bg-warning" />
+          <div className="h-3 w-3 rounded-full bg-success" />
+        </div>
+        <div className="ml-2 flex flex-1 items-center gap-2 rounded-md border border-white/[0.07] bg-white/[0.03] px-2.5 py-1.5">
+          <Search className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] text-muted-foreground">Search fleet, drivers, trips...</span>
+        </div>
+        <Bell className="h-3.5 w-3.5 text-muted-foreground" />
+        <Settings className="h-3.5 w-3.5 text-muted-foreground" />
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-white">AO</div>
+      </div>
 
-      {/* Frame */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[oklch(0.205_0.03_260)] shadow-2xl shadow-black/40">
-        {/* Window chrome */}
-        <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
-          <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-          <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-          <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-          <div className="ml-3 flex-1">
-            <div className="mx-auto w-fit rounded-md bg-white/[0.04] px-3 py-1 text-[11px] text-white/40">
-              app.primelex.com/dashboard
+      {/* Body: sidebar + content */}
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="hidden w-[150px] shrink-0 border-r border-white/[0.07] p-3 sm:block">
+          <div className="mb-3 flex items-center gap-2 px-1">
+            <div className="flex h-5 w-5 items-center justify-center rounded bg-primary">
+              <RouteIcon className="h-3 w-3 text-white" />
             </div>
+            <span className="text-[10px] font-bold tracking-wide text-foreground">PRIMELEX LIS</span>
           </div>
+          <div className="mb-2 px-2 text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">Main</div>
+          <ul className="flex flex-col gap-0.5">
+            {[
+              { icon: PieChart, label: "Dashboard", active: true },
+              { icon: Truck, label: "Fleet" },
+              { icon: Radio, label: "Dispatch" },
+              { icon: MapPin, label: "Trips" },
+              { icon: Fuel, label: "Fuel" },
+              { icon: Wrench, label: "Maintenance" },
+              { icon: ShieldCheck, label: "Safety" },
+              { icon: BarChart3, label: "Reports" },
+            ].map((item) => (
+              <li key={item.label}>
+                <div className={`flex items-center gap-2 rounded-md px-2 py-1.5 ${item.active ? "bg-primary/15 text-primary" : "text-muted-foreground"}`}>
+                  <item.icon className="h-3 w-3 shrink-0" />
+                  <span className="text-[10px] font-medium">{item.label}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* Dashboard body */}
-        <div className="grid grid-cols-[200px_1fr]">
-          {/* Sidebar */}
-          <div className="border-r border-white/[0.06] p-3">
-            <div className="mb-4 flex items-center gap-2 px-2">
-              <Hexagon className="h-6 w-6 fill-[#1d6ff4] text-[#1d6ff4]" strokeWidth={1.5} />
-              <span className="text-[12px] font-bold">PrimeLex</span>
+        {/* Main content */}
+        <div className="flex-1 p-4">
+          {/* Header row */}
+          <div className="mb-3 flex items-center justify-between">
+            <div>
+              <div className="text-[12px] font-bold text-foreground">Operations Overview</div>
+              <div className="text-[9px] text-muted-foreground">Welcome back, Ade · Real-time data</div>
             </div>
+            <div className="flex items-center gap-2">
+              <div className="rounded-md border border-white/[0.1] px-2 py-1 text-[8px] font-medium text-muted-foreground">Last 30 days</div>
+              <div className="rounded-md bg-primary px-2 py-1 text-[8px] font-semibold text-white">+ New Trip</div>
+            </div>
+          </div>
+
+          {/* KPI cards */}
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
             {[
-              { icon: TrendingUp, label: "Dashboard", active: true },
-              { icon: Truck, label: "Fleet" },
-              { icon: RouteIcon, label: "Routes" },
-              { icon: Users, label: "Drivers" },
-              { icon: ShieldCheck, label: "Compliance" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className={
-                  "mb-1 flex items-center gap-2.5 rounded-lg px-3 py-2 text-[12px] font-medium transition-colors " +
-                  (item.active
-                    ? "bg-[#1d6ff4]/15 text-[#5b9dff]"
-                    : "text-white/45 hover:bg-white/[0.03]")
-                }
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
+              { icon: Truck, label: "Active Vehicles", value: "248", delta: "+12", up: true, sub: "of 280 fleet" },
+              { icon: Navigation, label: "Active Trips", value: "36", delta: "+5", up: true, sub: "in transit" },
+              { icon: Fuel, label: "Fuel Cost", value: "₦4.2M", delta: "-8%", up: false, sub: "this month" },
+              { icon: CircleDot, label: "On-time Rate", value: "94.2%", delta: "+2.1%", up: true, sub: "delivery SLA" },
+            ].map((k) => (
+              <div key={k.label} className="rounded-lg border border-white/[0.07] bg-white/[0.025] p-2.5">
+                <div className="mb-1.5 flex items-center justify-between">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/12">
+                    <k.icon className="h-3 w-3 text-primary" />
+                  </div>
+                  <span className={`flex items-center gap-0.5 text-[8px] font-semibold ${k.up ? "text-success" : "text-error"}`}>
+                    {k.up ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
+                    {k.delta}
+                  </span>
+                </div>
+                <div className="text-[14px] font-bold text-foreground">{k.value}</div>
+                <div className="text-[8px] text-muted-foreground">{k.label}</div>
+                <div className="mt-0.5 text-[7px] text-muted-foreground/70">{k.sub}</div>
               </div>
             ))}
           </div>
 
-          {/* Main panel */}
-          <div className="p-4">
-            {/* Top bar */}
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <div className="text-[13px] font-semibold">Operations Overview</div>
-                <div className="text-[10px] text-white/40">Last 30 days</div>
-              </div>
-              <div className="flex gap-2">
-                <div className="rounded-md bg-white/[0.04] px-3 py-1.5 text-[10px] text-white/50">
-                  Export
-                </div>
-                <div className="rounded-md bg-[#1d6ff4] px-3 py-1.5 text-[10px] font-medium text-white">
-                  + New Trip
+          {/* Chart + side panel */}
+          <div className="mt-2 grid grid-cols-1 gap-2 lg:grid-cols-3">
+            {/* Bar chart card */}
+            <div className="rounded-lg border border-white/[0.07] bg-white/[0.025] p-3 lg:col-span-2">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-[10px] font-semibold text-foreground">Fleet Performance — Weekly</div>
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1 text-[8px] text-muted-foreground"><span className="h-2 w-2 rounded-sm bg-primary" /> Utilization</span>
+                  <span className="flex items-center gap-1 text-[8px] text-muted-foreground"><span className="h-2 w-2 rounded-sm bg-accent" /> Efficiency</span>
                 </div>
               </div>
-            </div>
-
-            {/* Stat cards */}
-            <div className="mb-4 grid grid-cols-3 gap-3">
-              {[
-                { label: "Active Trips", value: "1,248", delta: "+12%", color: "text-[#28c840]" },
-                { label: "On-time Rate", value: "97.4%", delta: "+3.1%", color: "text-[#28c840]" },
-                { label: "Fuel Saved", value: "8.2k L", delta: "+8%", color: "text-[#28c840]" },
-              ].map((s) => (
-                <div key={s.label} className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3">
-                  <div className="text-[10px] text-white/40">{s.label}</div>
-                  <div className="mt-1 text-[18px] font-bold">{s.value}</div>
-                  <div className={"text-[10px] font-medium " + s.color}>{s.delta}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Chart placeholder */}
-            <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="text-[12px] font-semibold">Trip Volume</div>
-                <div className="text-[10px] text-white/40">Weekly</div>
-              </div>
-              <div className="flex h-28 items-end gap-2">
-                {[40, 65, 50, 80, 55, 90, 70, 95, 60, 85, 75, 100].map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 rounded-t bg-gradient-to-t from-[#1d6ff4]/30 to-[#1d6ff4]"
-                    style={{ height: `${h}%` }}
-                  />
+              <div className="flex h-[90px] items-end justify-between gap-1.5">
+                {[
+                  { d: "Mon", u: 62, e: 48 },
+                  { d: "Tue", u: 78, e: 60 },
+                  { d: "Wed", u: 70, e: 55 },
+                  { d: "Thu", u: 88, e: 72 },
+                  { d: "Fri", u: 95, e: 80 },
+                  { d: "Sat", u: 68, e: 52 },
+                  { d: "Sun", u: 54, e: 40 },
+                ].map((b) => (
+                  <div key={b.d} className="flex flex-1 flex-col items-center gap-1">
+                    <div className="flex w-full items-end justify-center gap-0.5" style={{ height: 70 }}>
+                      <div className="w-1/2 rounded-t-sm bg-primary/80" style={{ height: `${b.u}%` }} />
+                      <div className="w-1/2 rounded-t-sm bg-accent/70" style={{ height: `${b.e}%` }} />
+                    </div>
+                    <span className="text-[7px] text-muted-foreground">{b.d}</span>
+                  </div>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Floating badge */}
-      <div className="absolute -right-3 top-20 hidden rounded-xl border border-white/10 bg-[oklch(0.24_0.03_260)] px-4 py-3 shadow-xl sm:block">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#28c840]/15">
-            <Zap className="h-4 w-4 text-[#28c840]" />
+            {/* Live fleet status */}
+            <div className="rounded-lg border border-white/[0.07] bg-white/[0.025] p-3">
+              <div className="mb-2 text-[10px] font-semibold text-foreground">Live Fleet Status</div>
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: "In Transit", count: 142, pct: 57, color: "bg-primary" },
+                  { label: "Idle", count: 61, pct: 25, color: "bg-warning" },
+                  { label: "Maintenance", count: 28, pct: 11, color: "bg-error" },
+                  { label: "Offline", count: 17, pct: 7, color: "bg-white/30" },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <div className="mb-0.5 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-[9px] text-foreground"><span className={`h-1.5 w-1.5 rounded-full ${s.color}`} />{s.label}</span>
+                      <span className="text-[9px] font-semibold text-foreground">{s.count}</span>
+                    </div>
+                    <div className="h-1 overflow-hidden rounded-full bg-white/[0.08]">
+                      <div className={`h-full rounded-full ${s.color}`} style={{ width: `${s.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 border-t border-white/[0.06] pt-2">
+                <div className="text-[8px] font-semibold uppercase tracking-wider text-muted-foreground">Maintenance Due</div>
+                <div className="mt-1 flex items-center justify-between">
+                  <span className="text-[16px] font-bold text-warning">14</span>
+                  <span className="text-[8px] text-muted-foreground">vehicles</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div className="text-[11px] font-semibold">AI Optimized</div>
-            <div className="text-[9px] text-white/40">Routes recalculated</div>
+
+          {/* Recent trips table */}
+          <div className="mt-2 rounded-lg border border-white/[0.07] bg-white/[0.025] p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <div className="text-[10px] font-semibold text-foreground">Recent Trips</div>
+              <span className="text-[8px] text-primary">View all →</span>
+            </div>
+            <div className="overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-[7px] uppercase tracking-wider text-muted-foreground">
+                    <th className="pb-1.5 font-medium">Trip</th>
+                    <th className="pb-1.5 font-medium">Vehicle</th>
+                    <th className="pb-1.5 font-medium">Route</th>
+                    <th className="pb-1.5 font-medium">Status</th>
+                    <th className="hidden pb-1.5 font-medium sm:table-cell">ETA</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { id: "TRP-1042", veh: "LAG-421-XA", route: "Lagos → Abuja", status: "In Transit", eta: "2h 14m", color: "text-primary bg-primary/12" },
+                    { id: "TRP-1041", veh: "LAG-318-KD", route: "Apapa → Kano", status: "Loading", eta: "—", color: "text-warning bg-warning/12" },
+                    { id: "TRP-1040", veh: "LAG-205-AB", route: "Lagos → PH", status: "Delivered", eta: "Done", color: "text-success bg-success/12" },
+                    { id: "TRP-1039", veh: "LAG-512-GH", route: "Ikeja → Ibadan", status: "Delayed", eta: "45m", color: "text-error bg-error/12" },
+                  ].map((t) => (
+                    <tr key={t.id} className="border-t border-white/[0.05]">
+                      <td className="py-1.5 text-[9px] font-medium text-foreground">{t.id}</td>
+                      <td className="py-1.5 text-[9px] text-muted-foreground">{t.veh}</td>
+                      <td className="py-1.5 text-[9px] text-muted-foreground">{t.route}</td>
+                      <td className="py-1.5"><span className={`rounded px-1.5 py-0.5 text-[8px] font-semibold ${t.color}`}>{t.status}</span></td>
+                      <td className="hidden py-1.5 text-[9px] text-muted-foreground sm:table-cell">{t.eta}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -340,24 +381,26 @@ function DashboardMockup() {
   );
 }
 
-/* ───────────────────────────  TRUST BAR  ─────────────────────────── */
-
-function TrustBar() {
-  const names = ["DANGOTE", "GBH LOGISTICS", "OANDO", "NIPCO", "BOVAS"];
+/* ── Modules ─────────────────────────────────────────────────────────────── */
+function ModulesSection() {
   return (
-    <section className="border-y border-white/[0.06] bg-[oklch(0.18_0.028_260)] py-8">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <p className="mb-6 text-center text-[12px] font-medium uppercase tracking-[0.18em] text-white/35">
-          Trusted by logistics leaders across Africa
+    <section className="border-t border-white/[0.06] bg-background py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">One Platform. Complete Visibility.</div>
+        <h2 className="text-center text-[1.85rem] font-bold leading-tight tracking-tight text-foreground lg:text-[2.1rem]">
+          Everything You Need in One Intelligent Platform
+        </h2>
+        <p className="mx-auto mt-3 max-w-lg text-center text-sm leading-relaxed text-muted-foreground">
+          Power your operations with connected modules built for logistics.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
-          {names.map((n) => (
-            <span
-              key={n}
-              className="text-[15px] font-bold tracking-wide text-white/25 transition-colors hover:text-white/50"
-            >
-              {n}
-            </span>
+        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
+          {MODULES.map((m) => (
+            <div key={m.label} className="flex flex-col items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-5 text-center transition-all hover:border-primary/30 hover:bg-white/[0.04]">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10">
+                <m.icon className="h-6 w-6 text-primary" />
+              </div>
+              <span className="whitespace-pre-line text-[12px] font-medium leading-snug text-foreground/90">{m.label}</span>
+            </div>
           ))}
         </div>
       </div>
@@ -365,208 +408,147 @@ function TrustBar() {
   );
 }
 
-/* ───────────────────────────  STATS BAR  ─────────────────────────── */
-
-function StatsBar() {
-  const stats = [
-    { value: "1,200+", label: "Organisations" },
-    { value: "47M+", label: "Trips tracked" },
-    { value: "97.4%", label: "On-time delivery" },
-    { value: "23%", label: "Avg. fuel savings" },
-  ];
+/* ── Benefits ────────────────────────────────────────────────────────────── */
+function BenefitsSection() {
   return (
-    <section className="bg-[oklch(0.165_0.028_258)] py-16">
-      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 md:grid-cols-4 lg:px-8">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center">
-            <div className="text-[36px] font-extrabold text-white">{s.value}</div>
-            <div className="mt-1 text-[13px] text-white/45">{s.label}</div>
-          </div>
-        ))}
+    <section className="border-t border-white/[0.06] bg-background py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Drive Real Results</div>
+        <h2 className="text-center text-[1.85rem] font-bold leading-tight tracking-tight text-foreground lg:text-[2.1rem]">
+          Turn Operations into Competitive Advantage
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-center text-sm leading-relaxed text-muted-foreground">
+          LIS helps logistics companies reduce costs, improve efficiency and make smarter decisions every day.
+        </p>
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {BENEFITS.map((b) => (
+            <div key={b.title} className="flex flex-col gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] p-6 transition-all hover:border-primary/25 hover:bg-white/[0.04]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
+                <b.icon className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="text-[15px] font-semibold text-foreground">{b.title}</h3>
+              <p className="text-[13px] leading-relaxed text-muted-foreground">{b.description}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-/* ───────────────────────────  FEATURES  ─────────────────────────── */
-
-function Features() {
-  const features = [
-    {
-      icon: RouteIcon,
-      title: "AI Route Optimization",
-      desc: "Cut fuel costs and delivery times with real-time route recalculation powered by machine learning.",
-    },
-    {
-      icon: Truck,
-      title: "Live Fleet Tracking",
-      desc: "Monitor every vehicle in real time with GPS telemetry, geofencing, and instant status alerts.",
-    },
-    {
-      icon: Users,
-      title: "Driver Management",
-      desc: "Onboard drivers, track compliance, and manage assignments with automated workflow tools.",
-    },
-    {
-      icon: ShieldCheck,
-      title: "Compliance & Safety",
-      desc: "Stay audit-ready with automated regulatory checks, document expiry alerts, and safety scoring.",
-    },
-    {
-      icon: TrendingUp,
-      title: "Analytics & Reporting",
-      desc: "Make data-driven decisions with real-time dashboards, custom reports, and predictive insights.",
-    },
-    {
-      icon: Zap,
-      title: "Workflow Automation",
-      desc: "Eliminate manual paperwork with automated trip assignments, approvals, and notifications.",
-    },
-  ];
+/* ── CTA Banner ──────────────────────────────────────────────────────────── */
+function CtaSection({ onCreateOrganisation, onSignIn }: { onCreateOrganisation: () => void; onSignIn: () => void }) {
   return (
-    <section className="bg-[oklch(0.165_0.028_258)] py-24">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5">
-            <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#5b9dff]">
-              Platform
-            </span>
-          </div>
-          <h2 className="mt-5 text-[36px] font-extrabold tracking-tight">
-            Everything you need to run logistics
+    <section className="mx-6 my-12 overflow-hidden rounded-2xl lg:mx-auto lg:max-w-7xl">
+      {/* Single horizontal strip — title | buttons | truck image */}
+      <div
+        className="relative flex min-h-[130px] items-center overflow-hidden"
+        style={{ background: "linear-gradient(100deg, #0b1528 0%, #0d1e3a 45%, #101f3c 75%, #0a1626 100%)" }}
+      >
+        {/* Left: title + subtitle */}
+        <div className="relative z-10 shrink-0 px-10 py-8 lg:w-[45%]">
+          <h2 className="text-[1.45rem] font-bold leading-snug tracking-tight text-white lg:text-[1.55rem]">
+            Ready to Modernize Your Logistics Operations?
           </h2>
-          <p className="mt-4 text-[17px] text-white/55">
-            One integrated platform replacing the patchwork of spreadsheets, trackers, and tools
-            your team is juggling today.
+          <p className="mt-1.5 text-[13px] leading-relaxed text-white/50">
+            Create your organisation and start running your operations smarter, faster and more profitably.
           </p>
-        </div>
-
-        <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="group rounded-2xl border border-white/[0.07] bg-white/[0.02] p-7 transition-all hover:border-[#1d6ff4]/30 hover:bg-white/[0.04]"
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1d6ff4]/12 text-[#1d6ff4] transition-colors group-hover:bg-[#1d6ff4]/20">
-                <f.icon className="h-6 w-6" />
-              </div>
-              <h3 className="mt-5 text-[18px] font-bold">{f.title}</h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-white/50">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ───────────────────────────  CTA  ─────────────────────────── */
-
-function CTA() {
-  return (
-    <section className="px-6 py-16 lg:px-8">
-      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-[#1d6ff4]/20 bg-gradient-to-br from-[#1d6ff4]/15 via-[oklch(0.19_0.03_260)] to-[oklch(0.16_0.028_260)] p-12 lg:p-16">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[#1d6ff4]/20 blur-[100px]" />
-        <div className="relative grid items-center gap-8 lg:grid-cols-2">
-          <div>
-            <h2 className="text-[34px] font-extrabold leading-tight">
-              Ready to modernize your logistics operations?
-            </h2>
-            <p className="mt-4 text-[16px] text-white/60">
-              Set up your organisation in under five minutes. No credit card required.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 rounded-lg bg-[#1d6ff4] px-6 py-3 text-[15px] font-semibold text-white shadow-lg shadow-[#1d6ff4]/30 transition-all hover:bg-[#155fd0]"
-              >
-                <User className="h-[17px] w-[17px]" />
-                Create Organisation
-              </a>
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-6 py-3 text-[15px] font-semibold text-white transition-all hover:bg-white/[0.06]"
-              >
-                <Lock className="h-[17px] w-[17px]" />
-                Administrator Sign In
-              </a>
-            </div>
+          {/* Buttons on mobile — stacked under text */}
+          <div className="mt-5 flex flex-wrap gap-3 lg:hidden">
+            <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white transition-colors hover:bg-[#1d4ed8]">
+              <User className="h-[15px] w-[15px]" />
+              Create Organisation
+            </button>
+            <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
+              <Lock className="h-[15px] w-[15px]" />
+              Administrator Sign In
+            </button>
           </div>
-          <ul className="space-y-3">
-            {[
-              "Free 30-day trial — full platform access",
-              "No credit card required to start",
-              "Onboarding support included",
-              "Cancel anytime, no lock-in",
-            ].map((t) => (
-              <li key={t} className="flex items-center gap-3 text-[15px] text-white/75">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#28c840]/20">
-                  <Check className="h-3 w-3 text-[#28c840]" />
-                </span>
-                {t}
-              </li>
-            ))}
-          </ul>
+        </div>
+
+        {/* Centre: buttons on desktop */}
+        <div className="relative z-10 hidden shrink-0 items-center gap-3 px-8 lg:flex">
+          <button onClick={onCreateOrganisation} className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-[9px] text-[13px] font-semibold text-white shadow-md shadow-blue-900/50 transition-colors hover:bg-[#1d4ed8]">
+            <User className="h-[15px] w-[15px]" />
+            Create Organisation
+          </button>
+          <button onClick={onSignIn} className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/[0.05] px-5 py-[9px] text-[13px] font-semibold text-white transition-all hover:border-white/45 hover:bg-white/[0.09]">
+            <Lock className="h-[15px] w-[15px]" />
+            Administrator Sign In
+          </button>
+        </div>
+
+        {/* Right: truck image fading in from right edge */}
+        <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[38%] lg:block">
+          <img
+            src="https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&w=900&h=400&fit=crop"
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover object-center"
+            style={{
+              maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 18%, black 40%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 18%, black 40%)",
+            }}
+          />
         </div>
       </div>
     </section>
   );
 }
 
-/* ───────────────────────────  FOOTER  ─────────────────────────── */
-
-function Footer() {
-  const cols = [
-    { title: "Product", links: ["Features", "Integrations", "Pricing", "Changelog"] },
-    { title: "Company", links: ["About", "Careers", "Blog", "Contact"] },
-    { title: "Resources", links: ["Docs", "API Reference", "Support", "Status"] },
-    { title: "Legal", links: ["Privacy", "Terms", "Security", "GDPR"] },
-  ];
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+function SiteFooter() {
   return (
-    <footer className="border-t border-white/[0.06] bg-[oklch(0.14_0.028_260)]">
-      <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.5fr_repeat(4,1fr)]">
-          <div>
-            <div className="flex items-center gap-3">
-              <Hexagon className="h-9 w-9 fill-[#1d6ff4] text-[#1d6ff4]" strokeWidth={1.5} />
+    <footer className="border-t border-white/[0.06] bg-background">
+      <div className="mx-auto max-w-7xl px-6 py-14">
+        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-7">
+          <div className="col-span-2 flex flex-col gap-4 sm:col-span-3 lg:col-span-2">
+            <a href="#" className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary" style={{ clipPath: "polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%)" }}>
+                <RouteIcon className="h-5 w-5 text-white" />
+              </div>
               <div className="leading-tight">
-                <div className="text-[15px] font-extrabold tracking-tight">PRIMELEX</div>
-                <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-white/50">
-                  Technologies
-                </div>
+                <div className="text-[13px] font-bold tracking-wide text-foreground">PRIMELEX</div>
+                <div className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">TECHNOLOGIES</div>
               </div>
-            </div>
-            <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-white/45">
-              The Logistics Intelligence System for modern logistics companies across Africa and
-              beyond.
+            </a>
+            <p className="max-w-[200px] text-[12px] leading-relaxed text-muted-foreground">
+              Building intelligent logistics software solutions that help businesses operate smarter and achieve more.
             </p>
+            <div className="mt-1 flex items-center gap-3">
+              {[Linkedin, Twitter, Facebook, Youtube].map((Icon, i) => (
+                <a key={i} href="#" className="flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.1] text-muted-foreground transition-colors hover:border-white/20 hover:text-foreground">
+                  <Icon className="h-3.5 w-3.5" />
+                </a>
+              ))}
+            </div>
           </div>
-          {cols.map((c) => (
-            <div key={c.title}>
-              <div className="mb-4 text-[13px] font-semibold uppercase tracking-wider text-white/40">
-                {c.title}
-              </div>
-              <ul className="space-y-2.5">
-                {c.links.map((l) => (
-                  <li key={l}>
-                    <a
-                      href="#"
-                      className="text-[14px] text-white/55 transition-colors hover:text-white"
-                    >
-                      {l}
-                    </a>
+
+          {FOOTER_COLS.map((col) => (
+            <div key={col.heading} className="flex flex-col gap-3">
+              <div className="text-[12px] font-semibold text-foreground">{col.heading}</div>
+              <ul className="flex flex-col gap-2">
+                {col.links.map((link) => (
+                  <li key={link}>
+                    <a href="#" className="text-[12px] text-muted-foreground transition-colors hover:text-foreground">{link}</a>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
+
+          <div className="flex flex-col gap-3">
+            <div className="text-[12px] font-semibold text-foreground">Support</div>
+            <ul className="flex flex-col gap-2.5">
+              <li className="flex items-start gap-2 text-[12px] text-muted-foreground"><span className="mt-px text-primary">✉</span>hello@primelextech.com</li>
+              <li className="flex items-start gap-2 text-[12px] text-muted-foreground"><span className="mt-px text-primary">☎</span>+234 800 123 4567</li>
+              <li className="flex items-start gap-2 text-[12px] text-muted-foreground"><span className="mt-px text-primary">🕐</span>Mon – Fri: 8:00 AM – 6:00 PM</li>
+            </ul>
+          </div>
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
-          <p className="text-[13px] text-white/40">
-            © {new Date().getFullYear()} PrimeLex Technologies. All rights reserved.
-          </p>
-          <p className="text-[13px] text-white/40">Built for logistics, made for scale.</p>
-        </div>
+      </div>
+      <div className="border-t border-white/[0.05] py-4 text-center text-[11px] text-muted-foreground">
+        © 2025 PrimeLex Technologies. All rights reserved.
       </div>
     </footer>
   );
