@@ -126,7 +126,7 @@ function RegisterWizard() {
   };
 
   if (provisioning) return <ProvisioningScreen slug={form.workspaceSlug} companyName={form.companyName} primaryColor={form.primaryColor} />;
-  if (provisionedSlug) return <WorkspaceReadyScreen slug={provisionedSlug} companyName={form.companyName} primaryColor={form.primaryColor} />;
+  if (provisionedSlug) return <WorkspaceReadyScreen slug={provisionedSlug} companyName={form.companyName} primaryColor={form.primaryColor} navigate={navigate} />;
 
   return (
     <div className="min-h-screen bg-background">
@@ -459,8 +459,7 @@ function ProvisioningScreen({ slug, companyName, primaryColor }: { slug: string;
   );
 }
 
-function WorkspaceReadyScreen({ slug, companyName, primaryColor }: { slug: string; companyName: string; primaryColor: string }) {
-  const navigate = useNavigate();
+function WorkspaceReadyScreen({ slug, companyName, primaryColor, navigate }: { slug: string; companyName: string; primaryColor: string; navigate: (to: string) => void }) {
   const [copied, setCopied] = useState(false);
   const workspaceUrl = `${window.location.origin}/${slug}/login`;
 
@@ -503,7 +502,7 @@ function WorkspaceReadyScreen({ slug, companyName, primaryColor }: { slug: strin
           </div>
 
           <button
-            onClick={() => navigate({ to: "/login" })}
+            onClick={() => navigate("/login")}
             className="inline-flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             style={{ background: primaryColor }}
           >

@@ -20,5 +20,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src/main.tsx", "src/App.tsx", "src/routes/LandingPage.tsx", "src/screens/RegisterScreen.tsx", "src/screens/LoginScreen.tsx", "src/lib/branding.tsx", "src/lib/organisations-store.tsx", "src/lib/toast.tsx"]
 }
