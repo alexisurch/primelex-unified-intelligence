@@ -126,7 +126,7 @@ function Hero() {
         }}
       />
 
-      <div className="relative z-10 mx-auto flex max-w-[1280px] items-center gap-10 px-8 py-16 lg:py-20">
+      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start gap-10 px-8 py-16 lg:py-20">
         {/* ── Left column ── */}
         <div className="flex w-full flex-col lg:w-[44%] lg:shrink-0">
           {/* Badge */}
@@ -187,7 +187,7 @@ function Hero() {
         </div>
 
         {/* ── Right column — dashboard screenshot ── */}
-        <div className="hidden flex-1 items-center justify-end lg:flex">
+        <div className="hidden flex-1 items-start justify-end lg:flex">
           <div
             className="relative w-full max-w-[640px] overflow-hidden rounded-2xl"
             style={{
