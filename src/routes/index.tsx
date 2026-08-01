@@ -56,10 +56,10 @@ function LandingPage() {
 function SiteNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#060c1a]/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1280px] items-center px-8 py-4">
+      <div className="mx-auto flex max-w-[1280px] items-center px-8" style={{ height: "84px" }}>
         {/* Logo */}
         <Link to="/" className="flex shrink-0 items-center gap-3">
-          <div className="relative h-[42px] w-[42px] shrink-0">
+          <div className="relative h-[46px] w-[46px] shrink-0">
             <div
               className="absolute inset-0 bg-[#1a56db]"
               style={{ clipPath: "polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%)", borderRadius: "4px" }}
@@ -69,17 +69,17 @@ function SiteNav() {
             </div>
           </div>
           <div className="leading-[1.15]">
-            <div className="text-[17px] font-black tracking-[0.06em] text-white">PRIMELEX</div>
-            <div className="text-[9.5px] font-medium tracking-[0.24em] text-white/45">TECHNOLOGIES</div>
+            <div className="text-[18px] font-black tracking-[0.06em] text-white">PRIMELEX</div>
+            <div className="text-[10px] font-medium tracking-[0.24em] text-white/45">TECHNOLOGIES</div>
           </div>
         </Link>
 
-        {/* Nav links — pushed to right of centre */}
-        <nav className="ml-auto hidden items-center gap-0.5 lg:flex">
+        {/* Nav links — perfectly centred */}
+        <nav className="mx-auto hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((n) => (
             <button
               key={n.label}
-              className="inline-flex items-center gap-[5px] rounded-md px-4 py-2.5 text-[14.5px] font-medium text-white/75 transition-colors hover:text-white"
+              className="inline-flex items-center gap-[5px] rounded-md px-5 py-2.5 text-[15px] font-medium text-white/75 transition-colors hover:text-white"
             >
               {n.label}
               {n.dropdown && <ChevronDown className="h-[13px] w-[13px] text-white/50" />}
@@ -90,7 +90,7 @@ function SiteNav() {
         {/* Sign In */}
         <Link
           to="/login"
-          className="ml-6 hidden shrink-0 items-center gap-2 rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-semibold text-white transition-all hover:border-white/40 hover:bg-white/[0.05] lg:inline-flex"
+          className="hidden shrink-0 items-center gap-2 rounded-lg border border-white/[0.22] bg-transparent px-6 py-3 text-[14.5px] font-semibold text-white transition-all hover:border-white/40 hover:bg-white/[0.05] lg:inline-flex"
         >
           <User className="h-[15px] w-[15px]" />
           Sign In
@@ -105,20 +105,36 @@ function Hero() {
   return (
     <section
       className="relative overflow-hidden bg-[#060c1a]"
-      style={{ minHeight: "calc(100vh - 74px)" }}
+      style={{ minHeight: "800px" }}
     >
       {/* Left blue glow */}
       <div
-        className="pointer-events-none absolute left-0 top-0 h-full w-1/2"
+        className="pointer-events-none absolute left-0 top-0 h-full w-3/5"
         style={{
           background:
-            "radial-gradient(ellipse 70% 80% at -5% 55%, rgba(26,86,219,0.28) 0%, transparent 65%)",
+            "radial-gradient(ellipse 70% 85% at -8% 50%, rgba(26,86,219,0.30) 0%, transparent 60%)",
+        }}
+      />
+      {/* Right subtle blue glow behind dashboard */}
+      <div
+        className="pointer-events-none absolute right-0 top-0 h-full w-1/2"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 70% at 80% 45%, rgba(26,86,219,0.18) 0%, transparent 65%)",
+        }}
+      />
+      {/* Vignette */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(0,0,0,0.35) 100%)",
         }}
       />
 
       {/* Dot-grid overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.035]"
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage:
             "radial-gradient(oklch(1 0 0) 1px, transparent 1px)",
@@ -126,16 +142,16 @@ function Hero() {
         }}
       />
 
-      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start gap-10 px-8 py-16 lg:py-20">
-        {/* ── Left column ── */}
-        <div className="flex w-full flex-col lg:w-[44%] lg:shrink-0">
+      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start gap-12 px-8 pt-16 pb-10 lg:pt-20">
+        {/* ── Left column ≈45% ── */}
+        <div className="flex w-full flex-col lg:w-[45%] lg:shrink-0">
           {/* Badge */}
-          <div className="mb-7 inline-flex w-fit items-center rounded-full border border-[#1a56db]/60 bg-[#1a56db]/[0.1] px-4 py-[5px] text-[11px] font-semibold uppercase tracking-[0.15em] text-[#60a5fa]">
+          <div className="mb-6 inline-flex w-fit items-center rounded-full border border-[#1a56db]/60 bg-[#1a56db]/[0.1] px-4 py-[5px] text-[11px] font-semibold uppercase tracking-[0.15em] text-[#60a5fa]">
             Logistics Intelligence System (LIS)
           </div>
 
           {/* Headline */}
-          <h1 className="text-[3.4rem] font-extrabold leading-[1.07] tracking-[-0.025em] text-white lg:text-[3.7rem]">
+          <h1 className="text-[3.7rem] font-extrabold leading-[1.06] tracking-[-0.025em] text-white lg:text-[4.1rem]">
             The Operating System
             <br />
             for{" "}
@@ -145,24 +161,24 @@ function Hero() {
           </h1>
 
           {/* Sub-copy */}
-          <p className="mt-5 max-w-[400px] text-[15.5px] leading-[1.7] text-white/50">
+          <p className="mt-7 max-w-[460px] text-[16px] leading-[1.7] text-white/50">
             Manage your fleet, dispatch, trips, fuel, maintenance,
             routes and operations from one intelligent platform.
             Optimize performance. Reduce costs. Deliver more.
           </p>
 
           {/* CTAs */}
-          <div className="mt-9 flex flex-wrap items-center gap-4">
+          <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link
               to="/register"
-              className="inline-flex items-center gap-2.5 rounded-lg bg-[#1a56db] px-7 py-3.5 text-[15px] font-semibold text-white shadow-xl shadow-[#1a56db]/30 transition-all hover:bg-[#1e4fc2]"
+              className="inline-flex items-center gap-2.5 rounded-lg bg-[#1a56db] px-8 py-4 text-[15.5px] font-semibold text-white shadow-xl shadow-[#1a56db]/30 transition-all hover:bg-[#1e4fc2]"
             >
               <User className="h-[17px] w-[17px]" />
               Create Organisation
             </Link>
             <Link
               to="/login"
-              className="inline-flex items-center gap-2.5 rounded-lg border border-white/[0.22] bg-transparent px-7 py-3.5 text-[15px] font-semibold text-white transition-all hover:border-white/35 hover:bg-white/[0.05]"
+              className="inline-flex items-center gap-2.5 rounded-lg border border-white/[0.22] bg-transparent px-8 py-4 text-[15.5px] font-semibold text-white transition-all hover:border-white/35 hover:bg-white/[0.05]"
             >
               <Lock className="h-[17px] w-[17px]" />
               Administrator Sign In
@@ -170,29 +186,31 @@ function Hero() {
           </div>
 
           {/* Trust strip */}
-          <div className="mt-12">
-            <p className="mb-5 text-[13px] text-white/35">
+          <div className="mt-16">
+            <p className="mb-6 text-[13px] text-white/35">
               Trusted by forward-thinking logistics companies
             </p>
-            <div className="flex flex-wrap items-center gap-8">
-              <span className="text-[15px] font-black italic tracking-wide text-white/45">MIKANO</span>
-              <span className="text-[14px] font-black tracking-wide text-white/45">DANGOTE</span>
-              <span className="text-[14px] font-bold tracking-[0.05em] text-white/45">SIFAX GROUP</span>
-              <span className="text-[14px] font-bold tracking-[0.05em] text-white/45">WAECORP</span>
-              <span className="text-[15px] font-semibold tracking-wide text-white/45">
+            <div className="flex flex-wrap items-center gap-10">
+              <span className="text-[18px] font-black italic tracking-wide text-white/45">MIKANO</span>
+              <span className="text-[17px] font-black tracking-wide text-white/45">DANGOTE</span>
+              <span className="text-[16px] font-bold tracking-[0.05em] text-white/45">SIFAX GROUP</span>
+              <span className="text-[16px] font-bold tracking-[0.05em] text-white/45">WAECORP</span>
+              <span className="text-[18px] font-semibold tracking-wide text-white/45">
                 ABC <span className="font-light">Logistics</span>
               </span>
             </div>
           </div>
         </div>
 
-        {/* ── Right column — dashboard screenshot ── */}
-        <div className="hidden flex-1 items-start justify-end lg:flex">
+        {/* ── Right column ≈55% — dashboard screenshot ── */}
+        <div className="hidden flex-1 items-start justify-end lg:flex" style={{ paddingTop: "4px" }}>
           <div
-            className="relative w-full max-w-[640px] overflow-hidden rounded-2xl"
+            className="relative w-full max-w-[740px] overflow-hidden rounded-[20px]"
             style={{
+              border: "1.5px solid rgba(59,130,246,0.35)",
               boxShadow:
-                "0 0 0 1px rgba(255,255,255,0.07), 0 30px 80px -10px rgba(0,0,0,0.8), 0 0 60px 0 rgba(26,86,219,0.15)",
+                "0 0 0 1px rgba(255,255,255,0.06), 0 40px 100px -15px rgba(0,0,0,0.85), 0 0 90px 0 rgba(26,86,219,0.28)",
+              transform: "rotate(2deg)",
             }}
           >
             <img
