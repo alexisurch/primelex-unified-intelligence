@@ -104,10 +104,8 @@ function SiteNav() {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section
-      className="relative bg-[#060c1a]"
-      style={{ minHeight: "820px", overflow: "hidden" }}
-    >
+    <section className="relative bg-[#060c1a]" style={{ overflow: "hidden" }}>
+
       {/* Left blue glow — matches approved design warm left-centre bloom */}
       <div
         className="pointer-events-none absolute left-0 top-0 h-full w-[60%]"
@@ -142,10 +140,11 @@ function Hero() {
       />
 
       {/* Two-column flex container */}
-      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start px-8 pt-[72px] pb-0 lg:gap-8">
+      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start px-8 pb-16 pt-[60px] lg:gap-10">
 
         {/* ── Left column ≈44% ── */}
-        <div className="flex w-full shrink-0 flex-col pb-16 lg:w-[44%]">
+        <div className="flex w-full shrink-0 flex-col lg:w-[44%]">
+
 
           {/* Badge */}
           <div className="mb-5 inline-flex w-fit items-center rounded-full border border-[#1a56db]/55 bg-[#1a56db]/[0.08] px-[14px] py-[6px] text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#60a5fa]">
@@ -191,32 +190,33 @@ function Hero() {
           </div>
 
           {/* Trusted strip */}
-          <div className="mt-14">
-            <p className="mb-5 text-[12.5px] text-white/35">
+          <div className="mt-11">
+            <p className="mb-4 text-[11.5px] text-white/35">
               Trusted by forward-thinking logistics companies
             </p>
-            <div className="flex flex-wrap items-center gap-9">
-              <span className="text-[17px] font-black italic tracking-wide text-white/40">MIKANO</span>
-              <span className="text-[16px] font-black tracking-wide text-white/40">DANGOTE</span>
-              <span className="text-[15.5px] font-bold tracking-[0.04em] text-white/40">SIFAX GROUP</span>
-              <span className="text-[15.5px] font-bold tracking-[0.04em] text-white/40">WAECORP</span>
-              <span className="text-[17px] font-semibold tracking-wide text-white/40">
+            <div className="flex flex-nowrap items-center gap-6 whitespace-nowrap">
+              <span className="text-[13px] font-black italic tracking-wide text-white/35">MIKANO</span>
+              <span className="text-[12.5px] font-black tracking-wide text-white/35">DANGOTE</span>
+              <span className="text-[12px] font-bold tracking-[0.04em] text-white/35">SIFAX GROUP</span>
+              <span className="text-[12px] font-bold tracking-[0.04em] text-white/35">WAECORP</span>
+              <span className="text-[13px] font-semibold tracking-wide text-white/35">
                 ABC <span className="font-light">Logistics</span>
               </span>
             </div>
           </div>
+
         </div>
 
         {/* ── Right column ≈56% — dashboard showcase ── */}
         <div
           className="relative hidden flex-1 lg:block"
-          style={{ marginTop: "-12px" }}
+          style={{ marginTop: "18px", marginRight: "0px", perspective: "1600px" }}
         >
           <div
             style={{
-              transform: "rotate(2deg)",
-              transformOrigin: "center center",
-              borderRadius: "18px",
+              transform: "rotateY(-5deg) rotateX(1.5deg) rotate(1.5deg)",
+              transformOrigin: "left center",
+              borderRadius: "16px",
               overflow: "hidden",
               border: "1.5px solid rgba(59,130,246,0.40)",
               boxShadow:
@@ -235,6 +235,7 @@ function Hero() {
             />
           </div>
         </div>
+
 
         {/* Mobile fallback */}
         <div className="mt-10 block w-full lg:hidden">
