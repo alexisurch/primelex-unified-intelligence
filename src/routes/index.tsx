@@ -104,54 +104,58 @@ function SiteNav() {
 function Hero() {
   return (
     <section
-      className="relative overflow-hidden bg-[#060c1a]"
-      style={{ minHeight: "800px" }}
+      className="relative bg-[#060c1a]"
+      style={{ minHeight: "820px", overflow: "hidden" }}
     >
-      {/* Left blue glow */}
+      {/* Left blue glow — matches approved design warm left-centre bloom */}
       <div
-        className="pointer-events-none absolute left-0 top-0 h-full w-3/5"
+        className="pointer-events-none absolute left-0 top-0 h-full w-[60%]"
         style={{
           background:
-            "radial-gradient(ellipse 70% 85% at -8% 50%, rgba(26,86,219,0.30) 0%, transparent 60%)",
+            "radial-gradient(ellipse 75% 80% at -5% 52%, rgba(26,86,219,0.32) 0%, rgba(26,86,219,0.08) 45%, transparent 70%)",
         }}
       />
-      {/* Right subtle blue glow behind dashboard */}
+      {/* Right blue glow behind dashboard */}
       <div
-        className="pointer-events-none absolute right-0 top-0 h-full w-1/2"
+        className="pointer-events-none absolute right-0 top-0 h-full w-[55%]"
         style={{
           background:
-            "radial-gradient(ellipse 60% 70% at 80% 45%, rgba(26,86,219,0.18) 0%, transparent 65%)",
+            "radial-gradient(ellipse 65% 75% at 85% 40%, rgba(26,86,219,0.20) 0%, transparent 60%)",
         }}
       />
-      {/* Vignette */}
+      {/* Edge vignette */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(0,0,0,0.35) 100%)",
+            "radial-gradient(ellipse 110% 110% at 50% 50%, transparent 45%, rgba(0,0,0,0.45) 100%)",
         }}
       />
-
-      {/* Dot-grid overlay */}
+      {/* Subtle dot-grid */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        className="pointer-events-none absolute inset-0 opacity-[0.035]"
         style={{
-          backgroundImage:
-            "radial-gradient(oklch(1 0 0) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
 
-      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start gap-12 px-8 pt-16 pb-10 lg:pt-20">
-        {/* ── Left column ≈45% ── */}
-        <div className="flex w-full flex-col lg:w-[45%] lg:shrink-0">
+      {/* Two-column flex container */}
+      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start px-8 pt-[72px] pb-0 lg:gap-8">
+
+        {/* ── Left column ≈44% ── */}
+        <div className="flex w-full shrink-0 flex-col pb-16 lg:w-[44%]">
+
           {/* Badge */}
-          <div className="mb-6 inline-flex w-fit items-center rounded-full border border-[#1a56db]/60 bg-[#1a56db]/[0.1] px-4 py-[5px] text-[11px] font-semibold uppercase tracking-[0.15em] text-[#60a5fa]">
+          <div className="mb-5 inline-flex w-fit items-center rounded-full border border-[#1a56db]/55 bg-[#1a56db]/[0.08] px-[14px] py-[6px] text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#60a5fa]">
             Logistics Intelligence System (LIS)
           </div>
 
-          {/* Headline */}
-          <h1 className="text-[3.7rem] font-extrabold leading-[1.06] tracking-[-0.025em] text-white lg:text-[4.1rem]">
+          {/* Headline — 3 locked lines */}
+          <h1
+            className="font-extrabold leading-[1.05] tracking-[-0.03em] text-white"
+            style={{ fontSize: "clamp(2.6rem, 3.8vw, 3.85rem)", maxWidth: "520px" }}
+          >
             The Operating System
             <br />
             for{" "}
@@ -160,71 +164,87 @@ function Hero() {
             Companies
           </h1>
 
-          {/* Sub-copy */}
-          <p className="mt-7 max-w-[460px] text-[16px] leading-[1.7] text-white/50">
+          {/* Description */}
+          <p className="mt-6 text-[15.5px] leading-[1.72] text-white/50" style={{ maxWidth: "430px" }}>
             Manage your fleet, dispatch, trips, fuel, maintenance,
             routes and operations from one intelligent platform.
             Optimize performance. Reduce costs. Deliver more.
           </p>
 
-          {/* CTAs */}
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          {/* CTA buttons */}
+          <div className="mt-9 flex flex-wrap items-center gap-[14px]">
             <Link
               to="/register"
-              className="inline-flex items-center gap-2.5 rounded-lg bg-[#1a56db] px-8 py-4 text-[15.5px] font-semibold text-white shadow-xl shadow-[#1a56db]/30 transition-all hover:bg-[#1e4fc2]"
+              className="inline-flex items-center gap-[9px] rounded-lg bg-[#1a56db] px-8 py-[14px] text-[15px] font-semibold text-white shadow-xl shadow-[#1a56db]/25 transition-all hover:bg-[#1d4ed8]"
             >
-              <User className="h-[17px] w-[17px]" />
+              <User className="h-[16px] w-[16px]" />
               Create Organisation
             </Link>
             <Link
               to="/login"
-              className="inline-flex items-center gap-2.5 rounded-lg border border-white/[0.22] bg-transparent px-8 py-4 text-[15.5px] font-semibold text-white transition-all hover:border-white/35 hover:bg-white/[0.05]"
+              className="inline-flex items-center gap-[9px] rounded-lg border border-white/25 bg-transparent px-8 py-[14px] text-[15px] font-semibold text-white transition-all hover:border-white/40 hover:bg-white/[0.05]"
             >
-              <Lock className="h-[17px] w-[17px]" />
+              <Lock className="h-[16px] w-[16px]" />
               Administrator Sign In
             </Link>
           </div>
 
-          {/* Trust strip */}
-          <div className="mt-16">
-            <p className="mb-6 text-[13px] text-white/35">
+          {/* Trusted strip */}
+          <div className="mt-14">
+            <p className="mb-5 text-[12.5px] text-white/35">
               Trusted by forward-thinking logistics companies
             </p>
-            <div className="flex flex-wrap items-center gap-10">
-              <span className="text-[18px] font-black italic tracking-wide text-white/45">MIKANO</span>
-              <span className="text-[17px] font-black tracking-wide text-white/45">DANGOTE</span>
-              <span className="text-[16px] font-bold tracking-[0.05em] text-white/45">SIFAX GROUP</span>
-              <span className="text-[16px] font-bold tracking-[0.05em] text-white/45">WAECORP</span>
-              <span className="text-[18px] font-semibold tracking-wide text-white/45">
+            <div className="flex flex-wrap items-center gap-9">
+              <span className="text-[17px] font-black italic tracking-wide text-white/40">MIKANO</span>
+              <span className="text-[16px] font-black tracking-wide text-white/40">DANGOTE</span>
+              <span className="text-[15.5px] font-bold tracking-[0.04em] text-white/40">SIFAX GROUP</span>
+              <span className="text-[15.5px] font-bold tracking-[0.04em] text-white/40">WAECORP</span>
+              <span className="text-[17px] font-semibold tracking-wide text-white/40">
                 ABC <span className="font-light">Logistics</span>
               </span>
             </div>
           </div>
         </div>
 
-        {/* ── Right column ≈55% — dashboard screenshot ── */}
-        <div className="hidden flex-1 items-start justify-end lg:flex" style={{ paddingTop: "4px" }}>
+        {/* ── Right column ≈56% — dashboard showcase ── */}
+        <div
+          className="relative hidden flex-1 lg:block"
+          style={{ marginTop: "-12px" }}
+        >
           <div
-            className="relative w-full max-w-[740px] overflow-hidden rounded-[20px]"
             style={{
-              border: "1.5px solid rgba(59,130,246,0.35)",
-              boxShadow:
-                "0 0 0 1px rgba(255,255,255,0.06), 0 40px 100px -15px rgba(0,0,0,0.85), 0 0 90px 0 rgba(26,86,219,0.28)",
               transform: "rotate(2deg)",
+              transformOrigin: "top left",
+              borderRadius: "18px",
+              overflow: "hidden",
+              border: "1.5px solid rgba(59,130,246,0.40)",
+              boxShadow:
+                "0 0 0 1px rgba(255,255,255,0.06)," +
+                "0 50px 120px -20px rgba(0,0,0,0.90)," +
+                "0 0 100px -10px rgba(26,86,219,0.38)," +
+                "0 0 40px 0 rgba(59,130,246,0.18)",
             }}
           >
             <img
               src="/dashboard-preview.png"
               alt="LIS platform dashboard overview"
               className="block w-full"
+              style={{ display: "block", width: "100%" }}
               draggable={false}
             />
           </div>
         </div>
 
-        {/* Mobile: image below text */}
+        {/* Mobile fallback */}
         <div className="mt-10 block w-full lg:hidden">
-          <div className="overflow-hidden rounded-xl" style={{ boxShadow: "0 0 0 1px rgba(255,255,255,0.07), 0 20px 60px -10px rgba(0,0,0,0.8)" }}>
+          <div
+            style={{
+              borderRadius: "14px",
+              overflow: "hidden",
+              border: "1px solid rgba(59,130,246,0.30)",
+              boxShadow: "0 20px 60px -10px rgba(0,0,0,0.8), 0 0 40px rgba(26,86,219,0.2)",
+            }}
+          >
             <img
               src="/dashboard-preview.png"
               alt="LIS platform dashboard overview"
