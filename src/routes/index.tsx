@@ -353,7 +353,7 @@ function CtaSection() {
           />
 
           {/* Truck illustration — flush right, blended into the background */}
-          <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-0 hidden w-[42%] select-none lg:block">
+          <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-0 hidden w-[52%] select-none lg:block">
             <img
               src={ctaTruck}
               alt=""
@@ -361,22 +361,18 @@ function CtaSection() {
               height={640}
               loading="lazy"
               draggable={false}
-              className="absolute bottom-0 right-[-4%] h-[112%] w-auto max-w-none object-contain opacity-[0.85]"
-              style={{ filter: "brightness(0.62) saturate(0.75) contrast(1.05)" }}
-            />
-            {/* blend edges into the navy base */}
-            <div
-              className="absolute inset-0"
+              className="absolute bottom-0 right-[-3%] h-[116%] w-auto max-w-none object-contain"
               style={{
-                background:
-                  "linear-gradient(to right, #0b1c3f 0%, rgba(11,28,63,0.72) 22%, rgba(11,28,63,0.18) 55%, rgba(8,20,40,0.35) 100%)",
+                filter: "brightness(0.6) saturate(0.7) contrast(1.05)",
+                maskImage:
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 16%, rgba(0,0,0,0.9) 38%, #000 55%), linear-gradient(to top, transparent 0%, rgba(0,0,0,0.6) 10%, #000 26%)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 16%, rgba(0,0,0,0.9) 38%, #000 55%), linear-gradient(to top, transparent 0%, rgba(0,0,0,0.6) 10%, #000 26%)",
+                maskComposite: "intersect",
+                WebkitMaskComposite: "source-in",
               }}
             />
-            <div
-              className="absolute inset-x-0 bottom-0 h-1/3"
-              style={{ background: "linear-gradient(to top, rgba(8,19,38,0.9), transparent)" }}
-            />
-          </div>
+
 
           {/* Left content ≈62% */}
           <div className="relative z-10 flex w-full flex-col justify-center px-8 py-10 sm:px-12 lg:w-[62%] lg:px-14 lg:py-11">
