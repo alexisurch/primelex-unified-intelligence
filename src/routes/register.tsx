@@ -502,7 +502,7 @@ function WorkspaceReadyScreen({ slug, companyName, primaryColor, navigate }: { s
           </div>
 
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate({ to: "/login" })}
             className="inline-flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             style={{ background: primaryColor }}
           >
