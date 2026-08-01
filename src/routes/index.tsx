@@ -189,20 +189,21 @@ function Hero() {
           </div>
 
           {/* Trusted strip */}
-          <div className="mt-14">
-            <p className="mb-5 text-[12.5px] text-white/35">
+          <div className="mt-11">
+            <p className="mb-4 text-[11.5px] text-white/35">
               Trusted by forward-thinking logistics companies
             </p>
-            <div className="flex flex-wrap items-center gap-9">
-              <span className="text-[17px] font-black italic tracking-wide text-white/40">MIKANO</span>
-              <span className="text-[16px] font-black tracking-wide text-white/40">DANGOTE</span>
-              <span className="text-[15.5px] font-bold tracking-[0.04em] text-white/40">SIFAX GROUP</span>
-              <span className="text-[15.5px] font-bold tracking-[0.04em] text-white/40">WAECORP</span>
-              <span className="text-[17px] font-semibold tracking-wide text-white/40">
+            <div className="flex flex-nowrap items-center gap-6 whitespace-nowrap">
+              <span className="text-[13px] font-black italic tracking-wide text-white/35">MIKANO</span>
+              <span className="text-[12.5px] font-black tracking-wide text-white/35">DANGOTE</span>
+              <span className="text-[12px] font-bold tracking-[0.04em] text-white/35">SIFAX GROUP</span>
+              <span className="text-[12px] font-bold tracking-[0.04em] text-white/35">WAECORP</span>
+              <span className="text-[13px] font-semibold tracking-wide text-white/35">
                 ABC <span className="font-light">Logistics</span>
               </span>
             </div>
           </div>
+
         </div>
 
         {/* ── Right column ≈56% — dashboard showcase ── */}
