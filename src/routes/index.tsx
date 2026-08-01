@@ -154,9 +154,9 @@ function Hero() {
           {/* Headline — 3 locked lines */}
           <h1
             className="font-extrabold leading-[1.05] tracking-[-0.03em] text-white"
-            style={{ fontSize: "clamp(2.6rem, 3.8vw, 3.85rem)", maxWidth: "520px" }}
+            style={{ fontSize: "clamp(2.4rem, 3.4vw, 3.5rem)" }}
           >
-            The Operating System
+            <span style={{ whiteSpace: "nowrap" }}>The Operating System</span>
             <br />
             for{" "}
             <span className="text-[#3b82f6]">Modern Logistics</span>
@@ -214,7 +214,7 @@ function Hero() {
           <div
             style={{
               transform: "rotate(2deg)",
-              transformOrigin: "top left",
+              transformOrigin: "center center",
               borderRadius: "18px",
               overflow: "hidden",
               border: "1.5px solid rgba(59,130,246,0.40)",
