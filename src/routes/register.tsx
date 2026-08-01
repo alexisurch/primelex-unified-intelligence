@@ -459,7 +459,7 @@ function ProvisioningScreen({ slug, companyName, primaryColor }: { slug: string;
   );
 }
 
-function WorkspaceReadyScreen({ slug, companyName, primaryColor, navigate }: { slug: string; companyName: string; primaryColor: string; navigate: (to: string) => void }) {
+function WorkspaceReadyScreen({ slug, companyName, primaryColor, navigate }: { slug: string; companyName: string; primaryColor: string; navigate: (opts: { to: string }) => void }) {
   const [copied, setCopied] = useState(false);
   const workspaceUrl = `${window.location.origin}/${slug}/login`;
 
