@@ -210,7 +210,7 @@ function Hero() {
         {/* ── Right column ≈56% — dashboard showcase ── */}
         <div
           className="relative hidden flex-1 lg:block"
-          style={{ marginTop: "18px", marginRight: "-28px", perspective: "1600px" }}
+          style={{ marginTop: "18px", marginRight: "0px", perspective: "1600px" }}
         >
           <div
             style={{
