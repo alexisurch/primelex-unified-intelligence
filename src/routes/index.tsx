@@ -372,6 +372,7 @@ function CtaSection() {
                 WebkitMaskComposite: "source-in",
               }}
             />
+          </div>
 
 
           {/* Left content ≈62% */}
