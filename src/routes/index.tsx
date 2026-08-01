@@ -210,11 +210,11 @@ function Hero() {
         {/* ── Right column ≈56% — dashboard showcase ── */}
         <div
           className="relative hidden flex-1 lg:block"
-          style={{ marginTop: "18px", marginRight: "-56px", perspective: "1600px" }}
+          style={{ marginTop: "18px", marginRight: "-28px", perspective: "1600px" }}
         >
           <div
             style={{
-              transform: "rotateY(-7deg) rotateX(2deg) rotate(1.5deg) scale(1.1)",
+              transform: "rotateY(-5deg) rotateX(1.5deg) rotate(1.5deg)",
               transformOrigin: "left center",
               borderRadius: "16px",
               overflow: "hidden",
