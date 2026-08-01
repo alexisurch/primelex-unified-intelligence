@@ -140,10 +140,11 @@ function Hero() {
       />
 
       {/* Two-column flex container */}
-      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start px-8 pt-[72px] pb-0 lg:gap-8">
+      <div className="relative z-10 mx-auto flex max-w-[1280px] items-start px-8 pb-16 pt-[60px] lg:gap-10">
 
         {/* ── Left column ≈44% ── */}
-        <div className="flex w-full shrink-0 flex-col pb-16 lg:w-[44%]">
+        <div className="flex w-full shrink-0 flex-col lg:w-[44%]">
+
 
           {/* Badge */}
           <div className="mb-5 inline-flex w-fit items-center rounded-full border border-[#1a56db]/55 bg-[#1a56db]/[0.08] px-[14px] py-[6px] text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#60a5fa]">
