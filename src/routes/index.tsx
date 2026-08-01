@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Truck, Fuel, Route as RouteIcon, Wrench, ShieldCheck, ChartBar as BarChart3, ChartPie as PieChart, ChevronDown, User, Lock, Linkedin, Twitter, Facebook, Youtube, DollarSign, Shield, BrainCircuit, Radio } from "lucide-react";
-import truckImg from "../assets/ChatGPT_Image_Jul_23,_2026,_06_26_39_PM.4.5.png";
+import ctaTruck from "../assets/cta-truck.png";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -332,44 +332,59 @@ function BenefitsSection() {
 /* ── CTA Banner ──────────────────────────────────────────────────────────── */
 function CtaSection() {
   return (
-    <section className="px-8 py-16">
+    <section className="px-8 py-14">
       <div className="mx-auto max-w-[1280px]">
         <div
-          className="relative flex min-h-[300px] items-center overflow-hidden rounded-[22px] border border-white/[0.08]"
+          className="relative isolate flex items-center overflow-hidden rounded-[22px] border border-white/[0.08]"
           style={{
             background:
-              "linear-gradient(110deg, #0c1c46 0%, #0f2156 50%, #0a1430 100%)",
+              "linear-gradient(105deg, #081326 0%, #0b1c3f 45%, #0d2350 72%, #081428 100%)",
             boxShadow:
-              "0 30px 80px -20px rgba(0,0,0,0.6), 0 0 60px -10px rgba(26,86,219,0.25), inset 0 0 120px 0 rgba(26,86,219,0.08)",
+              "0 24px 70px -24px rgba(0,0,0,0.7), 0 0 50px -14px rgba(26,86,219,0.22), inset 0 1px 0 0 rgba(255,255,255,0.05)",
           }}
         >
-          {/* soft blue radial overlay */}
+          {/* soft blue lighting */}
           <div
-            className="pointer-events-none absolute inset-0"
+            className="pointer-events-none absolute inset-0 -z-10"
             style={{
               background:
-                "radial-gradient(ellipse 70% 100% at 20% 50%, rgba(26,86,219,0.22) 0%, transparent 65%)",
-            }}
-          />
-          {/* subtle grid */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.035]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 44px),repeating-linear-gradient(90deg,#fff 0 1px,transparent 1px 44px)",
+                "radial-gradient(ellipse 60% 120% at 78% 55%, rgba(29,96,232,0.30) 0%, transparent 62%), radial-gradient(ellipse 55% 100% at 8% 40%, rgba(26,86,219,0.14) 0%, transparent 65%)",
             }}
           />
 
-          {/* Left content ≈65% */}
-          <div className="relative z-10 flex w-full flex-col justify-center px-12 py-12 lg:w-[65%] lg:px-14">
-            <h2 className="text-[2rem] font-bold leading-[1.15] tracking-tight text-white lg:text-[2.15rem]">
+          {/* Truck illustration — flush right, blended into the background */}
+          <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-0 hidden w-[52%] select-none lg:block">
+            <img
+              src={ctaTruck}
+              alt=""
+              width={1024}
+              height={640}
+              loading="lazy"
+              draggable={false}
+              className="absolute bottom-0 right-[-3%] h-[116%] w-auto max-w-none object-contain"
+              style={{
+                filter: "brightness(0.6) saturate(0.7) contrast(1.05)",
+                maskImage:
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 16%, rgba(0,0,0,0.9) 38%, #000 55%), linear-gradient(to top, transparent 0%, rgba(0,0,0,0.6) 10%, #000 26%)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 16%, rgba(0,0,0,0.9) 38%, #000 55%), linear-gradient(to top, transparent 0%, rgba(0,0,0,0.6) 10%, #000 26%)",
+                maskComposite: "intersect",
+                WebkitMaskComposite: "source-in",
+              }}
+            />
+          </div>
+
+
+          {/* Left content ≈62% */}
+          <div className="relative z-10 flex w-full flex-col justify-center px-8 py-10 sm:px-12 lg:w-[62%] lg:px-14 lg:py-11">
+            <h2 className="text-[1.6rem] font-bold leading-[1.2] tracking-tight text-white sm:text-[1.75rem]">
               Ready to Modernize Your Logistics Operations?
             </h2>
-            <p className="mt-4 max-w-[420px] text-[15px] leading-[1.7] text-white/55">
+            <p className="mt-3 max-w-[400px] text-[14px] leading-[1.65] text-white/55">
               Create your organisation and start running your operations
               smarter, faster and more profitably.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-[14px]">
+            <div className="mt-7 flex flex-wrap items-center gap-[14px]">
               <Link
                 to="/register"
                 className="inline-flex items-center gap-[9px] rounded-lg bg-[#1a56db] px-8 py-[14px] text-[15px] font-semibold text-white shadow-xl shadow-[#1a56db]/25 transition-all hover:bg-[#1d4ed8]"
@@ -385,34 +400,6 @@ function CtaSection() {
                 Administrator Sign In
               </Link>
             </div>
-          </div>
-
-          {/* Right truck image ≈35% — flush to right edge, fading into bg */}
-          <div className="pointer-events-none absolute bottom-0 right-0 top-0 hidden w-[38%] lg:block">
-            <img
-              src={truckImg}
-              alt=""
-              className="h-full w-full object-right object-contain"
-              draggable={false}
-            />
-            {/* fade truck into the navy background on its left edge */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to right, #0c1c46 0%, rgba(12,28,70,0.55) 18%, transparent 45%)",
-              }}
-            />
-          </div>
-
-          {/* Mobile: truck below */}
-          <div className="relative z-10 mt-6 block w-full lg:hidden">
-            <img
-              src={truckImg}
-              alt=""
-              className="mx-auto max-h-[200px] object-contain"
-              draggable={false}
-            />
           </div>
         </div>
       </div>
