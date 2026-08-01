@@ -104,10 +104,8 @@ function SiteNav() {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section
-      className="relative bg-[#060c1a]"
-      style={{ minHeight: "820px", overflow: "hidden" }}
-    >
+    <section className="relative bg-[#060c1a]" style={{ overflow: "hidden" }}>
+
       {/* Left blue glow — matches approved design warm left-centre bloom */}
       <div
         className="pointer-events-none absolute left-0 top-0 h-full w-[60%]"
