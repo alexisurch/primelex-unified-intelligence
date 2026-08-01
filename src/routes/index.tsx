@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Truck, Fuel, Route as RouteIcon, Wrench, ShieldCheck, ChartBar as BarChart3, ChartPie as PieChart, ChevronDown, User, Lock, Linkedin, Twitter, Facebook, Youtube, DollarSign, Shield, BrainCircuit, Radio } from "lucide-react";
-import truckImg from "../assets/ChatGPT_Image_Jul_23,_2026,_06_26_39_PM.4.5.png";
+import ctaTruck from "../assets/cta-truck.png";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
