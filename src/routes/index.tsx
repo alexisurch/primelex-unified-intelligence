@@ -1,5 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Truck, Fuel, Route as RouteIcon, Wrench, ShieldCheck, ChartBar as BarChart3, ChartPie as PieChart, ChevronDown, User, Lock, DollarSign, Shield, BrainCircuit, Radio, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
+import {
+  Truck,
+  Fuel,
+  Route as RouteIcon,
+  Wrench,
+  ShieldCheck,
+  ChartBar as BarChart3,
+  ChartPie as PieChart,
+  ChevronDown,
+  User,
+  Lock,
+  DollarSign,
+  Shield,
+  BrainCircuit,
+  Radio,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Youtube,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -20,14 +39,12 @@ const BENEFITS = [
   {
     icon: DollarSign,
     title: "Reduce Costs",
-    description:
-      "Identify inefficiencies and reduce fuel waste across your fleet.",
+    description: "Identify inefficiencies and reduce fuel waste across your fleet.",
   },
   {
     icon: Truck,
     title: "Improve Efficiency",
-    description:
-      "Increase fleet utilization and optimize operational workflows.",
+    description: "Increase fleet utilization and optimize operational workflows.",
   },
   {
     icon: Shield,
@@ -50,7 +67,12 @@ const FOOTER_COLS = [
   },
   {
     heading: "Solutions",
-    links: ["Fleet Management", "Dispatch Management", "Fuel Management", "Operations Intelligence"],
+    links: [
+      "Fleet Management",
+      "Dispatch Management",
+      "Fuel Management",
+      "Operations Intelligence",
+    ],
   },
   {
     heading: "Resources",
@@ -81,30 +103,30 @@ function LandingPage() {
 
 /* ── Navigation ─────────────────────────────────────────────────────────── */
 const NAV_LINKS = [
+  { label: "Product", dropdown: true },
   { label: "Solutions", dropdown: true },
-  { label: "Platform", dropdown: true },
   { label: "Resources", dropdown: true },
-  { label: "Company", dropdown: true },
+  { label: "Company", dropdown: false },
   { label: "Pricing", dropdown: false },
 ];
 function SiteNav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[oklch(0.16_0.028_260)] backdrop-blur-md">
-      <div className="mx-auto flex h-[84px] max-w-[1400px] items-center px-10">
+    <header className="absolute top-0 z-50 w-full bg-transparent">
+      <div className="mx-auto flex h-[96px] max-w-[1400px] items-center px-9 lg:px-12">
         {/* Logo — left */}
         <Link to="/" className="flex shrink-0 items-center gap-3">
-          <div className="relative h-[42px] w-[42px] shrink-0">
+          <div className="relative h-[50px] w-[50px] shrink-0">
             <div
               className="absolute inset-0 bg-primary"
               style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
             />
             <div className="relative z-10 flex h-full w-full items-center justify-center">
-              <RouteIcon className="h-[18px] w-[18px] text-white" />
+              <RouteIcon className="h-[20px] w-[20px] text-white" />
             </div>
           </div>
           <div className="leading-none">
-            <div className="text-[17px] font-black tracking-[0.06em] text-foreground">PRIMELEX</div>
-            <div className="mt-[3px] text-[8.5px] font-semibold tracking-[0.26em] text-muted-foreground">
+            <div className="text-[21px] font-black tracking-[0.14em] text-foreground">PRIMELEX</div>
+            <div className="mt-[3px] text-[10px] font-semibold tracking-[0.42em] text-muted-foreground">
               TECHNOLOGIES
             </div>
           </div>
@@ -115,7 +137,7 @@ function SiteNav() {
           {NAV_LINKS.map((n) => (
             <button
               key={n.label}
-              className="inline-flex items-center gap-[5px] rounded-md px-[20px] py-2.5 text-[14.5px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-[5px] rounded-md px-[20px] py-2.5 text-[13px] font-medium text-white transition-colors hover:text-foreground"
             >
               {n.label}
               {n.dropdown && <ChevronDown className="h-[13px] w-[13px] opacity-60" />}
@@ -126,7 +148,7 @@ function SiteNav() {
         {/* Sign In button — right */}
         <Link
           to="/login"
-          className="ml-auto hidden shrink-0 items-center gap-[7px] rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex"
+          className="ml-auto hidden shrink-0 items-center gap-[7px] rounded-lg border border-primary/65 bg-transparent px-5 py-3 text-[13px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex"
         >
           <User className="h-[15px] w-[15px]" />
           Sign In
@@ -139,10 +161,7 @@ function SiteNav() {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section
-      className="relative overflow-hidden"
-      style={{ background: "oklch(0.155 0.028 260)" }}
-    >
+    <section className="relative overflow-hidden" style={{ background: "oklch(0.105 0.034 260)" }}>
       {/* Left-side radial glow */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -180,21 +199,21 @@ function Hero() {
 
       <div
         className="relative mx-auto max-w-[1400px] px-10"
-        style={{ minHeight: "820px", paddingTop: "72px", paddingBottom: "72px" }}
+        style={{ minHeight: "100vh", paddingTop: "118px", paddingBottom: "28px" }}
       >
         {/* ── Desktop two-column ── */}
-        <div className="hidden lg:grid lg:grid-cols-[44%_56%] lg:items-start lg:gap-12">
+        <div className="hidden lg:grid lg:grid-cols-[43%_57%] lg:items-start lg:gap-8">
           {/* Left column */}
-          <div className="flex flex-col pt-4">
+          <div className="flex flex-col pt-0">
             {/* Badge */}
-            <div className="inline-flex w-fit items-center rounded-full border border-primary/50 bg-primary/[0.08] px-5 py-[9px] text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+            <div className="inline-flex w-fit items-center rounded-full border border-primary/50 bg-primary/[0.08] px-4 py-[7px] text-[12px] font-semibold uppercase tracking-[0.06em] text-primary">
               Logistics Intelligence System (LIS)
             </div>
 
             {/* Headline */}
             <h1
               className="mt-6 font-extrabold leading-[1.04] tracking-[-0.035em] text-foreground"
-              style={{ fontSize: "clamp(2.6rem, 4.2vw, 4.2rem)" }}
+              style={{ fontSize: "clamp(2.7rem, 3.55vw, 3.95rem)" }}
             >
               <span className="block whitespace-nowrap">The Operating System</span>
               <span className="block">
@@ -210,7 +229,7 @@ function Hero() {
             </h1>
 
             {/* Sub-copy */}
-            <p className="mt-7 max-w-[480px] text-[15.5px] leading-[1.8] text-muted-foreground">
+            <p className="mt-5 max-w-[480px] text-[16px] leading-[1.55] text-muted-foreground">
               Manage your fleet, dispatch, trips, fuel, maintenance,
               <br />
               routes and operations from one intelligent platform.
@@ -219,17 +238,17 @@ function Hero() {
             </p>
 
             {/* CTAs */}
-            <div className="mt-11 flex items-center gap-5">
+            <div className="mt-9 flex items-center gap-5">
               <Link
                 to="/register"
-                className="inline-flex items-center gap-[9px] rounded-lg bg-primary px-9 py-[15px] text-[15px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
+                className="inline-flex items-center gap-[9px] rounded-[5px] bg-primary px-7 py-[15px] text-[15px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
               >
                 <User className="h-[16px] w-[16px]" />
                 Create Organisation
               </Link>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-[9px] rounded-lg border border-white/[0.22] bg-white/[0.04] px-9 py-[15px] text-[15px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]"
+                className="inline-flex items-center gap-[9px] rounded-[5px] border border-primary/65 bg-white/[0.02] px-7 py-[15px] text-[15px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]"
               >
                 <Lock className="h-[16px] w-[16px]" />
                 Administrator Sign In
@@ -237,25 +256,33 @@ function Hero() {
             </div>
 
             {/* Trust strip */}
-            <div className="mt-16">
-              <p className="mb-7 text-[13px] font-normal text-white/40">
+            <div className="mt-12">
+              <p className="mb-6 text-[13px] font-normal text-white/40">
                 Trusted by forward-thinking logistics companies
               </p>
-              <div className="flex flex-wrap items-center gap-x-12 gap-y-4">
-                <span className="text-[15px] font-black italic tracking-wide text-white/30">MIKANO</span>
+              <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
+                <span className="text-[15px] font-black italic tracking-wide text-white/30">
+                  MIKANO
+                </span>
                 <span className="text-[15px] font-black tracking-wide text-white/30">DANGOTE</span>
-                <span className="text-[14px] font-bold tracking-[0.08em] text-white/30">SIFAX GROUP</span>
-                <span className="text-[14px] font-bold tracking-[0.07em] text-white/30">WAECORP</span>
-                <span className="text-[15px] font-semibold text-white/30">ABC <span className="font-light">Logistics</span></span>
+                <span className="text-[14px] font-bold tracking-[0.08em] text-white/30">
+                  SIFAX GROUP
+                </span>
+                <span className="text-[14px] font-bold tracking-[0.07em] text-white/30">
+                  WAECORP
+                </span>
+                <span className="text-[15px] font-semibold text-white/30">
+                  ABC <span className="font-light">Logistics</span>
+                </span>
               </div>
             </div>
           </div>
 
           {/* Right column – dashboard screenshot */}
-          <div className="relative flex items-start justify-end lg:h-[700px]">
+          <div className="relative flex items-start justify-end lg:h-[470px]">
             {/* Blue glow behind the frame */}
             <div
-              className="pointer-events-none absolute right-[-60px] top-[8%] h-[90%] w-[100%]"
+              className="pointer-events-none absolute right-[-35px] top-[3%] h-[98%] w-[102%]"
               style={{
                 background:
                   "radial-gradient(ellipse 70% 65% at 58% 48%, oklch(0.50 0.22 258 / 0.38) 0%, transparent 70%)",
@@ -264,11 +291,11 @@ function Hero() {
             />
             {/* Premium product frame */}
             <div
-              className="relative mt-[-30px] w-[105%] overflow-hidden rounded-[28px] border-2 border-blue-500/40 bg-[oklch(0.13_0.025_258)]"
+              className="relative mt-[-18px] w-[108%] overflow-hidden rounded-[18px] border border-blue-500/40 bg-[oklch(0.13_0.025_258)]"
               style={{
                 boxShadow:
                   "0 0 0 1px oklch(1 0 0 / 0.05), 0 70px 140px -28px oklch(0 0 0 / 0.85), 0 24px 60px -14px oklch(0 0 0 / 0.6), 0 0 100px -20px oklch(0.50 0.22 258 / 0.55)",
-                transform: "perspective(1600px) rotateY(-3deg) rotateX(0.8deg) rotate(2deg)",
+                transform: "perspective(1600px) rotateY(-3deg) rotateX(0.8deg) rotate(-1deg)",
                 transformOrigin: "right center",
               }}
             >
@@ -290,13 +317,14 @@ function Hero() {
           </div>
           <h1 className="mt-5 text-[2.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
             <span className="block whitespace-nowrap">The Operating System</span>
-            <span className="block">for <span className="text-primary">Modern Logistics</span></span>
+            <span className="block">
+              for <span className="text-primary">Modern Logistics</span>
+            </span>
             <span className="block">Companies</span>
           </h1>
           <p className="mt-5 text-[15px] leading-[1.65] text-muted-foreground">
-            Manage your fleet, dispatch, trips, fuel, maintenance,
-            routes and operations from one intelligent platform.
-            Optimize performance. Reduce costs. Deliver more.
+            Manage your fleet, dispatch, trips, fuel, maintenance, routes and operations from one
+            intelligent platform. Optimize performance. Reduce costs. Deliver more.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
@@ -315,7 +343,9 @@ function Hero() {
             </Link>
           </div>
           <div className="mt-8">
-            <p className="mb-4 text-[13px] text-muted-foreground">Trusted by forward-thinking logistics companies</p>
+            <p className="mb-4 text-[13px] text-muted-foreground">
+              Trusted by forward-thinking logistics companies
+            </p>
             <div className="flex flex-wrap items-center gap-5">
               <span className="text-[12px] font-black italic text-white/40">MIKANO</span>
               <span className="text-[12px] font-black text-white/40">DANGOTE</span>
@@ -324,8 +354,16 @@ function Hero() {
               <span className="text-[12px] font-semibold text-white/40">ABC Logistics</span>
             </div>
           </div>
-          <div className="mt-8 overflow-hidden rounded-[14px] border border-white/[0.1]" style={{ boxShadow: "0 24px 60px -12px oklch(0 0 0 / 0.6)" }}>
-            <img src="/dashboard-screenshot.png" alt="LIS Dashboard" className="block w-full" loading="eager" />
+          <div
+            className="mt-8 overflow-hidden rounded-[14px] border border-white/[0.1]"
+            style={{ boxShadow: "0 24px 60px -12px oklch(0 0 0 / 0.6)" }}
+          >
+            <img
+              src="/dashboard-screenshot.png"
+              alt="LIS Dashboard"
+              className="block w-full"
+              loading="eager"
+            />
           </div>
         </div>
       </div>
@@ -383,8 +421,8 @@ function BenefitsSection() {
           Turn Operations into Competitive Advantage
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-center text-sm leading-relaxed text-muted-foreground">
-          LIS helps logistics companies reduce costs, improve efficiency and
-          make smarter decisions every day.
+          LIS helps logistics companies reduce costs, improve efficiency and make smarter decisions
+          every day.
         </p>
 
         {/* 4-column benefit cards */}
@@ -398,9 +436,7 @@ function BenefitsSection() {
                 <b.icon className="h-5 w-5 text-[#3b82f6]" />
               </div>
               <h3 className="text-[15px] font-semibold text-white">{b.title}</h3>
-              <p className="text-[13px] leading-relaxed text-white/50">
-                {b.description}
-              </p>
+              <p className="text-[13px] leading-relaxed text-white/50">{b.description}</p>
             </div>
           ))}
         </div>
@@ -435,8 +471,8 @@ function CTASection() {
             Ready to Modernize Your Logistics Operations?
           </h2>
           <p className="mt-2 max-w-xs text-[13px] leading-relaxed text-muted-foreground">
-            Create your organisation and start running your operations
-            smarter, faster and more profitably.
+            Create your organisation and start running your operations smarter, faster and more
+            profitably.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
@@ -463,7 +499,10 @@ function CTASection() {
             alt=""
             aria-hidden="true"
             className="h-full w-full object-cover object-left"
-            style={{ maskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)" }}
+            style={{
+              maskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)",
+            }}
           />
         </div>
       </div>
@@ -495,8 +534,8 @@ function SiteFooter() {
               </div>
             </Link>
             <p className="max-w-[200px] text-[12px] leading-relaxed text-muted-foreground">
-              Building intelligent logistics software solutions that help
-              businesses operate smarter and achieve more.
+              Building intelligent logistics software solutions that help businesses operate smarter
+              and achieve more.
             </p>
             {/* Social */}
             <div className="mt-1 flex items-center gap-3">
