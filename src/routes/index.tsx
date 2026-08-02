@@ -56,22 +56,8 @@ const BENEFITS = [
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <PublicHeader />
-      <Hero />
-      <ModulesSection />
-      <BenefitsSection />
-      <CTASection />
-      <PublicFooter />
-    </div>
-  );
-}
-
-/* ── Hero ────────────────────────────────────────────────────────────────── */
-function Hero() {
-  return (
-    <section className="relative overflow-hidden" style={{ background: "oklch(0.105 0.034 260)" }}>
-      {/* Left-side radial glow */}
+    <div className="relative min-h-screen overflow-hidden text-foreground" style={{ background: "oklch(0.105 0.034 260)" }}>
+      {/* Page-wide mixture & blend — same as the hero */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -79,8 +65,6 @@ function Hero() {
             "radial-gradient(ellipse 50% 70% at 8% 50%, oklch(0.50 0.22 258 / 0.18) 0%, transparent 68%)",
         }}
       />
-
-      {/* Centre radial — very subtle lift */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -88,8 +72,6 @@ function Hero() {
             "radial-gradient(ellipse 90% 60% at 50% 50%, oklch(0.50 0.22 258 / 0.06) 0%, transparent 70%)",
         }}
       />
-
-      {/* Very subtle dot-grid texture overlay */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.025]"
         style={{
@@ -98,6 +80,22 @@ function Hero() {
         }}
       />
 
+      <div className="relative z-10">
+        <PublicHeader />
+        <Hero />
+        <ModulesSection />
+        <BenefitsSection />
+        <CTASection />
+        <PublicFooter />
+      </div>
+    </div>
+  );
+}
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+function Hero() {
+  return (
+    <section className="relative overflow-hidden">
       <div
         className="relative mx-auto max-w-[1400px] px-10"
         style={{ paddingTop: "118px", paddingBottom: "0px" }}
@@ -248,7 +246,7 @@ function Hero() {
 /* ── Modules ─────────────────────────────────────────────────────────────── */
 function ModulesSection() {
   return (
-    <section className="border-t border-white/[0.06] bg-background py-20">
+    <section className="py-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* Eyebrow */}
         <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
@@ -285,7 +283,7 @@ function ModulesSection() {
 /* ── Benefits ────────────────────────────────────────────────────────────── */
 function BenefitsSection() {
   return (
-    <section className="border-t border-white/[0.06] bg-background py-20">
+    <section className="py-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* Eyebrow */}
         <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
