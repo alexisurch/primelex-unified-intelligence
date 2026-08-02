@@ -12,7 +12,6 @@ import {
   Users,
   Building2,
   Gauge,
-  TrendingDown,
   BrainCircuit,
   Lock,
   Cloud,
@@ -88,7 +87,7 @@ const EXEC_KPIS = [
   { icon: Truck, name: "Fleet Utilisation", description: "Measure how effectively your fleet is being used over time." },
   { icon: Fuel, name: "Fuel Performance", description: "Track fuel efficiency and cost impact across the fleet." },
   { icon: Wrench, name: "Maintenance Performance", description: "Monitor repair cycles, downtime and maintenance spend." },
-  { icon: ChartBar3, name: "Operational Reviews", description: "Periodic reviews of performance across every module." },
+  { icon: BarChart3, name: "Operational Reviews", description: "Periodic reviews of performance across every module." },
   { icon: BrainCircuit, name: "AI Insights", description: "AI-generated recommendations tailored to your operations." },
   { icon: FileText, name: "Executive Reports", description: "Board-ready reports summarising operational performance." },
 ];
