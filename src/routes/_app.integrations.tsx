@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
-import { Plus, Settings2, MoveVertical as MoreVertical, Truck, RefreshCw, Search, Download, ListFilter as Filter, CalendarDays, Wifi } from "lucide-react";
+import { Settings2, MoveVertical as MoreVertical, Truck, RefreshCw, Search, Download, ListFilter as Filter, CalendarDays, Wifi } from "lucide-react";
 
 export const Route = createFileRoute("/_app/integrations")({
   component: IntegrationsPage,
@@ -328,12 +328,7 @@ function IntegrationsPage() {
       <Header
         title="Connected Systems"
         subtitle="Connect GPS tracking providers and external systems to automatically synchronize vehicles, trips, locations and operational data into LIS."
-        actions={
-          <Button className="bg-primary text-white hover:bg-primary/90">
-            <Plus className="mr-2 h-4 w-4" />
-            Connect System
-          </Button>
-        }
+        showDate={false}
       />
       <div className="space-y-6 p-8">
         {/* Connected Providers */}

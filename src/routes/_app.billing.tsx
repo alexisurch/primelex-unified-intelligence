@@ -411,12 +411,7 @@ function BillingPage() {
       <Header
         title="Billing & Subscription"
         subtitle="Manage your organisation's subscription, billing cycle, payment methods and view invoices and billing history."
-        actions={
-          <Button variant="outline" className="border-border bg-elevated/60">
-            <CreditCard className="mr-2 h-4 w-4" />
-            Manage Payment Method
-          </Button>
-        }
+        showDate={false}
       />
       <div className="p-8">
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
