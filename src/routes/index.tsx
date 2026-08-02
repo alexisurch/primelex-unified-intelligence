@@ -89,7 +89,7 @@ function LandingPage() {
       <ModulesSection />
       <BenefitsSection />
       <CTASection />
-      <PublicFooter />
+      <SiteFooter />
     </div>
   );
 }
