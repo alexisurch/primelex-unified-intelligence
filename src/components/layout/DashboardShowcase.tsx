@@ -2,7 +2,7 @@
  * DashboardShowcase — a STATIC marketing image frame for the LIS product
  * screenshot. Never mounts any live dashboard component.
  */
-import dashboardImg from "../../../fleet-app/src/assets/ChatGPT_Image_Jul_23,_2026,_06_26_39_PM.6.png";
+import dashboardImg from "../../../fleet-app/src/assets/DEPARTMENTS_(3) copy.png";
 
 export function DashboardShowcase() {
   return (

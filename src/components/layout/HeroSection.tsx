@@ -89,21 +89,19 @@ function HeroContent() {
 
       <h1
         className="mt-6 font-extrabold leading-[1.04] tracking-[-0.035em] text-white"
-        style={{ fontSize: "clamp(3rem, 4.8vw, 4.6rem)" }}
+        style={{ fontSize: "clamp(2.6rem, 4.2vw, 4.2rem)" }}
       >
-        The Operating System
-        <br />
-        for{" "}
-        <span
-          className="text-primary"
-          style={{
-            textShadow: "0 0 48px oklch(0.60 0.22 258 / 0.45)",
-          }}
-        >
-          Modern Logistics
+        <span className="block whitespace-nowrap">The Operating System</span>
+        <span className="block">
+          for{" "}
+          <span
+            className="text-primary"
+            style={{ textShadow: "0 0 48px oklch(0.60 0.22 258 / 0.45)" }}
+          >
+            Modern Logistics
+          </span>
         </span>
-        <br />
-        Companies
+        <span className="block">Companies</span>
       </h1>
 
       <p className="mt-7 max-w-[480px] text-[15.5px] leading-[1.8] text-white/55">
