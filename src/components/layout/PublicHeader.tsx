@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronDown, Route as RouteIcon, User } from "lucide-react";
+import { ChevronDown, Hexagon, User } from "lucide-react";
 
 const NAV_LINKS = [
   { label: "Product", dropdown: true },
@@ -9,53 +9,41 @@ const NAV_LINKS = [
   { label: "Pricing", dropdown: false },
 ];
 
-
 export function PublicHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[oklch(0.16_0.028_260)] backdrop-blur-md">
-      <div className="mx-auto flex h-[84px] max-w-[1400px] items-center px-10">
-        {/* Logo — left */}
+    <header className="absolute top-0 z-50 w-full bg-transparent">
+      <div className="mx-auto flex h-[92px] max-w-[1400px] items-center px-6 sm:px-10 lg:px-12">
         <Link to="/" className="flex shrink-0 items-center gap-3">
-          <div className="relative h-[42px] w-[42px] shrink-0">
-            <div
-              className="absolute inset-0 bg-primary"
-              style={{
-                clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
-              }}
-            />
-            <div className="relative z-10 flex h-full w-full items-center justify-center">
-              <RouteIcon className="h-[18px] w-[18px] text-white" />
-            </div>
+          <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+            <div className="absolute inset-0 bg-primary [clip-path:polygon(50%_0%,93%_25%,93%_75%,50%_100%,7%_75%,7%_25%)]" />
+            <div className="absolute inset-[10px] bg-[oklch(0.11_0.03_260)] [clip-path:polygon(50%_0%,93%_25%,93%_75%,50%_100%,7%_75%,7%_25%)]" />
+            <Hexagon className="relative h-5 w-5 fill-primary/30 text-primary" strokeWidth={2.8} />
           </div>
           <div className="leading-none">
-            <div className="text-[17px] font-black tracking-[0.06em] text-white">PRIMELEX</div>
-            <div className="mt-[3px] text-[8.5px] font-semibold tracking-[0.26em] text-white/50">
+            <div className="text-[21px] font-black tracking-[0.16em] text-white">PRIMELEX</div>
+            <div className="mt-1 text-[10px] font-semibold tracking-[0.43em] text-white/70">
               TECHNOLOGIES
             </div>
           </div>
         </Link>
 
-        {/* Nav — perfectly centred */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center lg:flex">
+        <nav className="ml-auto hidden items-center gap-8 lg:flex xl:gap-10">
           {NAV_LINKS.map((n) => (
             <button
               key={n.label}
-              className="inline-flex items-center gap-[5px] rounded-md px-[20px] py-2.5 text-[14.5px] font-medium text-white/70 transition-colors hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-md py-2 text-[13px] font-medium text-white transition-colors hover:text-primary"
             >
               {n.label}
-              {n.dropdown && (
-                <ChevronDown className="h-[13px] w-[13px] opacity-60" />
-              )}
+              {n.dropdown && <ChevronDown className="h-3.5 w-3.5 opacity-80" />}
             </button>
           ))}
         </nav>
 
-        {/* Sign In — right */}
         <Link
           to="/login"
-          className="ml-auto hidden shrink-0 items-center gap-[7px] rounded-lg border border-white/25 bg-transparent px-5 py-2.5 text-[14px] font-medium text-white transition-all hover:border-white/40 hover:bg-white/[0.05] lg:inline-flex"
+          className="ml-8 hidden shrink-0 items-center gap-2 rounded-md border border-primary/70 bg-white/[0.02] px-5 py-3 text-[13px] font-medium text-white shadow-[0_0_28px_oklch(0.55_0.22_258/0.14)] transition-all hover:bg-primary/10 lg:inline-flex"
         >
-          <User className="h-[15px] w-[15px]" />
+          <User className="h-4 w-4" />
           Sign In
         </Link>
       </div>
