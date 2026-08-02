@@ -24,7 +24,7 @@ export function DashboardShowcase() {
   return (
     <div className="relative flex justify-center lg:justify-end">
       <div className="pointer-events-none absolute -inset-10 bg-[radial-gradient(ellipse_70%_60%_at_58%_52%,oklch(0.54_0.22_258/0.42),transparent_70%)] blur-3xl" />
-      <div className="relative w-full max-w-[690px] overflow-hidden rounded-[18px] border border-primary/45 bg-[oklch(0.095_0.027_260)] p-4 shadow-[0_40px_120px_oklch(0_0_0/0.75),0_0_80px_oklch(0.55_0.22_258/0.25)] [transform:perspective(1500px)_rotateY(-5deg)_rotateX(1deg)_rotate(2deg)] lg:mr-[-8px]">
+      <div className="relative w-full max-w-[690px] overflow-hidden rounded-[18px] border border-primary/45 bg-[oklch(0.095_0.027_260)] p-4 shadow-[0_34px_100px_oklch(0_0_0/0.72),0_0_70px_oklch(0.55_0.22_258/0.22)] lg:mr-0">
         <div className="flex items-center justify-between pb-4">
           <div className="flex items-center gap-2 text-white">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-primary">

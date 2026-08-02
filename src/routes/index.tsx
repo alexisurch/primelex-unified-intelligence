@@ -282,7 +282,7 @@ function Hero() {
           <div className="relative flex items-start justify-end lg:h-[470px]">
             {/* Blue glow behind the frame */}
             <div
-              className="pointer-events-none absolute right-[-35px] top-[3%] h-[98%] w-[102%]"
+              className="pointer-events-none absolute right-[-18px] top-[2%] h-[92%] w-[96%]"
               style={{
                 background:
                   "radial-gradient(ellipse 70% 65% at 58% 48%, oklch(0.50 0.22 258 / 0.38) 0%, transparent 70%)",
@@ -291,12 +291,11 @@ function Hero() {
             />
             {/* Premium product frame */}
             <div
-              className="relative mt-[-18px] w-[108%] overflow-hidden rounded-[18px] border border-blue-500/40 bg-[oklch(0.13_0.025_258)]"
+              className="relative mt-[-10px] w-[100%] overflow-hidden rounded-[20px] border border-primary/45 bg-[oklch(0.13_0.025_258)]"
               style={{
                 boxShadow:
-                  "0 0 0 1px oklch(1 0 0 / 0.05), 0 70px 140px -28px oklch(0 0 0 / 0.85), 0 24px 60px -14px oklch(0 0 0 / 0.6), 0 0 100px -20px oklch(0.50 0.22 258 / 0.55)",
-                transform: "perspective(1600px) rotateY(-3deg) rotateX(0.8deg) rotate(-1deg)",
-                transformOrigin: "right center",
+                  "0 0 0 1px oklch(1 0 0 / 0.06), 0 48px 110px -32px oklch(0 0 0 / 0.82), 0 18px 44px -18px oklch(0 0 0 / 0.66), 0 0 80px -28px oklch(0.50 0.22 258 / 0.48)",
+                transform: "none",
               }}
             >
               <img
