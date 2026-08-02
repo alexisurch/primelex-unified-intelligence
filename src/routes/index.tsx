@@ -370,7 +370,7 @@ function BenefitsSection() {
 }
 
 /* ── CTA Banner ──────────────────────────────────────────────────────────── */
-function CtaSection() {
+function CTASection() {
   return (
     <section className="mx-6 my-12 overflow-hidden rounded-2xl lg:mx-auto lg:max-w-7xl">
       <div
