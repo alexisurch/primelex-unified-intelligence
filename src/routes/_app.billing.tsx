@@ -51,6 +51,9 @@ const statusTone: Record<Invoice["status"], "success" | "warning" | "danger"> = 
 /* ------------------------------------------------------------------ */
 
 function SubscriptionOverviewCard() {
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+
   return (
     <GlassCard className="p-6" hover={false}>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -76,19 +79,94 @@ function SubscriptionOverviewCard() {
           </div>
         </div>
 
-        {/* Right — estimated invoice */}
+        {/* Right — estimated invoice with payment method button */}
         <div className="shrink-0 rounded-xl border border-border/50 bg-background/30 p-5 text-right">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-primary">
             Estimated Next Invoice
           </div>
           <div className="mt-1.5 text-[32px] font-bold leading-none text-foreground">₦740,000</div>
           <div className="mt-1 text-[12px] text-muted-foreground">148 Active Trucks × ₦5,000</div>
-          <Button variant="outline" size="sm" className="mt-3 border-border bg-elevated/60 text-xs">
-            <Receipt className="mr-1.5 h-3.5 w-3.5" />
-            View Invoice Preview
-          </Button>
+          <div className="mt-3 flex items-center justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-border bg-elevated/60 text-xs"
+              onClick={() => { setPaymentOpen(true); setEditing(false); }}
+            >
+              <CreditCard className="mr-1.5 h-3.5 w-3.5" />
+              Payment Method
+            </Button>
+            <Button variant="outline" size="sm" className="border-border bg-elevated/60 text-xs">
+              <Receipt className="mr-1.5 h-3.5 w-3.5" />
+              View Invoice Preview
+            </Button>
+          </div>
         </div>
       </div>
+
+      <Dialog open={paymentOpen} onOpenChange={(o) => { setPaymentOpen(o); if (!o) setEditing(false); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Payment Method</DialogTitle>
+            <DialogDescription>
+              Your current payment method on file.
+            </DialogDescription>
+          </DialogHeader>
+
+          {!editing ? (
+            <>
+              <div className="flex items-center justify-between rounded-lg border border-border/50 bg-background/30 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-12 items-center justify-center rounded-md bg-[#1a1f71] text-[10px] font-bold text-white">
+                    VISA
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-semibold text-foreground">•••• 4281</div>
+                    <div className="text-[11px] text-muted-foreground">Expires 05/28</div>
+                  </div>
+                </div>
+                <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[11px] font-medium text-success">Primary</span>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setPaymentOpen(false)}>Close</Button>
+                <Button onClick={() => setEditing(true)}>
+                  <Pencil className="mr-2 h-3.5 w-3.5" />
+                  Update Payment Method
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <div className="space-y-4 py-2">
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-muted-foreground">Cardholder Name</label>
+                  <Input placeholder="Name on card" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-muted-foreground">Card Number</label>
+                  <Input placeholder="0000 0000 0000 0000" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-[12px] font-medium text-muted-foreground">Expiry</label>
+                    <Input placeholder="MM/YY" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[12px] font-medium text-muted-foreground">CVV</label>
+                    <Input placeholder="123" />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setEditing(false)}>Back</Button>
+                <Button onClick={() => { setPaymentOpen(false); setEditing(false); toast.success("Payment method updated successfully"); }}>
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </GlassCard>
   );
 }
@@ -232,76 +310,6 @@ function InvoiceHistory() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Right sidebar                                                       */
-/* ------------------------------------------------------------------ */
-
-function PaymentMethod() {
-  const [open, setOpen] = useState(false);
-  return (
-    <GlassCard className="p-5" hover={false}>
-      <h3 className="mb-4 text-[15px] font-semibold text-foreground">Payment Method</h3>
-      <div className="flex items-center justify-between rounded-lg border border-border/50 bg-background/30 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-12 items-center justify-center rounded-md bg-[#1a1f71] text-[10px] font-bold text-white">
-            VISA
-          </div>
-          <div>
-            <div className="text-[13px] font-semibold text-foreground">•••• 4281</div>
-            <div className="text-[11px] text-muted-foreground">Expires 05/28</div>
-          </div>
-        </div>
-        <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[11px] font-medium text-success">Primary</span>
-      </div>
-      <Button
-        variant="outline"
-        className="mt-4 w-full border-border bg-elevated/60 text-sm"
-        onClick={() => setOpen(true)}
-      >
-        <Pencil className="mr-2 h-3.5 w-3.5" />
-        Update Payment Method
-      </Button>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Update Payment Method</DialogTitle>
-            <DialogDescription>
-              Enter new card details to replace your current payment method.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-1.5">
-              <label className="text-[12px] font-medium text-muted-foreground">Cardholder Name</label>
-              <Input placeholder="Name on card" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[12px] font-medium text-muted-foreground">Card Number</label>
-              <Input placeholder="0000 0000 0000 0000" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-[12px] font-medium text-muted-foreground">Expiry</label>
-                <Input placeholder="MM/YY" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[12px] font-medium text-muted-foreground">CVV</label>
-                <Input placeholder="123" />
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={() => { setOpen(false); toast.success("Payment method updated successfully"); }}>
-              Save Changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </GlassCard>
-  );
-}
-
 interface SettingRow { id: string; label: string; value: string; valueClass?: string; isSwitch?: boolean; defaultOn?: boolean }
 
 function SubscriptionSettings() {
@@ -348,22 +356,14 @@ function BillingPage() {
         showDate={false}
       />
       <div className="p-8">
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
-          {/* Main column */}
-          <div className="space-y-6">
-            <SubscriptionOverviewCard />
-            <SummaryMetrics />
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <UsageBreakdown />
-              <SubscriptionSettings />
-            </div>
-            <InvoiceHistory />
+        <div className="space-y-6">
+          <SubscriptionOverviewCard />
+          <SummaryMetrics />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <UsageBreakdown />
+            <SubscriptionSettings />
           </div>
-
-          {/* Right sidebar */}
-          <div className="space-y-6">
-            <PaymentMethod />
-          </div>
+          <InvoiceHistory />
         </div>
       </div>
     </>
