@@ -1,15 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  Fuel,
-  Wrench,
-  Truck,
-  Clock,
-  Eye,
-  Zap,
-  Check,
-  ChevronDown,
-} from "lucide-react";
+import { Fuel, Wrench, Truck, Clock, Eye, Zap, Check, ChevronDown } from "lucide-react";
 import {
   PublicPage,
   CTASection,
@@ -49,12 +40,36 @@ const PRICING_EXAMPLES = [
 ];
 
 const ROI_CARDS = [
-  { icon: Fuel, title: "Reduce Fuel Waste", description: "Identify inefficiencies and cut fuel costs across your fleet." },
-  { icon: Wrench, title: "Reduce Downtime", description: "Predictive maintenance keeps trucks on the road longer." },
-  { icon: Truck, title: "Improve Fleet Utilisation", description: "Maximise the value of every truck in your fleet." },
-  { icon: Clock, title: "Save Staff Time", description: "Automate manual workflows and free up your team." },
-  { icon: Eye, title: "Improve Operational Visibility", description: "One source of truth across every module and team." },
-  { icon: Zap, title: "Accelerate Decision Making", description: "Real-time data and AI insights for faster, better decisions." },
+  {
+    icon: Fuel,
+    title: "Reduce Fuel Waste",
+    description: "Identify inefficiencies and cut fuel costs across your fleet.",
+  },
+  {
+    icon: Wrench,
+    title: "Reduce Downtime",
+    description: "Predictive maintenance keeps trucks on the road longer.",
+  },
+  {
+    icon: Truck,
+    title: "Improve Fleet Utilisation",
+    description: "Maximise the value of every truck in your fleet.",
+  },
+  {
+    icon: Clock,
+    title: "Save Staff Time",
+    description: "Automate manual workflows and free up your team.",
+  },
+  {
+    icon: Eye,
+    title: "Improve Operational Visibility",
+    description: "One source of truth across every module and team.",
+  },
+  {
+    icon: Zap,
+    title: "Accelerate Decision Making",
+    description: "Real-time data and AI insights for faster, better decisions.",
+  },
 ];
 
 const FAQS = [
@@ -115,8 +130,7 @@ function PricingHero() {
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.035]"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
@@ -132,9 +146,8 @@ function PricingHero() {
             Around Your <span className="text-[#3b82f6]">Fleet</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-[1.72] text-white/50">
-            One predictable monthly subscription based on your active trucks.
-            No hidden fees. Unlimited users. Unlimited AI insights. Unlimited
-            modules.
+            One predictable monthly subscription based on your active trucks. No hidden fees.
+            Unlimited users. Unlimited AI insights. Unlimited modules.
           </p>
         </div>
       </Container>
@@ -151,8 +164,7 @@ function PricingCard() {
           <div
             className="relative overflow-hidden rounded-[22px] border border-white/[0.08] p-10 lg:p-14"
             style={{
-              background:
-                "linear-gradient(110deg, #0c1c46 0%, #0f2156 50%, #0a1430 100%)",
+              background: "linear-gradient(110deg, #0c1c46 0%, #0f2156 50%, #0a1430 100%)",
               boxShadow:
                 "0 30px 80px -20px rgba(0,0,0,0.6), 0 0 60px -10px rgba(26,86,219,0.25), inset 0 0 120px 0 rgba(26,86,219,0.08)",
             }}
@@ -169,13 +181,9 @@ function PricingCard() {
                 LIS Platform
               </div>
               <div className="mt-4 flex items-end justify-center gap-2">
-                <span className="text-[4rem] font-extrabold leading-none text-white">
-                  ₦5,000
-                </span>
+                <span className="text-[4rem] font-extrabold leading-none text-white">₦5,000</span>
               </div>
-              <div className="mt-2 text-[15px] text-white/55">
-                Per Active Truck / Month
-              </div>
+              <div className="mt-2 text-[15px] text-white/55">Per Active Truck / Month</div>
 
               <div className="mx-auto mt-10 grid max-w-xl grid-cols-1 gap-3 text-left sm:grid-cols-2">
                 {PRICING_FEATURES.map((f) => (
@@ -303,11 +311,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
           className={`h-4 w-4 shrink-0 text-white/50 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
-      {open && (
-        <div className="px-6 pb-5 text-[13.5px] leading-relaxed text-white/55">
-          {a}
-        </div>
-      )}
+      {open && <div className="px-6 pb-5 text-[13.5px] leading-relaxed text-white/55">{a}</div>}
     </div>
   );
 }

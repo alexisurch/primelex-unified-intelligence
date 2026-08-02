@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import ctaTruck from "../assets/cta-truck.png";
 import {
   Truck,
   Fuel,
@@ -8,18 +7,14 @@ import {
   ShieldCheck,
   ChartBar as BarChart3,
   ChartPie as PieChart,
-  ChevronDown,
   User,
   Lock,
   DollarSign,
   Shield,
   BrainCircuit,
   Radio,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Youtube,
 } from "lucide-react";
+import { CTASection, PublicFooter, PublicHeader } from "../components/public/PublicShared";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -61,101 +56,16 @@ const BENEFITS = [
 
 const TRUST_LOGOS = ["MIKANO", "DANGOTE", "SIFAX GROUP", "WAECORP", "ABC Logistics"];
 
-const FOOTER_COLS = [
-  {
-    heading: "Product",
-    links: ["Features", "Modules", "Integrations", "Security"],
-  },
-  {
-    heading: "Solutions",
-    links: [
-      "Fleet Management",
-      "Dispatch Management",
-      "Fuel Management",
-      "Operations Intelligence",
-    ],
-  },
-  {
-    heading: "Resources",
-    links: ["Documentation", "Help Center", "Blog", "API Reference"],
-  },
-  {
-    heading: "Company",
-    links: ["About Us", "Careers", "Partners", "Contact Us"],
-  },
-  {
-    heading: "Legal",
-    links: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
-  },
-];
-
 function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SiteNav />
+      <PublicHeader />
       <Hero />
       <ModulesSection />
       <BenefitsSection />
       <CTASection />
-      <SiteFooter />
+      <PublicFooter />
     </div>
-  );
-}
-
-/* ── Navigation ─────────────────────────────────────────────────────────── */
-const NAV_LINKS = [
-  { label: "Product", dropdown: true },
-  { label: "Solutions", dropdown: true },
-  { label: "Resources", dropdown: true },
-  { label: "Company", dropdown: false },
-  { label: "Pricing", dropdown: false },
-];
-function SiteNav() {
-  return (
-    <header className="absolute top-0 z-50 w-full bg-transparent">
-      <div className="mx-auto flex h-[96px] max-w-[1400px] items-center px-9 lg:px-12">
-        {/* Logo — left */}
-        <Link to="/" className="flex shrink-0 items-center gap-3">
-          <div className="relative h-[50px] w-[50px] shrink-0">
-            <div
-              className="absolute inset-0 bg-primary"
-              style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
-            />
-            <div className="relative z-10 flex h-full w-full items-center justify-center">
-              <RouteIcon className="h-[20px] w-[20px] text-white" />
-            </div>
-          </div>
-          <div className="leading-none">
-            <div className="text-[21px] font-black tracking-[0.14em] text-foreground">PRIMELEX</div>
-            <div className="mt-[3px] text-[10px] font-semibold tracking-[0.42em] text-muted-foreground">
-              TECHNOLOGIES
-            </div>
-          </div>
-        </Link>
-
-        {/* Nav links — perfectly centred */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center lg:flex">
-          {NAV_LINKS.map((n) => (
-            <button
-              key={n.label}
-              className="inline-flex items-center gap-[5px] rounded-md px-[20px] py-2.5 text-[13px] font-medium text-white transition-colors hover:text-foreground"
-            >
-              {n.label}
-              {n.dropdown && <ChevronDown className="h-[13px] w-[13px] opacity-60" />}
-            </button>
-          ))}
-        </nav>
-
-        {/* Sign In button — right */}
-        <Link
-          to="/login"
-          className="ml-auto hidden shrink-0 items-center gap-[7px] rounded-lg border border-primary/65 bg-transparent px-5 py-3 text-[13px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex"
-        >
-          <User className="h-[15px] w-[15px]" />
-          Sign In
-        </Link>
-      </div>
-    </header>
   );
 }
 
@@ -442,158 +352,5 @@ function BenefitsSection() {
         </div>
       </div>
     </section>
-  );
-}
-
-/* ── CTA Banner ──────────────────────────────────────────────────────────── */
-function CTASection() {
-  return (
-    <section className="mx-6 my-12 lg:mx-auto lg:max-w-7xl">
-      <div className="relative min-h-[154px] overflow-hidden rounded-[22px] border border-primary/35 bg-[oklch(0.105_0.034_260)] shadow-[0_34px_100px_-38px_oklch(0_0_0/0.88),0_0_80px_-34px_oklch(0.50_0.22_258/0.5)]">
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,oklch(0.125_0.04_260)_0%,oklch(0.155_0.055_258)_48%,oklch(0.115_0.04_260)_100%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_140%_at_58%_50%,oklch(0.50_0.22_258/0.18),transparent_68%)]" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:repeating-linear-gradient(135deg,white_0_1px,transparent_1px_4px)]" />
-
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[38%] lg:block">
-          <img
-            src={ctaTruck}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover object-right"
-            style={{
-              maskImage: "linear-gradient(to right, transparent 0%, black 30%)",
-              WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 30%)",
-            }}
-          />
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.105_0.034_260)_0%,transparent_34%,oklch(0.08_0.03_260/0.18)_100%)]" />
-        </div>
-
-        <div className="relative z-10 grid min-h-[154px] items-center gap-8 px-8 py-8 md:grid-cols-[minmax(0,1fr)_auto] lg:w-[78%] lg:py-7">
-          <div>
-            <h2 className="max-w-[560px] text-[22px] font-bold leading-[1.2] tracking-[-0.02em] text-foreground md:text-[24px]">
-              Ready to Modernize Your Logistics Operations?
-            </h2>
-            <p className="mt-4 max-w-[390px] text-[14px] leading-[1.55] text-muted-foreground">
-              Create your organisation and start running your operations smarter, faster and more
-              profitably.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center md:justify-self-end">
-            <Link
-              to="/register"
-              className="inline-flex items-center justify-center gap-[9px] rounded-[5px] bg-primary px-7 py-[15px] text-[15px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
-            >
-              <User className="h-[16px] w-[16px]" />
-              Create Organisation
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center gap-[9px] rounded-[5px] border border-primary/65 bg-white/[0.02] px-7 py-[15px] text-[15px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]"
-            >
-              <Lock className="h-[16px] w-[16px]" />
-              Administrator Sign In
-            </Link>
-          </div>
-        </div>
-
-        <div className="relative z-10 mt-0 block lg:hidden">
-          <img
-            src={ctaTruck}
-            alt="Logistics truck"
-            className="h-52 w-full object-cover object-right opacity-80"
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-function SiteFooter() {
-  return (
-    <footer className="border-t border-white/[0.06] bg-background">
-      {/* Main footer grid */}
-      <div className="mx-auto max-w-7xl px-6 py-14">
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-7">
-          {/* Brand column – takes 2 of 7 */}
-          <div className="col-span-2 flex flex-col gap-4 sm:col-span-3 lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2.5">
-              <div
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary"
-                style={{ clipPath: "polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%)" }}
-              >
-                <RouteIcon className="h-5 w-5 text-white" />
-              </div>
-              <div className="leading-tight">
-                <div className="text-[13px] font-bold tracking-wide text-foreground">PRIMELEX</div>
-                <div className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  TECHNOLOGIES
-                </div>
-              </div>
-            </Link>
-            <p className="max-w-[200px] text-[12px] leading-relaxed text-muted-foreground">
-              Building intelligent logistics software solutions that help businesses operate smarter
-              and achieve more.
-            </p>
-            {/* Social */}
-            <div className="mt-1 flex items-center gap-3">
-              {[Linkedin, Twitter, Facebook, Youtube].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="flex h-7 w-7 items-center justify-center rounded-md border border-white/[0.1] text-muted-foreground transition-colors hover:border-white/20 hover:text-foreground"
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Link columns */}
-          {FOOTER_COLS.map((col) => (
-            <div key={col.heading} className="flex flex-col gap-3">
-              <div className="text-[12px] font-semibold text-foreground">{col.heading}</div>
-              <ul className="flex flex-col gap-2">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-[12px] text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          {/* Support column */}
-          <div className="flex flex-col gap-3">
-            <div className="text-[12px] font-semibold text-foreground">Support</div>
-            <ul className="flex flex-col gap-2.5">
-              <li className="flex items-start gap-2 text-[12px] text-muted-foreground">
-                <span className="mt-px text-primary">✉</span>
-                hello@primelextech.com
-              </li>
-              <li className="flex items-start gap-2 text-[12px] text-muted-foreground">
-                <span className="mt-px text-primary">☎</span>
-                +234 800 123 4567
-              </li>
-              <li className="flex items-start gap-2 text-[12px] text-muted-foreground">
-                <span className="mt-px text-primary">🕐</span>
-                Mon – Fri: 8:00 AM – 6:00 PM
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Copyright bar */}
-      <div className="border-t border-white/[0.05] py-4 text-center text-[11px] text-muted-foreground">
-        © 2025 PrimeLex Technologies. All rights reserved.
-      </div>
-    </footer>
   );
 }

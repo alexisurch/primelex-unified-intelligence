@@ -34,18 +34,66 @@ export const Route = createFileRoute("/product")({
 });
 
 const MODULE_CARDS = [
-  { icon: Truck, name: "Fleet Operations", description: "Track every truck, driver and assignment in one unified registry." },
-  { icon: Radio, name: "Dispatch Center", description: "Plan, assign and monitor live trips and deliveries in real time." },
-  { icon: BarChart3, name: "Trips & Deliveries", description: "Full visibility into trip status, delivery progress and outcomes." },
-  { icon: Fuel, name: "Fuel Intelligence", description: "Measure fuel performance across fleet, trucks, drivers and routes." },
-  { icon: RouteIcon, name: "Route Intelligence", description: "Profile routes with preferred trucks, drivers and health scoring." },
-  { icon: Wrench, name: "Maintenance Intelligence", description: "Monitor truck health, repair history and predictive maintenance." },
-  { icon: ShieldCheck, name: "Safety & Incidents", description: "Log, track and analyse incidents to improve driver safety." },
-  { icon: PieChart, name: "Executive Dashboard", description: "KPI scorecards and operations health for leadership." },
-  { icon: FileText, name: "Reports & Analytics", description: "Generate operational and executive reports across every module." },
-  { icon: ScrollText, name: "Audit Trail", description: "Immutable records of every action across the platform." },
-  { icon: Users, name: "Users & Access", description: "Role-based permissions and team management for your workspace." },
-  { icon: Building2, name: "Organisation Management", description: "Multi-tenant workspaces with secure isolation per company." },
+  {
+    icon: Truck,
+    name: "Fleet Operations",
+    description: "Track every truck, driver and assignment in one unified registry.",
+  },
+  {
+    icon: Radio,
+    name: "Dispatch Center",
+    description: "Plan, assign and monitor live trips and deliveries in real time.",
+  },
+  {
+    icon: BarChart3,
+    name: "Trips & Deliveries",
+    description: "Full visibility into trip status, delivery progress and outcomes.",
+  },
+  {
+    icon: Fuel,
+    name: "Fuel Intelligence",
+    description: "Measure fuel performance across fleet, trucks, drivers and routes.",
+  },
+  {
+    icon: RouteIcon,
+    name: "Route Intelligence",
+    description: "Profile routes with preferred trucks, drivers and health scoring.",
+  },
+  {
+    icon: Wrench,
+    name: "Maintenance Intelligence",
+    description: "Monitor truck health, repair history and predictive maintenance.",
+  },
+  {
+    icon: ShieldCheck,
+    name: "Safety & Incidents",
+    description: "Log, track and analyse incidents to improve driver safety.",
+  },
+  {
+    icon: PieChart,
+    name: "Executive Dashboard",
+    description: "KPI scorecards and operations health for leadership.",
+  },
+  {
+    icon: FileText,
+    name: "Reports & Analytics",
+    description: "Generate operational and executive reports across every module.",
+  },
+  {
+    icon: ScrollText,
+    name: "Audit Trail",
+    description: "Immutable records of every action across the platform.",
+  },
+  {
+    icon: Users,
+    name: "Users & Access",
+    description: "Role-based permissions and team management for your workspace.",
+  },
+  {
+    icon: Building2,
+    name: "Organisation Management",
+    description: "Multi-tenant workspaces with secure isolation per company.",
+  },
 ];
 
 const FUEL_METRICS = [
@@ -83,22 +131,70 @@ const MAINTENANCE_FEATURES = [
 ];
 
 const EXEC_KPIS = [
-  { icon: Gauge, name: "Operations Health Index", description: "A single score summarising the health of your entire operation." },
-  { icon: Truck, name: "Fleet Utilisation", description: "Measure how effectively your fleet is being used over time." },
-  { icon: Fuel, name: "Fuel Performance", description: "Track fuel efficiency and cost impact across the fleet." },
-  { icon: Wrench, name: "Maintenance Performance", description: "Monitor repair cycles, downtime and maintenance spend." },
-  { icon: BarChart3, name: "Operational Reviews", description: "Periodic reviews of performance across every module." },
-  { icon: BrainCircuit, name: "AI Insights", description: "AI-generated recommendations tailored to your operations." },
-  { icon: FileText, name: "Executive Reports", description: "Board-ready reports summarising operational performance." },
+  {
+    icon: Gauge,
+    name: "Operations Health Index",
+    description: "A single score summarising the health of your entire operation.",
+  },
+  {
+    icon: Truck,
+    name: "Fleet Utilisation",
+    description: "Measure how effectively your fleet is being used over time.",
+  },
+  {
+    icon: Fuel,
+    name: "Fuel Performance",
+    description: "Track fuel efficiency and cost impact across the fleet.",
+  },
+  {
+    icon: Wrench,
+    name: "Maintenance Performance",
+    description: "Monitor repair cycles, downtime and maintenance spend.",
+  },
+  {
+    icon: BarChart3,
+    name: "Operational Reviews",
+    description: "Periodic reviews of performance across every module.",
+  },
+  {
+    icon: BrainCircuit,
+    name: "AI Insights",
+    description: "AI-generated recommendations tailored to your operations.",
+  },
+  {
+    icon: FileText,
+    name: "Executive Reports",
+    description: "Board-ready reports summarising operational performance.",
+  },
 ];
 
 const SECURITY_ITEMS = [
-  { icon: Lock, title: "Role-Based Permissions", description: "Granular access control over every module and action." },
-  { icon: Building2, title: "Organisation Workspaces", description: "Secure multi-tenant isolation per company." },
+  {
+    icon: Lock,
+    title: "Role-Based Permissions",
+    description: "Granular access control over every module and action.",
+  },
+  {
+    icon: Building2,
+    title: "Organisation Workspaces",
+    description: "Secure multi-tenant isolation per company.",
+  },
   { icon: Lock, title: "Encrypted Data", description: "Data encrypted in transit and at rest." },
-  { icon: ScrollText, title: "Audit Trail", description: "Immutable record of every action across the platform." },
-  { icon: Cloud, title: "Secure Cloud Platform", description: "Hosted on enterprise-grade cloud infrastructure." },
-  { icon: Plug, title: "Future-Ready Integrations", description: "Designed to connect with GPS, telematics and more." },
+  {
+    icon: ScrollText,
+    title: "Audit Trail",
+    description: "Immutable record of every action across the platform.",
+  },
+  {
+    icon: Cloud,
+    title: "Secure Cloud Platform",
+    description: "Hosted on enterprise-grade cloud infrastructure.",
+  },
+  {
+    icon: Plug,
+    title: "Future-Ready Integrations",
+    description: "Designed to connect with GPS, telematics and more.",
+  },
 ];
 
 function ProductPage() {
@@ -130,8 +226,7 @@ function ProductHero() {
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.035]"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
@@ -147,9 +242,8 @@ function ProductHero() {
             for <span className="text-[#3b82f6]">Modern Logistics</span> Companies
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-[1.72] text-white/50">
-            LIS unifies fleet operations, dispatch, maintenance, fuel
-            intelligence, route intelligence, reporting and operational AI
-            into one intelligent platform.
+            LIS unifies fleet operations, dispatch, maintenance, fuel intelligence, route
+            intelligence, reporting and operational AI into one intelligent platform.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-[14px]">
             <PrimaryButton to="/register">Create Organisation</PrimaryButton>
