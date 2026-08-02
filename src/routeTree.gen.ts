@@ -25,11 +25,13 @@ import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppOrganisationRouteImport } from './routes/_app.organisation'
 import { Route as AppMaintenanceRouteImport } from './routes/_app.maintenance'
 import { Route as AppKpiScorecardRouteImport } from './routes/_app.kpi-scorecard'
+import { Route as AppIntegrationsRouteImport } from './routes/_app.integrations'
 import { Route as AppFuelIntelligenceRouteImport } from './routes/_app.fuel-intelligence'
 import { Route as AppFleetOperationsRouteImport } from './routes/_app.fleet-operations'
 import { Route as AppDocumentsRouteImport } from './routes/_app.documents'
 import { Route as AppDispatchCenterRouteImport } from './routes/_app.dispatch-center'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppBillingRouteImport } from './routes/_app.billing'
 import { Route as AppAuditTrailRouteImport } from './routes/_app.audit-trail'
 import { Route as AppActionCenterRouteImport } from './routes/_app.action-center'
 import { Route as OrganisationLoginRouteImport } from './routes/$organisation/login'
@@ -113,6 +115,11 @@ const AppKpiScorecardRoute = AppKpiScorecardRouteImport.update({
   path: '/kpi-scorecard',
   getParentRoute: () => AppRoute,
 } as any)
+const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFuelIntelligenceRoute = AppFuelIntelligenceRouteImport.update({
   id: '/fuel-intelligence',
   path: '/fuel-intelligence',
@@ -136,6 +143,11 @@ const AppDispatchCenterRoute = AppDispatchCenterRouteImport.update({
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBillingRoute = AppBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAuditTrailRoute = AppAuditTrailRouteImport.update({
@@ -164,11 +176,13 @@ export interface FileRoutesByFullPath {
   '/$organisation/login': typeof OrganisationLoginRoute
   '/action-center': typeof AppActionCenterRoute
   '/audit-trail': typeof AppAuditTrailRoute
+  '/billing': typeof AppBillingRoute
   '/dashboard': typeof AppDashboardRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
+  '/integrations': typeof AppIntegrationsRoute
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/organisation': typeof AppOrganisationRoute
@@ -189,11 +203,13 @@ export interface FileRoutesByTo {
   '/$organisation/login': typeof OrganisationLoginRoute
   '/action-center': typeof AppActionCenterRoute
   '/audit-trail': typeof AppAuditTrailRoute
+  '/billing': typeof AppBillingRoute
   '/dashboard': typeof AppDashboardRoute
   '/dispatch-center': typeof AppDispatchCenterRoute
   '/documents': typeof AppDocumentsRoute
   '/fleet-operations': typeof AppFleetOperationsRoute
   '/fuel-intelligence': typeof AppFuelIntelligenceRoute
+  '/integrations': typeof AppIntegrationsRoute
   '/kpi-scorecard': typeof AppKpiScorecardRoute
   '/maintenance': typeof AppMaintenanceRoute
   '/organisation': typeof AppOrganisationRoute
@@ -216,11 +232,13 @@ export interface FileRoutesById {
   '/$organisation/login': typeof OrganisationLoginRoute
   '/_app/action-center': typeof AppActionCenterRoute
   '/_app/audit-trail': typeof AppAuditTrailRoute
+  '/_app/billing': typeof AppBillingRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/dispatch-center': typeof AppDispatchCenterRoute
   '/_app/documents': typeof AppDocumentsRoute
   '/_app/fleet-operations': typeof AppFleetOperationsRoute
   '/_app/fuel-intelligence': typeof AppFuelIntelligenceRoute
+  '/_app/integrations': typeof AppIntegrationsRoute
   '/_app/kpi-scorecard': typeof AppKpiScorecardRoute
   '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/organisation': typeof AppOrganisationRoute
@@ -243,11 +261,13 @@ export interface FileRouteTypes {
     | '/$organisation/login'
     | '/action-center'
     | '/audit-trail'
+    | '/billing'
     | '/dashboard'
     | '/dispatch-center'
     | '/documents'
     | '/fleet-operations'
     | '/fuel-intelligence'
+    | '/integrations'
     | '/kpi-scorecard'
     | '/maintenance'
     | '/organisation'
@@ -268,11 +288,13 @@ export interface FileRouteTypes {
     | '/$organisation/login'
     | '/action-center'
     | '/audit-trail'
+    | '/billing'
     | '/dashboard'
     | '/dispatch-center'
     | '/documents'
     | '/fleet-operations'
     | '/fuel-intelligence'
+    | '/integrations'
     | '/kpi-scorecard'
     | '/maintenance'
     | '/organisation'
@@ -294,11 +316,13 @@ export interface FileRouteTypes {
     | '/$organisation/login'
     | '/_app/action-center'
     | '/_app/audit-trail'
+    | '/_app/billing'
     | '/_app/dashboard'
     | '/_app/dispatch-center'
     | '/_app/documents'
     | '/_app/fleet-operations'
     | '/_app/fuel-intelligence'
+    | '/_app/integrations'
     | '/_app/kpi-scorecard'
     | '/_app/maintenance'
     | '/_app/organisation'
@@ -435,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppKpiScorecardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/integrations': {
+      id: '/_app/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof AppIntegrationsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/fuel-intelligence': {
       id: '/_app/fuel-intelligence'
       path: '/fuel-intelligence'
@@ -470,6 +501,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/billing': {
+      id: '/_app/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof AppBillingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/audit-trail': {
       id: '/_app/audit-trail'
       path: '/audit-trail'
@@ -497,11 +535,13 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppActionCenterRoute: typeof AppActionCenterRoute
   AppAuditTrailRoute: typeof AppAuditTrailRoute
+  AppBillingRoute: typeof AppBillingRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppDispatchCenterRoute: typeof AppDispatchCenterRoute
   AppDocumentsRoute: typeof AppDocumentsRoute
   AppFleetOperationsRoute: typeof AppFleetOperationsRoute
   AppFuelIntelligenceRoute: typeof AppFuelIntelligenceRoute
+  AppIntegrationsRoute: typeof AppIntegrationsRoute
   AppKpiScorecardRoute: typeof AppKpiScorecardRoute
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppOrganisationRoute: typeof AppOrganisationRoute
@@ -516,11 +556,13 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppActionCenterRoute: AppActionCenterRoute,
   AppAuditTrailRoute: AppAuditTrailRoute,
+  AppBillingRoute: AppBillingRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppDispatchCenterRoute: AppDispatchCenterRoute,
   AppDocumentsRoute: AppDocumentsRoute,
   AppFleetOperationsRoute: AppFleetOperationsRoute,
   AppFuelIntelligenceRoute: AppFuelIntelligenceRoute,
+  AppIntegrationsRoute: AppIntegrationsRoute,
   AppKpiScorecardRoute: AppKpiScorecardRoute,
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppOrganisationRoute: AppOrganisationRoute,

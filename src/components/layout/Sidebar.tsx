@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { LayoutDashboard, Truck, Radio, Route as RouteIcon, Wrench, Fuel, ShieldAlert, FileText, ChartBar as BarChart3, Target, UserCog, Settings, Building2, PanelLeftClose, ChevronRight, Zap, History } from "lucide-react";
+import { LayoutDashboard, Truck, Radio, Route as RouteIcon, Wrench, Fuel, ShieldAlert, FileText, ChartBar as BarChart3, Target, UserCog, Settings, Building2, PanelLeftClose, ChevronRight, Zap, History, Plug, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useBranding } from "@/lib/branding";
 import { useState } from "react";
@@ -41,6 +41,8 @@ const groups = [
     items: [
       { to: "/users-access", label: "Users & Access", icon: UserCog },
       { to: "/organisation", label: "Organisation", icon: Building2 },
+      { to: "/integrations", label: "Connected Systems", icon: Plug },
+      { to: "/billing", label: "Billing & Subscription", icon: CreditCard },
       { to: "/system-settings", label: "System Settings", icon: Settings },
     ],
   },
