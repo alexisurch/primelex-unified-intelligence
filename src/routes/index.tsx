@@ -1,24 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Truck,
-  Fuel,
-  Route as RouteIcon,
-  Wrench,
-  ShieldCheck,
-  BarChart3,
-  PieChart,
-  ChevronDown,
-  User,
-  Lock,
-  DollarSign,
-  Shield,
-  BrainCircuit,
-  Radio,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Youtube,
-} from "lucide-react";
+import { Truck, Fuel, Route as RouteIcon, Wrench, ShieldCheck, ChartBar as BarChart3, ChartPie as PieChart, ChevronDown, User, Lock, DollarSign, Shield, BrainCircuit, Radio, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -26,11 +7,7 @@ export const Route = createFileRoute("/")({
 
 const MODULES = [
   { icon: Truck, label: "Fleet\nOperations" },
-  { icon: Radio,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Youtube, label: "Dispatch\nCenter" },
+  { icon: Radio, label: "Dispatch\nCenter" },
   { icon: Fuel, label: "Fuel\nIntelligence" },
   { icon: RouteIcon, label: "Route\nIntelligence" },
   { icon: Wrench, label: "Maintenance\nManagement" },
@@ -113,10 +90,10 @@ const NAV_LINKS = [
 function SiteNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[oklch(0.16_0.028_260)] backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center gap-8 px-8 py-4">
-        {/* Logo */}
+      <div className="mx-auto flex h-[84px] max-w-[1400px] items-center px-10">
+        {/* Logo — left */}
         <Link to="/" className="flex shrink-0 items-center gap-3">
-          <div className="relative h-10 w-10 shrink-0">
+          <div className="relative h-[42px] w-[42px] shrink-0">
             <div
               className="absolute inset-0 bg-primary"
               style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
@@ -127,29 +104,29 @@ function SiteNav() {
           </div>
           <div className="leading-none">
             <div className="text-[17px] font-black tracking-[0.06em] text-foreground">PRIMELEX</div>
-            <div className="mt-0.5 text-[9px] font-medium tracking-[0.22em] text-muted-foreground">
+            <div className="mt-[3px] text-[8.5px] font-semibold tracking-[0.26em] text-muted-foreground">
               TECHNOLOGIES
             </div>
           </div>
         </Link>
 
-        {/* Nav links — pushed to the right */}
-        <nav className="ml-auto hidden items-center lg:flex">
+        {/* Nav links — perfectly centred */}
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center lg:flex">
           {NAV_LINKS.map((n) => (
             <button
               key={n.label}
-              className="inline-flex items-center gap-1.5 rounded-md px-4 py-2.5 text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-[5px] rounded-md px-[20px] py-2.5 text-[14.5px] font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {n.label}
-              {n.dropdown && <ChevronDown className="h-[14px] w-[14px]" />}
+              {n.dropdown && <ChevronDown className="h-[13px] w-[13px] opacity-60" />}
             </button>
           ))}
         </nav>
 
-        {/* Sign In button */}
+        {/* Sign In button — right */}
         <Link
           to="/login"
-          className="hidden shrink-0 items-center gap-2 rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex"
+          className="ml-auto hidden shrink-0 items-center gap-[7px] rounded-lg border border-white/[0.22] bg-transparent px-5 py-2.5 text-[14px] font-medium text-foreground transition-all hover:border-white/40 hover:bg-white/[0.04] lg:inline-flex"
         >
           <User className="h-[15px] w-[15px]" />
           Sign In
@@ -162,145 +139,193 @@ function SiteNav() {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[oklch(0.16_0.028_260)]">
-      {/* Large blue radial glow — left side, matching the design */}
+    <section
+      className="relative overflow-hidden"
+      style={{ background: "oklch(0.155 0.028 260)" }}
+    >
+      {/* Left-side radial glow */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 55% 70% at 10% 50%, oklch(0.55 0.2 258 / 0.18) 0%, transparent 65%)",
+            "radial-gradient(ellipse 50% 70% at 8% 50%, oklch(0.50 0.22 258 / 0.18) 0%, transparent 68%)",
         }}
       />
 
-      <div className="relative mx-auto max-w-7xl px-8 pb-10 pt-14">
-        <div
-          className="grid grid-cols-1 items-center gap-8 lg:gap-10"
-          style={{ gridTemplateColumns: "1fr" }}
-        >
-          {/* ── Two-col layout on lg+ ── */}
-          <div className="hidden lg:grid lg:grid-cols-[42%_58%] lg:items-center lg:gap-10">
-            {/* Left column */}
-            <div className="flex flex-col">
-              {/* Badge */}
-              <div className="mb-5 inline-flex w-fit items-center rounded-full border border-primary/40 bg-primary/[0.08] px-4 py-[6px] text-[11px] font-semibold uppercase tracking-[0.13em] text-primary/90">
-                Logistics Intelligence System (LIS)
-              </div>
+      {/* Centre radial — very subtle lift */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 90% 60% at 50% 50%, oklch(0.50 0.22 258 / 0.06) 0%, transparent 70%)",
+        }}
+      />
 
-              {/* Headline */}
-              <h1 className="text-[3.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
-                The Operating System
-                <br />
-                for{" "}<span className="text-primary">Modern Logistics</span>
-                <br />
-                Companies
-              </h1>
+      {/* Bottom vignette */}
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-32"
+        style={{
+          background: "linear-gradient(to bottom, transparent, oklch(0.13 0.025 258 / 0.5))",
+        }}
+      />
 
-              {/* Sub-copy */}
-              <p className="mt-5 max-w-[380px] text-[15px] leading-[1.65] text-muted-foreground">
-                Manage your fleet, dispatch, trips, fuel, maintenance,
-                routes and operations from one intelligent platform.
-                Optimize performance. Reduce costs. Deliver more.
-              </p>
+      {/* Very subtle dot-grid texture overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
 
-              {/* CTAs */}
-              <div className="mt-8 flex items-center gap-3">
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
-                >
-                  <User className="h-4 w-4" />
-                  Create Organisation
-                </Link>
-                <Link
-                  to="/login"
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-6 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]"
-                >
-                  <Lock className="h-4 w-4" />
-                  Administrator Sign In
-                </Link>
-              </div>
-
-              {/* Trust strip */}
-              <div className="mt-10">
-                <p className="mb-4 text-[13px] text-muted-foreground">
-                  Trusted by forward-thinking logistics companies
-                </p>
-                <div className="flex flex-wrap items-center gap-7">
-                  <span className="text-[13px] font-black italic tracking-wide text-white/40">MIKANO</span>
-                  <span className="text-[13px] font-black tracking-wide text-white/40">DANGOTE</span>
-                  <span className="text-[12px] font-bold tracking-[0.08em] text-white/40">SIFAX GROUP</span>
-                  <span className="text-[12px] font-bold tracking-[0.06em] text-white/40">WAECORP</span>
-                  <span className="text-[13px] font-semibold tracking-wide text-white/40">ABC <span className="font-light">Logistics</span></span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right column – dashboard screenshot */}
-            <div className="flex items-center justify-end">
-              <div
-                className="w-full overflow-hidden rounded-[16px] border border-white/[0.1]"
-                style={{
-                  boxShadow:
-                    "0 0 0 1px oklch(1 0 0 / 0.04), 0 40px 100px -20px oklch(0 0 0 / 0.7), 0 8px 32px -8px oklch(0 0 0 / 0.5)",
-                }}
-              >
-                <img
-                  src="/ChatGPT_Image_Jul_23,_2026,_06_26_39_PM.1.png"
-                  alt="LIS Dashboard Preview"
-                  className="block w-full"
-                  loading="eager"
-                  draggable={false}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* ── Mobile/tablet single-column ── */}
-          <div className="flex flex-col lg:hidden">
-            <div className="mb-5 inline-flex w-fit items-center rounded-full border border-primary/40 bg-primary/[0.08] px-4 py-[6px] text-[11px] font-semibold uppercase tracking-[0.13em] text-primary/90">
+      <div
+        className="relative mx-auto max-w-[1400px] px-10"
+        style={{ minHeight: "820px", paddingTop: "72px", paddingBottom: "72px" }}
+      >
+        {/* ── Desktop two-column ── */}
+        <div className="hidden lg:grid lg:grid-cols-[44%_56%] lg:items-start lg:gap-12">
+          {/* Left column */}
+          <div className="flex flex-col pt-4">
+            {/* Badge */}
+            <div className="inline-flex w-fit items-center rounded-full border border-primary/50 bg-primary/[0.08] px-5 py-[9px] text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
               Logistics Intelligence System (LIS)
             </div>
-            <h1 className="text-[2.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
-              The Operating System
-              <br />
-              for{" "}<span className="text-primary">Modern Logistics</span>
-              <br />
-              Companies
+
+            {/* Headline */}
+            <h1
+              className="mt-6 font-extrabold leading-[1.04] tracking-[-0.035em] text-foreground"
+              style={{ fontSize: "clamp(2.6rem, 4.2vw, 4.2rem)" }}
+            >
+              <span className="block whitespace-nowrap">The Operating System</span>
+              <span className="block">
+                for{" "}
+                <span
+                  className="text-primary"
+                  style={{ textShadow: "0 0 48px oklch(0.60 0.22 258 / 0.45)" }}
+                >
+                  Modern Logistics
+                </span>
+              </span>
+              <span className="block">Companies</span>
             </h1>
-            <p className="mt-5 text-[15px] leading-[1.65] text-muted-foreground">
+
+            {/* Sub-copy */}
+            <p className="mt-7 max-w-[480px] text-[15.5px] leading-[1.8] text-muted-foreground">
               Manage your fleet, dispatch, trips, fuel, maintenance,
+              <br />
               routes and operations from one intelligent platform.
+              <br />
               Optimize performance. Reduce costs. Deliver more.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+
+            {/* CTAs */}
+            <div className="mt-11 flex items-center gap-5">
               <Link
                 to="/register"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
+                className="inline-flex items-center gap-[9px] rounded-lg bg-primary px-9 py-[15px] text-[15px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
               >
-                <User className="h-4 w-4" />
+                <User className="h-[16px] w-[16px]" />
                 Create Organisation
               </Link>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-5 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35"
+                className="inline-flex items-center gap-[9px] rounded-lg border border-white/[0.22] bg-white/[0.04] px-9 py-[15px] text-[15px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]"
               >
-                <Lock className="h-4 w-4" />
+                <Lock className="h-[16px] w-[16px]" />
                 Administrator Sign In
               </Link>
             </div>
-            <div className="mt-8">
-              <p className="mb-4 text-[13px] text-muted-foreground">Trusted by forward-thinking logistics companies</p>
-              <div className="flex flex-wrap items-center gap-5">
-                <span className="text-[12px] font-black italic text-white/40">MIKANO</span>
-                <span className="text-[12px] font-black text-white/40">DANGOTE</span>
-                <span className="text-[11px] font-bold text-white/40">SIFAX GROUP</span>
-                <span className="text-[11px] font-bold text-white/40">WAECORP</span>
-                <span className="text-[12px] font-semibold text-white/40">ABC Logistics</span>
+
+            {/* Trust strip */}
+            <div className="mt-16">
+              <p className="mb-7 text-[13px] font-normal text-white/40">
+                Trusted by forward-thinking logistics companies
+              </p>
+              <div className="flex flex-wrap items-center gap-x-12 gap-y-4">
+                <span className="text-[15px] font-black italic tracking-wide text-white/30">MIKANO</span>
+                <span className="text-[15px] font-black tracking-wide text-white/30">DANGOTE</span>
+                <span className="text-[14px] font-bold tracking-[0.08em] text-white/30">SIFAX GROUP</span>
+                <span className="text-[14px] font-bold tracking-[0.07em] text-white/30">WAECORP</span>
+                <span className="text-[15px] font-semibold text-white/30">ABC <span className="font-light">Logistics</span></span>
               </div>
             </div>
-            <div className="mt-8 overflow-hidden rounded-[14px] border border-white/[0.1]" style={{ boxShadow: "0 24px 60px -12px oklch(0 0 0 / 0.6)" }}>
-              <img src="/ChatGPT_Image_Jul_23,_2026,_06_26_39_PM.1.png" alt="LIS Dashboard" className="block w-full" loading="eager" />
+          </div>
+
+          {/* Right column – dashboard screenshot */}
+          <div className="relative flex items-start justify-end lg:h-[700px]">
+            {/* Blue glow behind the frame */}
+            <div
+              className="pointer-events-none absolute right-[-60px] top-[8%] h-[90%] w-[100%]"
+              style={{
+                background:
+                  "radial-gradient(ellipse 70% 65% at 58% 48%, oklch(0.50 0.22 258 / 0.38) 0%, transparent 70%)",
+                filter: "blur(56px)",
+              }}
+            />
+            {/* Premium product frame */}
+            <div
+              className="relative mt-[-30px] w-[105%] overflow-hidden rounded-[28px] border-2 border-blue-500/40 bg-[oklch(0.13_0.025_258)]"
+              style={{
+                boxShadow:
+                  "0 0 0 1px oklch(1 0 0 / 0.05), 0 70px 140px -28px oklch(0 0 0 / 0.85), 0 24px 60px -14px oklch(0 0 0 / 0.6), 0 0 100px -20px oklch(0.50 0.22 258 / 0.55)",
+                transform: "perspective(1600px) rotateY(-3deg) rotateX(0.8deg) rotate(2deg)",
+                transformOrigin: "right center",
+              }}
+            >
+              <img
+                src="/dashboard-screenshot.png"
+                alt="PrimeLex Logistics Intelligence System dashboard"
+                className="block w-full select-none"
+                draggable={false}
+                loading="eager"
+              />
             </div>
+          </div>
+        </div>
+
+        {/* ── Mobile/tablet single-column ── */}
+        <div className="flex flex-col lg:hidden">
+          <div className="inline-flex w-fit items-center rounded-full border border-primary/40 bg-primary/[0.08] px-4 py-[6px] text-[11px] font-semibold uppercase tracking-[0.13em] text-primary/90">
+            Logistics Intelligence System (LIS)
+          </div>
+          <h1 className="mt-5 text-[2.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
+            <span className="block whitespace-nowrap">The Operating System</span>
+            <span className="block">for <span className="text-primary">Modern Logistics</span></span>
+            <span className="block">Companies</span>
+          </h1>
+          <p className="mt-5 text-[15px] leading-[1.65] text-muted-foreground">
+            Manage your fleet, dispatch, trips, fuel, maintenance,
+            routes and operations from one intelligent platform.
+            Optimize performance. Reduce costs. Deliver more.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-[11px] text-[14px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
+            >
+              <User className="h-4 w-4" />
+              Create Organisation
+            </Link>
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/[0.22] bg-white/[0.04] px-5 py-[11px] text-[14px] font-semibold text-foreground transition-all hover:border-white/35"
+            >
+              <Lock className="h-4 w-4" />
+              Administrator Sign In
+            </Link>
+          </div>
+          <div className="mt-8">
+            <p className="mb-4 text-[13px] text-muted-foreground">Trusted by forward-thinking logistics companies</p>
+            <div className="flex flex-wrap items-center gap-5">
+              <span className="text-[12px] font-black italic text-white/40">MIKANO</span>
+              <span className="text-[12px] font-black text-white/40">DANGOTE</span>
+              <span className="text-[11px] font-bold text-white/40">SIFAX GROUP</span>
+              <span className="text-[11px] font-bold text-white/40">WAECORP</span>
+              <span className="text-[12px] font-semibold text-white/40">ABC Logistics</span>
+            </div>
+          </div>
+          <div className="mt-8 overflow-hidden rounded-[14px] border border-white/[0.1]" style={{ boxShadow: "0 24px 60px -12px oklch(0 0 0 / 0.6)" }}>
+            <img src="/dashboard-screenshot.png" alt="LIS Dashboard" className="block w-full" loading="eager" />
           </div>
         </div>
       </div>
