@@ -33,11 +33,8 @@ const BENEFITS = [
 ];
 
 const FOOTER_COLS = [
-  { heading: "Product", links: ["Features", "Modules", "Integrations", "Security"] },
   { heading: "Solutions", links: ["Fleet Management", "Dispatch Management", "Fuel Management", "Operations Intelligence"] },
-  { heading: "Resources", links: ["Documentation", "Help Center", "Blog", "API Reference"] },
   { heading: "Company", links: ["About Us", "Careers", "Partners", "Contact Us"] },
-  { heading: "Legal", links: ["Privacy Policy", "Terms of Service", "Cookie Policy"] },
 ];
 
 function LandingPage() {
@@ -189,21 +186,6 @@ function Hero() {
             </Link>
           </div>
 
-          {/* Trusted strip */}
-          <div className="mt-11">
-            <p className="mb-4 text-[11.5px] text-white/35">
-              Trusted by forward-thinking logistics companies
-            </p>
-            <div className="flex flex-nowrap items-center gap-6 whitespace-nowrap">
-              <span className="text-[13px] font-black italic tracking-wide text-white/35">MIKANO</span>
-              <span className="text-[12.5px] font-black tracking-wide text-white/35">DANGOTE</span>
-              <span className="text-[12px] font-bold tracking-[0.04em] text-white/35">SIFAX GROUP</span>
-              <span className="text-[12px] font-bold tracking-[0.04em] text-white/35">WAECORP</span>
-              <span className="text-[13px] font-semibold tracking-wide text-white/35">
-                ABC <span className="font-light">Logistics</span>
-              </span>
-            </div>
-          </div>
 
         </div>
 
