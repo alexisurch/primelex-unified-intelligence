@@ -1,20 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Truck,
-  Fuel,
-  Route as RouteIcon,
-  Wrench,
-  ShieldCheck,
-  BarChart3,
-  PieChart,
-  ChevronDown,
-  User,
-  Lock,
-  DollarSign,
-  Shield,
-  BrainCircuit,
-  Radio,
-} from "lucide-react";
+import { Truck, Fuel, Route as RouteIcon, Wrench, ShieldCheck, ChartBar as BarChart3, ChartPie as PieChart, ChevronDown, User, Lock, DollarSign, Shield, BrainCircuit, Radio, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -56,7 +41,11 @@ const BENEFITS = [
   },
 ];
 
-const TRUST_LOGOS = ["MIKANO", "DANGOTE", "SIFAX GROUP", "WAECORP", "ABC Logistics"];
+const NAV_LINKS = [
+  { label: "Product", to: "/product" as const, dropdown: false },
+  { label: "Company", to: "/company" as const, dropdown: false },
+  { label: "Pricing", to: "/pricing" as const, dropdown: false },
+];
 
 const FOOTER_COLS = [
   {
@@ -88,8 +77,8 @@ function LandingPage() {
       <Hero />
       <ModulesSection />
       <BenefitsSection />
-      <CTASection />
-      <PublicFooter />
+      <CtaSection />
+      <SiteFooter />
     </div>
   );
 }
