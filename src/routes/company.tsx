@@ -27,11 +27,31 @@ export const Route = createFileRoute("/company")({
 });
 
 const VALUES = [
-  { icon: Lightbulb, name: "Innovation", description: "We build software that thinks ahead, so operators don't have to catch up." },
-  { icon: Gauge, name: "Operational Excellence", description: "We hold ourselves to the same standard of precision we build for our customers." },
-  { icon: Sparkles, name: "Intelligence", description: "Every feature is designed to turn raw data into decisions." },
-  { icon: Shield, name: "Reliability", description: "Our platform is built to be dependable when operations depend on it." },
-  { icon: HeartHandshake, name: "Customer Success", description: "We succeed only when our customers' operations run smoother." },
+  {
+    icon: Lightbulb,
+    name: "Innovation",
+    description: "We build software that thinks ahead, so operators don't have to catch up.",
+  },
+  {
+    icon: Gauge,
+    name: "Operational Excellence",
+    description: "We hold ourselves to the same standard of precision we build for our customers.",
+  },
+  {
+    icon: Sparkles,
+    name: "Intelligence",
+    description: "Every feature is designed to turn raw data into decisions.",
+  },
+  {
+    icon: Shield,
+    name: "Reliability",
+    description: "Our platform is built to be dependable when operations depend on it.",
+  },
+  {
+    icon: HeartHandshake,
+    name: "Customer Success",
+    description: "We succeed only when our customers' operations run smoother.",
+  },
 ];
 
 function CompanyPage() {
@@ -62,8 +82,7 @@ function CompanyHero() {
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.035]"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
@@ -79,8 +98,8 @@ function CompanyHero() {
             for <span className="text-[#3b82f6]">Modern Logistics</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-[1.72] text-white/50">
-            PrimeLex Technologies builds intelligent software that helps
-            logistics companies operate smarter, faster and more profitably.
+            PrimeLex Technologies builds intelligent software that helps logistics companies operate
+            smarter, faster and more profitably.
           </p>
         </div>
       </Container>
@@ -102,19 +121,18 @@ function AboutSection() {
           />
           <div className="mt-8 space-y-5 text-[15px] leading-[1.8] text-white/55">
             <p>
-              Logistics companies operate in a world of disconnected tools —
-              spreadsheets for fuel, paper for dispatch, separate apps for
-              maintenance, and reports that arrive too late to act on.
+              Logistics companies operate in a world of disconnected tools — spreadsheets for fuel,
+              paper for dispatch, separate apps for maintenance, and reports that arrive too late to
+              act on.
             </p>
             <p>
-              We built LIS to replace that fragmentation with a single,
-              intelligent platform. One place to manage fleet, dispatch,
-              fuel, maintenance, routes, safety and reporting — with
-              operational AI that turns data into decisions.
+              We built LIS to replace that fragmentation with a single, intelligent platform. One
+              place to manage fleet, dispatch, fuel, maintenance, routes, safety and reporting —
+              with operational AI that turns data into decisions.
             </p>
             <p>
-              Our mission is simple: give logistics companies an operating
-              system, not just another app.
+              Our mission is simple: give logistics companies an operating system, not just another
+              app.
             </p>
           </div>
         </div>
@@ -135,9 +153,9 @@ function MissionVision() {
             </div>
             <h3 className="text-[18px] font-bold text-white">Our Mission</h3>
             <p className="mt-3 text-[14px] leading-[1.75] text-white/55">
-              To give logistics companies a single intelligent platform that
-              unifies every part of their operation — so they can reduce
-              costs, improve efficiency and make smarter decisions every day.
+              To give logistics companies a single intelligent platform that unifies every part of
+              their operation — so they can reduce costs, improve efficiency and make smarter
+              decisions every day.
             </p>
           </div>
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-8">
@@ -146,9 +164,9 @@ function MissionVision() {
             </div>
             <h3 className="text-[18px] font-bold text-white">Our Vision</h3>
             <p className="mt-3 text-[14px] leading-[1.75] text-white/55">
-              A world where every logistics company operates from one source
-              of truth — where data, decisions and action are connected in
-              real time, and no operation is limited by disconnected software.
+              A world where every logistics company operates from one source of truth — where data,
+              decisions and action are connected in real time, and no operation is limited by
+              disconnected software.
             </p>
           </div>
         </div>
@@ -175,8 +193,7 @@ function Philosophy() {
             Our Philosophy
           </h2>
           <blockquote className="mx-auto mt-6 max-w-2xl text-[1.5rem] font-medium leading-[1.45] text-white/85">
-            "We believe logistics companies deserve an operating system, not
-            disconnected software."
+            "We believe logistics companies deserve an operating system, not disconnected software."
           </blockquote>
         </div>
       </Container>
@@ -284,13 +301,7 @@ function ContactRow({
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-2">
       <span className="text-[12px] font-medium text-white/60">{label}</span>
