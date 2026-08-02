@@ -325,7 +325,7 @@ function ModulesSection() {
             </div>
           ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
