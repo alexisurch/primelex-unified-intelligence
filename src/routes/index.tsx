@@ -95,6 +95,13 @@ function LandingPage() {
 }
 
 /* ── Navigation ─────────────────────────────────────────────────────────── */
+const NAV_LINKS = [
+  { label: "Solutions", dropdown: true },
+  { label: "Platform", dropdown: true },
+  { label: "Resources", dropdown: true },
+  { label: "Company", dropdown: true },
+  { label: "Pricing", dropdown: false },
+];
 function SiteNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[oklch(0.16_0.028_260)] backdrop-blur-md">
