@@ -54,8 +54,6 @@ const BENEFITS = [
   },
 ];
 
-const TRUST_LOGOS = ["MIKANO", "DANGOTE", "SIFAX GROUP", "WAECORP", "ABC Logistics"];
-
 function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -167,26 +165,9 @@ function Hero() {
             </div>
 
             {/* Trust strip */}
-            <div className="mt-12">
-              <p className="mb-6 text-[13px] font-normal text-white/40">
-                Trusted by forward-thinking logistics companies
-              </p>
-              <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
-                <span className="text-[15px] font-black italic tracking-wide text-white/30">
-                  MIKANO
-                </span>
-                <span className="text-[15px] font-black tracking-wide text-white/30">DANGOTE</span>
-                <span className="text-[14px] font-bold tracking-[0.08em] text-white/30">
-                  SIFAX GROUP
-                </span>
-                <span className="text-[14px] font-bold tracking-[0.07em] text-white/30">
-                  WAECORP
-                </span>
-                <span className="text-[15px] font-semibold text-white/30">
-                  ABC <span className="font-light">Logistics</span>
-                </span>
-              </div>
-            </div>
+            <p className="mt-6 text-[13px] font-normal text-white/40">
+              Trusted by forward-thinking logistics companies
+            </p>
           </div>
 
           {/* Right column – dashboard screenshot */}
@@ -252,18 +233,9 @@ function Hero() {
               Administrator Sign In
             </Link>
           </div>
-          <div className="mt-8">
-            <p className="mb-4 text-[13px] text-muted-foreground">
-              Trusted by forward-thinking logistics companies
-            </p>
-            <div className="flex flex-wrap items-center gap-5">
-              <span className="text-[12px] font-black italic text-white/40">MIKANO</span>
-              <span className="text-[12px] font-black text-white/40">DANGOTE</span>
-              <span className="text-[11px] font-bold text-white/40">SIFAX GROUP</span>
-              <span className="text-[11px] font-bold text-white/40">WAECORP</span>
-              <span className="text-[12px] font-semibold text-white/40">ABC Logistics</span>
-            </div>
-          </div>
+          <p className="mt-5 text-[13px] text-muted-foreground">
+            Trusted by forward-thinking logistics companies
+          </p>
           <div
             className="mt-8 overflow-hidden rounded-[14px] border border-white/[0.1]"
             style={{ boxShadow: "0 24px 60px -12px oklch(0 0 0 / 0.6)" }}
