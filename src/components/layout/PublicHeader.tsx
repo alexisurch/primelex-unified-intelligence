@@ -13,7 +13,7 @@ const NAV_LINKS = [
 export function PublicHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[oklch(0.16_0.028_260)] backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1400px] items-center px-10 py-[14px]">
+      <div className="mx-auto flex h-[84px] max-w-[1400px] items-center px-10">
         {/* Logo — left */}
         <Link to="/" className="flex shrink-0 items-center gap-3">
           <div className="relative h-[42px] w-[42px] shrink-0">
@@ -40,7 +40,7 @@ export function PublicHeader() {
           {NAV_LINKS.map((n) => (
             <button
               key={n.label}
-              className="inline-flex items-center gap-[5px] rounded-md px-[18px] py-2.5 text-[14.5px] font-medium text-white/70 transition-colors hover:text-white"
+              className="inline-flex items-center gap-[5px] rounded-md px-[20px] py-2.5 text-[14.5px] font-medium text-white/70 transition-colors hover:text-white"
             >
               {n.label}
               {n.dropdown && (
