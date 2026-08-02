@@ -1,4 +1,4 @@
-import { Bell, Calendar, ChevronDown, Moon, Sun, Settings as SettingsIcon, LogOut, CircleUser as UserCircle } from "lucide-react";
+import { Bell, ChevronDown, Moon, Sun, Settings as SettingsIcon, LogOut, CircleUser as UserCircle, ArrowRight, TriangleAlert as AlertTriangle, Wrench, IdCard, ShieldAlert } from "lucide-react";
 import { usePreferences } from "@/lib/preferences";
 import { useBranding } from "@/lib/branding";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -10,20 +10,41 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { alerts } from "@/lib/mock-data";
+import { useState } from "react";
+
+const alertIconMap: Record<string, typeof Bell> = {
+  AlertTriangle,
+  Wrench,
+  IdCard,
+  ShieldAlert,
+};
+
+const alertToneMap: Record<string, string> = {
+  danger: "text-danger",
+  warning: "text-warning",
+  info: "text-info",
+  purple: "text-purple",
+};
 
 interface HeaderProps {
   title: string;
   subtitle?: string;
-  showDate?: boolean;
-  showExport?: boolean;
   actions?: React.ReactNode;
+  /** @deprecated date filter removed */
+  showDate?: boolean;
+  /** @deprecated export dropdown removed */
+  showExport?: boolean;
 }
 
-export function Header({ title, subtitle, showDate = true, actions }: HeaderProps) {
+export function Header({ title, subtitle, actions }: HeaderProps) {
   const { resolvedTheme, toggleTheme } = usePreferences();
   const { adminName, logoDataUrl, primaryColor } = useBranding();
   const navigate = useNavigate();
   const isDark = resolvedTheme === "dark";
+  const [activeAlert, setActiveAlert] = useState<(typeof alerts)[number] | null>(null);
 
   const handleLogout = () => {
     navigate({ to: "/login" });
@@ -38,14 +59,6 @@ export function Header({ title, subtitle, showDate = true, actions }: HeaderProp
         </div>
 
         <div className="flex items-center gap-3">
-          {showDate && (
-            <button className="flex items-center gap-2 rounded-lg border border-border bg-elevated/60 px-3 py-2 text-xs text-foreground hover:border-primary/40">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="font-medium">May 14, 2026</span>
-              <span className="text-muted-foreground">vs May 7, 2026</span>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-            </button>
-          )}
           <button
             onClick={toggleTheme}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
@@ -54,10 +67,48 @@ export function Header({ title, subtitle, showDate = true, actions }: HeaderProp
           >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
-          <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-elevated/60 hover:border-primary/40">
-            <Bell className="h-4 w-4" />
-            <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-white">8</span>
-          </button>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-elevated/60 hover:border-primary/40">
+                <Bell className="h-4 w-4" />
+                <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-white">{alerts.length}</span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80 p-0">
+              <div className="border-b border-border/60 px-4 py-3">
+                <div className="text-sm font-semibold text-foreground">Notifications</div>
+                <div className="text-[11px] text-muted-foreground">Recent {alerts.length} alerts</div>
+              </div>
+              <div className="max-h-80 overflow-y-auto">
+                {alerts.map((a) => {
+                  const Icon = alertIconMap[a.icon] ?? Bell;
+                  return (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => setActiveAlert(a)}
+                      className="flex w-full items-start gap-3 border-b border-border/30 px-4 py-3 text-left transition-colors last:border-0 hover:bg-white/[0.03]"
+                    >
+                      <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${alertToneMap[a.type] ?? "text-muted-foreground"}`} />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-medium text-foreground">{a.title}</div>
+                        <div className="truncate text-xs text-muted-foreground">{a.detail}</div>
+                        <div className="mt-0.5 text-[10px] text-muted-foreground">{a.time}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/action-center" })}
+                className="flex w-full items-center justify-center gap-1.5 border-t border-border/60 px-4 py-3 text-xs font-medium text-primary transition-colors hover:bg-primary/5"
+              >
+                Show more <ArrowRight className="h-3 w-3" />
+              </button>
+            </PopoverContent>
+          </Popover>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -113,6 +164,30 @@ export function Header({ title, subtitle, showDate = true, actions }: HeaderProp
           {actions}
         </div>
       )}
+
+      <Sheet open={!!activeAlert} onOpenChange={(o) => { if (!o) setActiveAlert(null); }}>
+        <SheetContent side="right" className="w-full overflow-y-auto border-l border-border bg-background/95 p-0 backdrop-blur sm:max-w-md">
+          {activeAlert && (
+            <div className="space-y-5 px-6 py-8">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Notification</div>
+                <h2 className="mt-1 text-xl font-semibold text-foreground">{activeAlert.title}</h2>
+              </div>
+              <p className="text-sm leading-relaxed text-muted-foreground">{activeAlert.detail}</p>
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                <span>{activeAlert.time}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setActiveAlert(null); navigate({ to: "/action-center" }); }}
+                className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+              >
+                View in Action Center <ArrowRight className="h-3 w-3" />
+              </button>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

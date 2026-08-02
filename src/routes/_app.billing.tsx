@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { CreditCard, Truck, Wallet, CalendarClock, Receipt, FileText, Download, Pencil, CircleCheck as CheckCircle2, TrendingUp, TrendingDown, LifeBuoy, Search, ListFilter as Filter } from "lucide-react";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { CreditCard, Truck, Wallet, CalendarClock, Receipt, FileText, Download, Pencil, Search, ListFilter as Filter } from "lucide-react";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/billing")({
   component: BillingPage,
@@ -45,20 +46,14 @@ const statusTone: Record<Invoice["status"], "success" | "warning" | "danger"> = 
 /* Trend data                                                          */
 /* ------------------------------------------------------------------ */
 
-const trendData = [
-  { month: "Feb '26", amount: 580000 },
-  { month: "Mar '26", amount: 615000 },
-  { month: "Apr '26", amount: 645000 },
-  { month: "May '26", amount: 690000 },
-  { month: "Jun '26", amount: 720000 },
-  { month: "Jul '26", amount: 740000 },
-];
-
 /* ------------------------------------------------------------------ */
 /* Sub-components                                                      */
 /* ------------------------------------------------------------------ */
 
 function SubscriptionOverviewCard() {
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+
   return (
     <GlassCard className="p-6" hover={false}>
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -76,7 +71,7 @@ function SubscriptionOverviewCard() {
               <Pill tone="success">Active</Pill>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-x-8 gap-y-1 sm:grid-cols-4">
-              <PlanDetail label="Billing Cycle" value="Monthly" />
+              <PlanDetail label="Billing Cycle" value="30 Days" />
               <PlanDetail label="Price per Active Truck" value="₦5,000" />
               <PlanDetail label="Next Billing Date" value="31 Aug, 2026" />
               <PlanDetail label="Auto Renewal" value="Enabled" valueClass="text-success font-semibold" />
@@ -84,19 +79,94 @@ function SubscriptionOverviewCard() {
           </div>
         </div>
 
-        {/* Right — estimated invoice */}
+        {/* Right — estimated invoice with payment method button */}
         <div className="shrink-0 rounded-xl border border-border/50 bg-background/30 p-5 text-right">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-primary">
             Estimated Next Invoice
           </div>
           <div className="mt-1.5 text-[32px] font-bold leading-none text-foreground">₦740,000</div>
           <div className="mt-1 text-[12px] text-muted-foreground">148 Active Trucks × ₦5,000</div>
-          <Button variant="outline" size="sm" className="mt-3 border-border bg-elevated/60 text-xs">
-            <Receipt className="mr-1.5 h-3.5 w-3.5" />
-            View Invoice Preview
-          </Button>
+          <div className="mt-3 flex items-center justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-border bg-elevated/60 text-xs"
+              onClick={() => { setPaymentOpen(true); setEditing(false); }}
+            >
+              <CreditCard className="mr-1.5 h-3.5 w-3.5" />
+              Payment Method
+            </Button>
+            <Button variant="outline" size="sm" className="border-border bg-elevated/60 text-xs">
+              <Receipt className="mr-1.5 h-3.5 w-3.5" />
+              View Invoice Preview
+            </Button>
+          </div>
         </div>
       </div>
+
+      <Dialog open={paymentOpen} onOpenChange={(o) => { setPaymentOpen(o); if (!o) setEditing(false); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Payment Method</DialogTitle>
+            <DialogDescription>
+              Your current payment method on file.
+            </DialogDescription>
+          </DialogHeader>
+
+          {!editing ? (
+            <>
+              <div className="flex items-center justify-between rounded-lg border border-border/50 bg-background/30 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-12 items-center justify-center rounded-md bg-[#1a1f71] text-[10px] font-bold text-white">
+                    VISA
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-semibold text-foreground">•••• 4281</div>
+                    <div className="text-[11px] text-muted-foreground">Expires 05/28</div>
+                  </div>
+                </div>
+                <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[11px] font-medium text-success">Primary</span>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setPaymentOpen(false)}>Close</Button>
+                <Button onClick={() => setEditing(true)}>
+                  <Pencil className="mr-2 h-3.5 w-3.5" />
+                  Update Payment Method
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <div className="space-y-4 py-2">
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-muted-foreground">Cardholder Name</label>
+                  <Input placeholder="Name on card" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[12px] font-medium text-muted-foreground">Card Number</label>
+                  <Input placeholder="0000 0000 0000 0000" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-[12px] font-medium text-muted-foreground">Expiry</label>
+                    <Input placeholder="MM/YY" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[12px] font-medium text-muted-foreground">CVV</label>
+                    <Input placeholder="123" />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setEditing(false)}>Back</Button>
+                <Button onClick={() => { setPaymentOpen(false); setEditing(false); toast.success("Payment method updated successfully"); }}>
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </GlassCard>
   );
 }
@@ -118,7 +188,7 @@ function SummaryMetrics() {
   const cards = [
     { label: "Current Active Trucks", value: "148", sub: "Billable this cycle", icon: Truck, color: "text-info", bg: "bg-info/15" },
     { label: "Current Monthly Cost", value: "₦740,000", sub: "Before tax", icon: Wallet, color: "text-success", bg: "bg-success/15" },
-    { label: "Billing Cycle", value: "Monthly", sub: "1st – Last day of month", icon: CalendarClock, color: "text-purple", bg: "bg-purple/15" },
+    { label: "Billing Cycle", value: "30 Days", sub: "Renewed every 30 days", icon: CalendarClock, color: "text-purple", bg: "bg-purple/15" },
     { label: "Next Invoice Date", value: "31 Aug, 2026", sub: "In 8 days", icon: Receipt, color: "text-warning", bg: "bg-warning/15" },
   ];
   return (
@@ -174,40 +244,6 @@ function UsageBreakdown() {
           <span className="text-[13px] font-semibold text-primary">Estimated Monthly Total</span>
           <span className="text-[15px] font-bold text-primary">₦740,000</span>
         </div>
-      </div>
-    </SectionCard>
-  );
-}
-
-function BillingTrend() {
-  return (
-    <SectionCard title="Billing Trend (Last 6 Months)">
-      <div className="h-[260px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={trendData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-            <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
-            <YAxis
-              tickFormatter={(v: number) => `₦${(v / 1000).toFixed(0)}k`}
-              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-              axisLine={false}
-              tickLine={false}
-              width={50}
-            />
-            <Tooltip
-              formatter={(v: number) => [`₦${v.toLocaleString()}`, "Amount"]}
-              contentStyle={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="amount"
-              stroke="hsl(var(--primary))"
-              strokeWidth={2.5}
-              dot={{ r: 4, fill: "hsl(var(--primary))", strokeWidth: 0 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
       </div>
     </SectionCard>
   );
@@ -274,91 +310,12 @@ function InvoiceHistory() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Right sidebar                                                       */
-/* ------------------------------------------------------------------ */
-
-function PaymentMethod() {
-  return (
-    <GlassCard className="p-5" hover={false}>
-      <h3 className="mb-4 text-[15px] font-semibold text-foreground">Payment Method</h3>
-      <div className="flex items-center justify-between rounded-lg border border-border/50 bg-background/30 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-12 items-center justify-center rounded-md bg-[#1a1f71] text-[10px] font-bold text-white">
-            VISA
-          </div>
-          <div>
-            <div className="text-[13px] font-semibold text-foreground">•••• 4281</div>
-            <div className="text-[11px] text-muted-foreground">Expires 05/28</div>
-          </div>
-        </div>
-        <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[11px] font-medium text-success">Primary</span>
-      </div>
-      <Button variant="outline" className="mt-4 w-full border-border bg-elevated/60 text-sm">
-        <Pencil className="mr-2 h-3.5 w-3.5" />
-        Update Payment Method
-      </Button>
-    </GlassCard>
-  );
-}
-
-interface ActivityItem {
-  id: string;
-  title: string;
-  description: string;
-  timestamp: string;
-  tone: "success" | "info" | "warning" | "purple";
-  iconBg: string;
-  icon: typeof CheckCircle2;
-}
-
-function BillingActivity() {
-  const items: ActivityItem[] = [
-    { id: "a1", title: "Payment successful", description: "₦720,000 paid via Visa •••• 4281", timestamp: "Today, 10:42 AM", tone: "success", iconBg: "bg-success/15", icon: CheckCircle2 },
-    { id: "a2", title: "Invoice generated", description: "INV-1008 for ₦720,000", timestamp: "31 Jul, 2026 11:59 PM", tone: "info", iconBg: "bg-info/15", icon: FileText },
-    { id: "a3", title: "Active trucks increased", description: "138 → 148 active trucks", timestamp: "20 Jul, 2026 09:15 AM", tone: "warning", iconBg: "bg-warning/15", icon: Truck },
-    { id: "a4", title: "Payment method updated", description: "Visa •••• 4281 set as primary", timestamp: "5 Jul, 2026 02:30 PM", tone: "purple", iconBg: "bg-purple/15", icon: CreditCard },
-  ];
-
-  const toneText: Record<ActivityItem["tone"], string> = {
-    success: "text-success",
-    info: "text-info",
-    warning: "text-warning",
-    purple: "text-purple",
-  };
-
-  return (
-    <GlassCard className="p-5" hover={false}>
-      <h3 className="mb-4 text-[15px] font-semibold text-foreground">Billing Activity</h3>
-      <div className="flex flex-col">
-        {items.map((item, i) => (
-          <div key={item.id} className="flex items-start gap-3">
-            <div className="flex flex-col items-center">
-              <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full", item.iconBg)}>
-                <item.icon className={cn("h-4 w-4", toneText[item.tone])} />
-              </div>
-              {i < items.length - 1 && (
-                <span className="my-1 w-px flex-1 bg-border/60" style={{ minHeight: 20 }} />
-              )}
-            </div>
-            <div className="flex flex-col gap-0.5 pb-4">
-              <span className="text-[11px] text-muted-foreground">{item.timestamp}</span>
-              <span className="text-[13px] font-semibold text-foreground">{item.title}</span>
-              <span className="text-[12px] text-muted-foreground">{item.description}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </GlassCard>
-  );
-}
-
 interface SettingRow { id: string; label: string; value: string; valueClass?: string; isSwitch?: boolean; defaultOn?: boolean }
 
 function SubscriptionSettings() {
   const rows: SettingRow[] = [
     { id: "plan", label: "Plan", value: "Professional Plan" },
-    { id: "cycle", label: "Billing Cycle", value: "Monthly" },
+    { id: "cycle", label: "Billing Cycle", value: "30 Days" },
     { id: "currency", label: "Currency", value: "NGN" },
     { id: "renewal", label: "Auto Renewal", value: "Enabled", valueClass: "text-success font-semibold", isSwitch: true, defaultOn: true },
     { id: "vat", label: "Tax (VAT)", value: "Applied (7.5%)" },
@@ -386,21 +343,6 @@ function SubscriptionSettings() {
   );
 }
 
-function NeedHelp() {
-  return (
-    <GlassCard className="p-5" hover={false}>
-      <h3 className="mb-2 text-[15px] font-semibold text-foreground">Need Help?</h3>
-      <p className="mb-4 text-[12px] leading-relaxed text-muted-foreground">
-        Our billing team is here to help you with any billing or payment related questions.
-      </p>
-      <Button variant="outline" className="w-full border-border bg-elevated/60 text-sm">
-        <LifeBuoy className="mr-2 h-4 w-4" />
-        Contact Billing Support
-      </Button>
-    </GlassCard>
-  );
-}
-
 /* ------------------------------------------------------------------ */
 /* Page layout                                                         */
 /* ------------------------------------------------------------------ */
@@ -414,25 +356,14 @@ function BillingPage() {
         showDate={false}
       />
       <div className="p-8">
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
-          {/* Main column */}
-          <div className="space-y-6">
-            <SubscriptionOverviewCard />
-            <SummaryMetrics />
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <UsageBreakdown />
-              <BillingTrend />
-            </div>
-            <InvoiceHistory />
-          </div>
-
-          {/* Right sidebar */}
-          <div className="space-y-6">
-            <PaymentMethod />
-            <BillingActivity />
+        <div className="space-y-6">
+          <SubscriptionOverviewCard />
+          <SummaryMetrics />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <UsageBreakdown />
             <SubscriptionSettings />
-            <NeedHelp />
           </div>
+          <InvoiceHistory />
         </div>
       </div>
     </>

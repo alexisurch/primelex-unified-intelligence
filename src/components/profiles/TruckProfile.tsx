@@ -1,6 +1,7 @@
-import { Truck as TruckIcon, CircleUser as UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CircleCheck as CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog, Pencil } from "lucide-react";
+import { Truck as TruckIcon, CircleUser as UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CircleCheck as CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog, Pencil, Archive, ArchiveRestore } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { Pill } from "@/components/shared/Cards";
 import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend } from "@/lib/mock-data";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
@@ -10,17 +11,17 @@ import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, Documen
 import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
 import { DocumentUploadDialog, EditProfileDialog } from "./ProfileDialogs";
 import { useState } from "react";
-import { toast } from "sonner";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
 
 export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [archived, setArchived] = useState(false);
   const { trackingMode } = usePreferences();
   const { getManagerForTruck } = useFleetManagers();
   const isManual = trackingMode === "manual";
   const t = trucks.find((x) => x.id === id);
-  const [uploadOpen, setUploadOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
   if (!t) return <div className="p-6 text-sm text-muted-foreground">Truck not found.</div>;
   const fleetManager = getManagerForTruck(t.id);
 
@@ -178,6 +179,20 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
         subtitle={<><span>{t.model}</span><Circle className="h-1 w-1 fill-muted-foreground" /></>}
         statusTone={opStatusTone}
         statusLabel={t.status}
+        actions={
+          <Button
+            size="sm"
+            variant="outline"
+            className={archived ? "border-success/40 text-success" : "border-warning/40 text-warning"}
+            onClick={() => {
+              setArchived((v) => !v);
+              toast.success(archived ? `${t.plate} restored to active fleet` : `${t.plate} archived — removed from active trucks`);
+            }}
+          >
+            {archived ? <ArchiveRestore className="mr-1.5 h-3.5 w-3.5" /> : <Archive className="mr-1.5 h-3.5 w-3.5" />}
+            {archived ? "Unarchive" : "Archive"}
+          </Button>
+        }
       />
       <ProfileTabs defaultValue="overview" tabs={[
         { value: "overview", label: "Overview", content: overviewTab },

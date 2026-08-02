@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { History, RefreshCw, ListFilter as Filter } from "lucide-react";
 import { Header } from "@/components/layout/Header";
-import { KPICard, SectionCard, Pill } from "@/components/shared/Cards";
+import { SectionCard, Pill } from "@/components/shared/Cards";
 import { fetchAuditTrail, type DbAuditEntry } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -89,26 +89,10 @@ function AuditTrailPage() {
     return true;
   });
 
-  const byAction: Record<string, number> = {};
-  const byModule: Record<string, number> = {};
-  entries.forEach((e) => {
-    byAction[e.action] = (byAction[e.action] ?? 0) + 1;
-    byModule[e.module] = (byModule[e.module] ?? 0) + 1;
-  });
-  const topAction = Object.entries(byAction).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
-  const topModule = Object.entries(byModule).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
-
   return (
     <>
       <Header title="Audit Trail" subtitle="Complete record of every operational change." showExport={false} />
       <div className="space-y-6 p-8">
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <KPICard label="Total Events" value={entries.length} icon={History} tone="info" footnote="All time" />
-          <KPICard label="Showing" value={filtered.length} icon={Filter} tone="success" footnote="After filters" />
-          <KPICard label="Top Action" value={topAction} icon={RefreshCw} tone="warning" footnote={`${byAction[topAction] ?? 0} events`} />
-          <KPICard label="Top Module" value={topModule} icon={History} tone="purple" footnote={`${byModule[topModule] ?? 0} events`} />
-        </div>
-
         <SectionCard
           title="Event Log"
           action={
