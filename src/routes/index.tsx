@@ -14,7 +14,7 @@ import {
   BrainCircuit,
   Radio,
 } from "lucide-react";
-import { CTASection, PublicFooter, PublicHeader } from "../components/public/PublicShared";
+import { CTASection, PublicPage } from "../components/public/PublicShared";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -56,39 +56,12 @@ const BENEFITS = [
 
 function LandingPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden text-foreground" style={{ background: "oklch(0.105 0.034 260)" }}>
-      {/* Page-wide mixture & blend — same as the hero */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 50% 70% at 8% 50%, oklch(0.50 0.22 258 / 0.18) 0%, transparent 68%)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 60% at 50% 50%, oklch(0.50 0.22 258 / 0.06) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      <div className="relative z-10">
-        <PublicHeader />
-        <Hero />
-        <ModulesSection />
-        <BenefitsSection />
-        <CTASection />
-        <PublicFooter />
-      </div>
-    </div>
+    <PublicPage>
+      <Hero />
+      <ModulesSection />
+      <BenefitsSection />
+      <CTASection />
+    </PublicPage>
   );
 }
 

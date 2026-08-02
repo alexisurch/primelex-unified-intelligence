@@ -177,7 +177,7 @@ export function PublicHeader() {
 
 export function PublicFooter() {
   return (
-    <footer className="border-t border-white/[0.06] bg-[#07101f]">
+    <footer className="border-t border-white/[0.06]">
       <div className="mx-auto max-w-[1280px] px-8 py-14">
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-7">
           <div className="col-span-2 flex flex-col gap-4 sm:col-span-3 lg:col-span-2">
@@ -301,12 +301,46 @@ export function CTASection() {
   );
 }
 
+export function PublicBackground() {
+  return (
+    <>
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 50% 70% at 8% 50%, oklch(0.50 0.22 258 / 0.18) 0%, transparent 68%)",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 90% 60% at 50% 50%, oklch(0.50 0.22 258 / 0.06) 0%, transparent 70%)",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+    </>
+  );
+}
+
 export function PublicPage({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#060c1a] text-foreground">
-      <PublicHeader />
-      {children}
-      <PublicFooter />
+    <div
+      className="relative min-h-screen overflow-hidden text-foreground"
+      style={{ background: "oklch(0.105 0.034 260)" }}
+    >
+      <PublicBackground />
+      <div className="relative z-10">
+        <PublicHeader />
+        {children}
+        <PublicFooter />
+      </div>
     </div>
   );
 }
