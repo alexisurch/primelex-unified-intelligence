@@ -309,20 +309,20 @@ function Dashboard() {
           {/* Fleet at a Glance */}
           <SectionCard title="Fleet at a Glance" >
             <div className="flex items-center gap-4">
-              <div className="relative h-[180px] w-[180px] shrink-0">
+              <div className="relative h-[130px] w-[130px] shrink-0">
                 <ResponsiveContainer>
                   <PieChart>
-                    <Pie data={fleetBreakdown} innerRadius={60} outerRadius={82} paddingAngle={2.5} dataKey="value">
+                    <Pie data={fleetBreakdown} innerRadius={42} outerRadius={58} paddingAngle={2.5} dataKey="value">
                       {fleetBreakdown.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-2xl font-semibold">128</div>
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Total</div>
+                  <div className="text-xl font-semibold">128</div>
+                  <div className="text-[9px] uppercase tracking-wider text-muted-foreground">Total</div>
                 </div>
               </div>
-              <div className="flex-1 space-y-2.5">
+              <div className="flex-1 space-y-2">
                 {fleetBreakdown.map((f) => (
                   <div key={f.name} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
@@ -338,23 +338,23 @@ function Dashboard() {
 
           {/* Operations Overview — no "all operations running smoothly" message */}
           <SectionCard title="Operations Overview (Today)">
-            <div className="flex items-center justify-between px-2">
+            <div className="flex items-center justify-between gap-1 px-1">
               {[
                 { icon: Truck, label: "Departed", value: 156, delta: "8%", tone: "info", up: true },
                 { icon: TruckIcon, label: "In Transit", value: 142, delta: "5%", tone: "success", up: true },
                 { icon: Package, label: "Delivered", value: 112, delta: "12%", tone: "warning", up: true },
                 { icon: AlertTriangle, label: "Delayed", value: 18, delta: "10%", tone: "danger", up: false },
               ].map((s, i, arr) => (
-                <div key={s.label} className="flex items-center gap-3">
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-full bg-${s.tone}/15`}>
-                      <s.icon className={`h-5 w-5 text-${s.tone}`} />
+                <div key={s.label} className="flex items-center gap-1">
+                  <div className="flex flex-col items-center gap-1">
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-full bg-${s.tone}/15`}>
+                      <s.icon className={`h-4 w-4 text-${s.tone}`} />
                     </div>
-                    <span className="text-[11px] uppercase tracking-wider text-muted-foreground">{s.label}</span>
-                    <span className="text-lg font-semibold">{s.value}</span>
-                    <span className={`text-[11px] font-medium ${s.up ? "text-success" : "text-danger"}`}>{s.up ? "▲" : "▼"} {s.delta}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</span>
+                    <span className="text-base font-semibold">{s.value}</span>
+                    <span className={`text-[10px] font-medium ${s.up ? "text-success" : "text-danger"}`}>{s.up ? "▲" : "▼"} {s.delta}</span>
                   </div>
-                  {i < arr.length - 1 && <ArrowRight className="h-4 w-4 text-muted-foreground" />}
+                  {i < arr.length - 1 && <ArrowRight className="h-3 w-3 text-muted-foreground" />}
                 </div>
               ))}
             </div>
