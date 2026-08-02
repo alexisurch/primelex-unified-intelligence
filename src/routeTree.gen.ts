@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProductRouteImport } from './routes/product'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CompanyRouteImport } from './routes/company'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppUsersAccessRouteImport } from './routes/_app.users-access'
@@ -36,9 +39,24 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductRoute = ProductRouteImport.update({
+  id: '/product',
+  path: '/product',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanyRoute = CompanyRouteImport.update({
+  id: '/company',
+  path: '/company',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -138,7 +156,10 @@ const OrganisationLoginRoute = OrganisationLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/company': typeof CompanyRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/product': typeof ProductRoute
   '/register': typeof RegisterRoute
   '/$organisation/login': typeof OrganisationLoginRoute
   '/action-center': typeof AppActionCenterRoute
@@ -160,7 +181,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/company': typeof CompanyRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/product': typeof ProductRoute
   '/register': typeof RegisterRoute
   '/$organisation/login': typeof OrganisationLoginRoute
   '/action-center': typeof AppActionCenterRoute
@@ -184,7 +208,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
+  '/company': typeof CompanyRoute
   '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/product': typeof ProductRoute
   '/register': typeof RegisterRoute
   '/$organisation/login': typeof OrganisationLoginRoute
   '/_app/action-center': typeof AppActionCenterRoute
@@ -208,7 +235,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/company'
     | '/login'
+    | '/pricing'
+    | '/product'
     | '/register'
     | '/$organisation/login'
     | '/action-center'
@@ -230,7 +260,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/company'
     | '/login'
+    | '/pricing'
+    | '/product'
     | '/register'
     | '/$organisation/login'
     | '/action-center'
@@ -253,7 +286,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_app'
+    | '/company'
     | '/login'
+    | '/pricing'
+    | '/product'
     | '/register'
     | '/$organisation/login'
     | '/_app/action-center'
@@ -277,7 +313,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  CompanyRoute: typeof CompanyRoute
   LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
+  ProductRoute: typeof ProductRoute
   RegisterRoute: typeof RegisterRoute
   OrganisationLoginRoute: typeof OrganisationLoginRoute
 }
@@ -291,11 +330,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/product': {
+      id: '/product'
+      path: '/product'
+      fullPath: '/product'
+      preLoaderRoute: typeof ProductRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/company': {
+      id: '/company'
+      path: '/company'
+      fullPath: '/company'
+      preLoaderRoute: typeof CompanyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -477,7 +537,10 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  CompanyRoute: CompanyRoute,
   LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
+  ProductRoute: ProductRoute,
   RegisterRoute: RegisterRoute,
   OrganisationLoginRoute: OrganisationLoginRoute,
 }
