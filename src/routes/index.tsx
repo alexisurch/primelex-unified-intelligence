@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import ctaTruck from "../assets/cta-truck.png";
 import {
   Truck,
   Fuel,
@@ -447,61 +448,60 @@ function BenefitsSection() {
 /* ── CTA Banner ──────────────────────────────────────────────────────────── */
 function CTASection() {
   return (
-    <section className="mx-6 my-12 overflow-hidden rounded-2xl lg:mx-auto lg:max-w-7xl">
-      <div
-        className="relative flex min-h-[220px] items-center overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(100deg, oklch(0.22 0.055 258) 0%, oklch(0.28 0.07 258) 50%, oklch(0.2 0.04 260) 100%)",
-        }}
-      >
-        {/* Subtle grid overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg,oklch(1 0 0) 0 1px,transparent 1px 40px),repeating-linear-gradient(90deg,oklch(1 0 0) 0 1px,transparent 1px 40px)",
-          }}
-        />
+    <section className="mx-6 my-12 lg:mx-auto lg:max-w-7xl">
+      <div className="relative min-h-[154px] overflow-hidden rounded-[22px] border border-primary/35 bg-[oklch(0.105_0.034_260)] shadow-[0_34px_100px_-38px_oklch(0_0_0/0.88),0_0_80px_-34px_oklch(0.50_0.22_258/0.5)]">
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,oklch(0.125_0.04_260)_0%,oklch(0.155_0.055_258)_48%,oklch(0.115_0.04_260)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_140%_at_58%_50%,oklch(0.50_0.22_258/0.18),transparent_68%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:repeating-linear-gradient(135deg,white_0_1px,transparent_1px_4px)]" />
 
-        {/* Text + buttons */}
-        <div className="relative z-10 flex-1 px-10 py-10">
-          <h2 className="max-w-sm text-[1.65rem] font-bold leading-tight tracking-tight text-foreground">
-            Ready to Modernize Your Logistics Operations?
-          </h2>
-          <p className="mt-2 max-w-xs text-[13px] leading-relaxed text-muted-foreground">
-            Create your organisation and start running your operations smarter, faster and more
-            profitably.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[38%] lg:block">
+          <img
+            src={ctaTruck}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover object-right"
+            style={{
+              maskImage: "linear-gradient(to right, transparent 0%, black 30%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 30%)",
+            }}
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.105_0.034_260)_0%,transparent_34%,oklch(0.08_0.03_260/0.18)_100%)]" />
+        </div>
+
+        <div className="relative z-10 grid min-h-[154px] items-center gap-8 px-8 py-8 md:grid-cols-[minmax(0,1fr)_auto] lg:w-[78%] lg:py-7">
+          <div>
+            <h2 className="max-w-[560px] text-[22px] font-bold leading-[1.2] tracking-[-0.02em] text-foreground md:text-[24px]">
+              Ready to Modernize Your Logistics Operations?
+            </h2>
+            <p className="mt-4 max-w-[390px] text-[14px] leading-[1.55] text-muted-foreground">
+              Create your organisation and start running your operations smarter, faster and more
+              profitably.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center md:justify-self-end">
             <Link
               to="/register"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
+              className="inline-flex items-center justify-center gap-[9px] rounded-[5px] bg-primary px-7 py-[15px] text-[15px] font-semibold text-white shadow-lg shadow-primary/30 transition-all hover:bg-primary/90"
             >
-              <User className="h-4 w-4" />
+              <User className="h-[16px] w-[16px]" />
               Create Organisation
             </Link>
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 rounded-md border border-white/[0.2] bg-white/[0.06] px-5 py-2.5 text-sm font-semibold text-foreground transition-all hover:border-white/30 hover:bg-white/[0.1]"
+              className="inline-flex items-center justify-center gap-[9px] rounded-[5px] border border-primary/65 bg-white/[0.02] px-7 py-[15px] text-[15px] font-semibold text-foreground transition-all hover:border-white/35 hover:bg-white/[0.07]"
             >
-              <Lock className="h-4 w-4" />
+              <Lock className="h-[16px] w-[16px]" />
               Administrator Sign In
             </Link>
           </div>
         </div>
 
-        {/* Truck image */}
-        <div className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[42%] lg:block">
+        <div className="relative z-10 mt-0 block lg:hidden">
           <img
-            src="https://images.pexels.com/photos/1121123/pexels-photo-1121123.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover object-left"
-            style={{
-              maskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)",
-              WebkitMaskImage: "linear-gradient(to right, transparent 0%, oklch(1 0 0) 35%)",
-            }}
+            src={ctaTruck}
+            alt="Logistics truck"
+            className="h-52 w-full object-cover object-right opacity-80"
           />
         </div>
       </div>
