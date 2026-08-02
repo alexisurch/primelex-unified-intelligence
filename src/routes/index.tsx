@@ -14,6 +14,10 @@ import {
   Shield,
   BrainCircuit,
   Radio,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Youtube,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -22,7 +26,11 @@ export const Route = createFileRoute("/")({
 
 const MODULES = [
   { icon: Truck, label: "Fleet\nOperations" },
-  { icon: Radio, label: "Dispatch\nCenter" },
+  { icon: Radio,
+  Linkedin,
+  Twitter,
+  Facebook,
+  Youtube, label: "Dispatch\nCenter" },
   { icon: Fuel, label: "Fuel\nIntelligence" },
   { icon: RouteIcon, label: "Route\nIntelligence" },
   { icon: Wrench, label: "Maintenance\nManagement" },
