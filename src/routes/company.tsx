@@ -71,7 +71,7 @@ function CompanyPage() {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function CompanyHero() {
   return (
-    <section className="relative overflow-hidden bg-[#060c1a]">
+    <section className="relative overflow-hidden">
       <div
         className="pointer-events-none absolute left-0 top-0 h-full w-[60%]"
         style={{
@@ -110,7 +110,7 @@ function CompanyHero() {
 /* ── About ───────────────────────────────────────────────────────────────── */
 function AboutSection() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <div className="mx-auto max-w-3xl">
           <SectionHeading
@@ -144,7 +144,7 @@ function AboutSection() {
 /* ── Mission & Vision ────────────────────────────────────────────────────── */
 function MissionVision() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#060c1a] py-20">
+    <section className="py-20">
       <Container>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-8">
@@ -178,7 +178,7 @@ function MissionVision() {
 /* ── Philosophy ──────────────────────────────────────────────────────────── */
 function Philosophy() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-5 flex justify-center">
@@ -204,7 +204,7 @@ function Philosophy() {
 /* ── Values ──────────────────────────────────────────────────────────────── */
 function Values() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#060c1a] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Core Values"
@@ -224,7 +224,7 @@ function Values() {
 /* ── Contact ─────────────────────────────────────────────────────────────── */
 function Contact() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Contact"

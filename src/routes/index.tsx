@@ -14,7 +14,7 @@ import {
   BrainCircuit,
   Radio,
 } from "lucide-react";
-import { CTASection, PublicFooter, PublicHeader } from "../components/public/PublicShared";
+import { CTASection, PublicPage } from "../components/public/PublicShared";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -56,59 +56,22 @@ const BENEFITS = [
 
 function LandingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <PublicHeader />
+    <PublicPage>
       <Hero />
       <ModulesSection />
       <BenefitsSection />
       <CTASection />
-      <PublicFooter />
-    </div>
+    </PublicPage>
   );
 }
 
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="relative overflow-hidden" style={{ background: "oklch(0.105 0.034 260)" }}>
-      {/* Left-side radial glow */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 50% 70% at 8% 50%, oklch(0.50 0.22 258 / 0.18) 0%, transparent 68%)",
-        }}
-      />
-
-      {/* Centre radial — very subtle lift */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 60% at 50% 50%, oklch(0.50 0.22 258 / 0.06) 0%, transparent 70%)",
-        }}
-      />
-
-      {/* Bottom vignette */}
-      <div
-        className="pointer-events-none absolute bottom-0 left-0 right-0 h-32"
-        style={{
-          background: "linear-gradient(to bottom, transparent, oklch(0.13 0.025 258 / 0.5))",
-        }}
-      />
-
-      {/* Very subtle dot-grid texture overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
+    <section className="relative overflow-hidden">
       <div
         className="relative mx-auto max-w-[1400px] px-10"
-        style={{ minHeight: "100vh", paddingTop: "118px", paddingBottom: "28px" }}
+        style={{ paddingTop: "118px", paddingBottom: "0px" }}
       >
         {/* ── Desktop two-column ── */}
         <div className="hidden lg:grid lg:grid-cols-[43%_57%] lg:items-start lg:gap-8">
@@ -171,7 +134,7 @@ function Hero() {
           </div>
 
           {/* Right column – dashboard screenshot */}
-          <div className="relative flex items-start justify-end lg:h-[470px]">
+          <div className="relative flex items-start justify-end lg:h-[430px]">
             {/* Blue glow behind the frame */}
             <div
               className="pointer-events-none absolute right-[-18px] top-[2%] h-[92%] w-[96%]"
@@ -193,7 +156,7 @@ function Hero() {
               <img
                 src="/dashboard-screenshot.png"
                 alt="PrimeLex Logistics Intelligence System dashboard"
-                className="block w-full select-none"
+                className="block w-full select-none lg:max-h-[430px] lg:object-cover lg:object-top"
                 draggable={false}
                 loading="eager"
               />
@@ -256,7 +219,7 @@ function Hero() {
 /* ── Modules ─────────────────────────────────────────────────────────────── */
 function ModulesSection() {
   return (
-    <section className="border-t border-white/[0.06] bg-background py-20">
+    <section className="py-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* Eyebrow */}
         <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
@@ -293,7 +256,7 @@ function ModulesSection() {
 /* ── Benefits ────────────────────────────────────────────────────────────── */
 function BenefitsSection() {
   return (
-    <section className="border-t border-white/[0.06] bg-background py-20">
+    <section className="py-20">
       <div className="mx-auto max-w-7xl px-6">
         {/* Eyebrow */}
         <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">

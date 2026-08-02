@@ -119,7 +119,7 @@ function PricingPage() {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function PricingHero() {
   return (
-    <section className="relative overflow-hidden bg-[#060c1a]">
+    <section className="relative overflow-hidden">
       <div
         className="pointer-events-none absolute left-0 top-0 h-full w-[60%]"
         style={{
@@ -158,7 +158,7 @@ function PricingHero() {
 /* ── Pricing Card ────────────────────────────────────────────────────────── */
 function PricingCard() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <div className="mx-auto max-w-3xl">
           <div
@@ -214,7 +214,7 @@ function PricingCard() {
 /* ── Pricing Examples ────────────────────────────────────────────────────── */
 function PricingExamples() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#060c1a] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Pricing Examples"
@@ -241,7 +241,7 @@ function PricingExamples() {
 /* ── ROI ────────────────────────────────────────────────────────────────── */
 function ROISection() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="ROI"
@@ -281,7 +281,7 @@ function ROISection() {
 /* ── FAQ ────────────────────────────────────────────────────────────────── */
 function FAQ() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#060c1a] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="FAQ"

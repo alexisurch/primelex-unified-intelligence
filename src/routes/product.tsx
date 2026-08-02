@@ -215,7 +215,7 @@ function ProductPage() {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 function ProductHero() {
   return (
-    <section className="relative overflow-hidden bg-[#060c1a]">
+    <section className="relative overflow-hidden">
       <div
         className="pointer-events-none absolute left-0 top-0 h-full w-[60%]"
         style={{
@@ -258,7 +258,7 @@ function ProductHero() {
 /* ── Platform Overview ────────────────────────────────────────────────────── */
 function PlatformOverview() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Platform Overview"
@@ -278,7 +278,7 @@ function PlatformOverview() {
 /* ── Fuel Intelligence ────────────────────────────────────────────────────── */
 function FuelIntelligence() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#060c1a] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Fuel Intelligence"
@@ -318,7 +318,7 @@ function FuelIntelligence() {
 /* ── Route Intelligence ──────────────────────────────────────────────────── */
 function RouteIntelligence() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Route Intelligence"
@@ -344,7 +344,7 @@ function RouteIntelligence() {
 /* ── Maintenance Intelligence ────────────────────────────────────────────── */
 function MaintenanceIntelligence() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#060c1a] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Maintenance Intelligence"
@@ -370,7 +370,7 @@ function MaintenanceIntelligence() {
 /* ── Executive Intelligence ──────────────────────────────────────────────── */
 function ExecutiveIntelligence() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#07101f] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Executive Intelligence"
@@ -390,7 +390,7 @@ function ExecutiveIntelligence() {
 /* ── Security ────────────────────────────────────────────────────────────── */
 function Security() {
   return (
-    <section className="border-t border-white/[0.06] bg-[#060c1a] py-20">
+    <section className="py-20">
       <Container>
         <SectionHeading
           eyebrow="Security"

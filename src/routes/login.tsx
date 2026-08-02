@@ -7,6 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { getOrganisationByAdminEmail, ensureSeedOrganisation } from "@/lib/organisations-store";
 import { useBranding } from "@/lib/branding";
+import { PublicBackground } from "../components/public/PublicShared";
 
 export const Route = createFileRoute("/login")({
   component: AdminLogin,
@@ -45,7 +46,12 @@ function AdminLogin() {
   };
 
   return (
-    <div className="grid min-h-screen grid-cols-1 bg-background lg:grid-cols-2">
+    <div
+      className="relative min-h-screen overflow-hidden text-foreground"
+      style={{ background: "oklch(0.105 0.034 260)" }}
+    >
+      <PublicBackground />
+      <div className="relative z-10 grid min-h-screen grid-cols-1 lg:grid-cols-2">
       {/* Left: brand panel */}
       <div
         className="relative hidden overflow-hidden p-12 lg:flex lg:flex-col lg:justify-between"
@@ -145,6 +151,7 @@ function AdminLogin() {
             By continuing, you agree to our Terms and Privacy Policy.
           </p>
         </div>
+      </div>
       </div>
     </div>
   );
