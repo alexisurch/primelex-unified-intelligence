@@ -228,7 +228,9 @@ export async function readAuditLogs(
 ) {
   let query = supabase
     .from("audit_logs")
-    .select("*")
+    .select(
+      "id, organization_id, actor_id, actor_name, actor_role, module, entity_type, entity_id, entity_label, action, field_name, previous_value, new_value, old_values, new_values, changed_fields, notes, created_at",
+    )
     .eq("organization_id", input.organizationId)
     .order("created_at", { ascending: false })
     .limit(input.limit ?? 200);
