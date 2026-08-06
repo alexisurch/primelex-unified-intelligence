@@ -9,10 +9,12 @@ import type {
 
 type Client = SupabaseClient<Database>;
 
-function unwrap<T>(result: { data: T; error: { message: string } | null }): T {
+function unwrap<T>(result: { data: T; error: { message: string } | null }): NonNullable<T> {
   if (result.error) throw new Error(result.error.message);
-  return result.data;
+  if (result.data === null || result.data === undefined) throw new Error("No data returned");
+  return result.data as NonNullable<T>;
 }
+
 
 export async function provisionOrganisation(
   supabase: Client,
