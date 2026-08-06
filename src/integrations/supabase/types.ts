@@ -1090,6 +1090,7 @@ export type Database = {
         Returns: boolean
       }
       is_org_member: { Args: { _organization_id: string }; Returns: boolean }
+      storage_path_org: { Args: { _name: string }; Returns: string }
     }
     Enums: {
       audit_action:
