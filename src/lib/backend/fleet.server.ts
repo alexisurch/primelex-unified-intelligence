@@ -69,7 +69,7 @@ export async function createTruck(supabase: Client, actorId: string, input: z.in
     engine_health: input.engineHealth ?? 100, gps_status: input.gpsStatus ?? "Offline",
     last_service_date: input.lastServiceDate, tracking_source: input.trackingSource ?? "GPS",
     created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -85,7 +85,7 @@ export async function updateTruck(supabase: Client, _actorId: string, input: z.i
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("trucks").update(u)
+  const { data, error } = await supabase.from("trucks").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }
@@ -147,7 +147,7 @@ export async function createDriver(supabase: Client, actorId: string, input: z.i
     status: input.status ?? "Active", truck_id: input.truckId ?? null,
     fleet_manager_id: input.fleetManagerId ?? null, violations: input.violations ?? 0,
     trainings: input.trainings ?? 0, created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -164,7 +164,7 @@ export async function updateDriver(supabase: Client, _actorId: string, input: z.
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("drivers").update(u)
+  const { data, error } = await supabase.from("drivers").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }
@@ -202,7 +202,7 @@ export async function createFleetManager(supabase: Client, actorId: string, inpu
     email: input.email, photo: input.photo, status: input.status ?? "Active",
     date_joined: input.dateJoined ?? new Date().toISOString().slice(0, 10),
     user_id: input.userId ?? null, created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -216,7 +216,7 @@ export async function updateFleetManager(supabase: Client, _actorId: string, inp
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("fleet_managers").update(u)
+  const { data, error } = await supabase.from("fleet_managers").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }
@@ -231,7 +231,7 @@ export async function assignDriverToTruck(supabase: Client, actorId: string, inp
   const { data, error } = await supabase.from("truck_assignments").insert({
     organization_id: input.organizationId, truck_id: input.truckId, driver_id: input.driverId,
     fleet_manager_id: input.fleetManagerId ?? null, status: "Active", assigned_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -287,7 +287,7 @@ export async function createTruckDocument(supabase: Client, actorId: string, inp
     document_type: input.documentType, file_path: input.filePath, file_size: input.fileSize,
     mime_type: input.mimeType, expiry_date: input.expiryDate, version: input.version ?? "1.0",
     uploaded_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -306,7 +306,7 @@ export async function createDriverDocument(supabase: Client, actorId: string, in
     document_type: input.documentType, file_path: input.filePath, file_size: input.fileSize,
     mime_type: input.mimeType, expiry_date: input.expiryDate, version: input.version ?? "1.0",
     uploaded_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -336,7 +336,7 @@ export async function createMaintenance(supabase: Client, actorId: string, input
     status: input.status ?? "Scheduled", performed_by: input.performedBy, work_done: input.workDone,
     due_date: input.dueDate, service_date: input.serviceDate, next_service_date: input.nextServiceDate,
     created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -350,7 +350,7 @@ export async function updateMaintenance(supabase: Client, _actorId: string, inpu
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("truck_maintenance").update(u)
+  const { data, error } = await supabase.from("truck_maintenance").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }
@@ -374,7 +374,7 @@ export async function createFuel(supabase: Client, actorId: string, input: z.inf
     unit_price: input.unitPrice, location: input.location, transaction_type: input.transactionType,
     assignment_type: input.assignmentType, status: input.status ?? "Approved", note: input.note,
     recorded_by: actorId, transaction_date: input.transactionDate ?? new Date().toISOString(),
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -401,7 +401,7 @@ export async function createIncident(supabase: Client, actorId: string, input: z
     investigator: input.investigator, corrective_actions: input.correctiveActions,
     est_delay_min: input.estDelayMin ?? 0, est_financial_impact: input.estFinancialImpact ?? 0,
     photos: input.photos ?? [], documents: input.documents ?? [],
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -416,7 +416,7 @@ export async function updateIncident(supabase: Client, _actorId: string, input: 
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("incidents").update(u)
+  const { data, error } = await supabase.from("incidents").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }

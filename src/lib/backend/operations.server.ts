@@ -55,7 +55,7 @@ export async function createClient(supabase: Client, actorId: string, input: z.i
     organization_id: input.organizationId, name: input.name, contact_name: input.contactName,
     phone: input.phone, email: input.email, address: input.address, industry: input.industry,
     status: input.status ?? "Active", created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -68,7 +68,7 @@ export async function updateClient(supabase: Client, _actorId: string, input: z.
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("clients").update(u)
+  const { data, error } = await supabase.from("clients").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }
@@ -86,7 +86,7 @@ export async function createClientContact(supabase: Client, _actorId: string, in
   const { data, error } = await supabase.from("client_contacts").insert({
     organization_id: input.organizationId, client_id: input.clientId, name: input.name,
     role: input.role, phone: input.phone, email: input.email, is_primary: input.isPrimary ?? false,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -130,7 +130,7 @@ export async function createRoute(supabase: Client, actorId: string, input: z.in
     estimated_duration_min: input.estimatedDurationMin, road_type: input.roadType,
     terrain: input.terrain, fuel_estimate_l: input.fuelEstimateL, toll_cost: input.tollCost ?? 0,
     created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -144,7 +144,7 @@ export async function updateRoute(supabase: Client, _actorId: string, input: z.i
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("routes").update(u)
+  const { data, error } = await supabase.from("routes").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }
@@ -160,7 +160,7 @@ export async function findOrCreateRoute(
   const name = `${origin} → ${destination}`;
   const { data, error } = await supabase.from("routes").insert({
     organization_id: organizationId, name, origin, destination, distance_km: distanceKm, created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -215,7 +215,7 @@ export async function createTrip(supabase: Client, actorId: string, input: z.inf
     eta: input.eta, departure_time: input.departureTime, tracking_mode: input.trackingMode ?? "manual",
     fuel_assigned_l: input.fuelAssignedL ?? 0, fuel_cost: input.fuelCost ?? 0,
     other_expenses: input.otherExpenses ?? 0, revenue: input.revenue ?? 0, created_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -235,7 +235,7 @@ export async function updateTrip(supabase: Client, _actorId: string, input: z.in
   for (const [k, col] of Object.entries(map)) {
     if (input[k as keyof typeof input] !== undefined) u[col] = input[k as keyof typeof input];
   }
-  const { data, error } = await supabase.from("trips").update(u)
+  const { data, error } = await supabase.from("trips").update(u as never)
     .eq("id", input.id).eq("organization_id", input.organizationId).select("*").single();
   return unwrap(data, error);
 }
@@ -279,7 +279,7 @@ export async function createTripDocument(supabase: Client, actorId: string, inpu
     organization_id: input.organizationId, trip_id: input.tripId, name: input.name,
     document_type: input.documentType ?? "Other", file_path: input.filePath,
     file_size: input.fileSize, mime_type: input.mimeType, uploaded_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -304,7 +304,7 @@ export async function createTripCost(supabase: Client, actorId: string, input: z
   const { data, error } = await supabase.from("trip_costs").insert({
     organization_id: input.organizationId, trip_id: input.tripId, cost_type: input.costType,
     description: input.description, amount: input.amount, recorded_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
@@ -322,7 +322,7 @@ export async function createTripDelay(supabase: Client, actorId: string, input: 
   const { data, error } = await supabase.from("trip_delays").insert({
     organization_id: input.organizationId, trip_id: input.tripId, reason: input.reason,
     delay_minutes: input.delayMinutes, impact: input.impact, reported_by: actorId,
-  }).select("*").single();
+  } as never).select("*").single();
   return unwrap(data, error);
 }
 
