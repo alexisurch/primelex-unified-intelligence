@@ -211,7 +211,7 @@ export const getDriver = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => truckIdSchema.parse(input))
   .handler(async ({ data, context }) =>
-    readDriver(context.supabase, { organizationId: data.organizationId, id: data.id }),
+    readDriver(context.supabase, data.organizationId, data.id),
   );
 
 export const addDriver = createServerFn({ method: "POST" })
@@ -264,10 +264,7 @@ export const getFleetManager = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => truckIdSchema.parse(input))
   .handler(async ({ data, context }) =>
-    readFleetManager(context.supabase, {
-      organizationId: data.organizationId,
-      id: data.id,
-    }),
+    readFleetManager(context.supabase, data.organizationId, data.id),
   );
 
 export const addFleetManager = createServerFn({ method: "POST" })
