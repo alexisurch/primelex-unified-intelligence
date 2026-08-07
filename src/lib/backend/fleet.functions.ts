@@ -12,17 +12,17 @@ import {
   driverQuerySchema,
   createFleetManagerSchema,
   updateFleetManagerSchema,
-  fleetManagerQuerySchema,
+  fmQuerySchema,
   assignDriverSchema,
   unassignDriverSchema,
-  assignFleetManagerTrucksSchema,
-  createTruckDocumentSchema,
-  createDriverDocumentSchema,
-  documentQuerySchema,
-  deleteDocumentSchema,
-  createMaintenanceSchema,
-  updateMaintenanceSchema,
-  maintenanceQuerySchema,
+  assignFmTrucksSchema,
+  createTruckDocSchema,
+  createDriverDocSchema,
+  docQuerySchema,
+  deleteDocSchema,
+  createMaintSchema,
+  updateMaintSchema,
+  maintQuerySchema,
   createFuelSchema,
   fuelQuerySchema,
   createIncidentSchema,
@@ -257,7 +257,7 @@ export const getDriverHistory = createServerFn({ method: "POST" })
 
 export const listFleetManagers = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => fleetManagerQuerySchema.parse(input))
+  .inputValidator((input: unknown) => fmQuerySchema.parse(input))
   .handler(async ({ data, context }) => readFleetManagers(context.supabase, data));
 
 export const getFleetManager = createServerFn({ method: "POST" })
@@ -349,7 +349,7 @@ export const unassignDriver = createServerFn({ method: "POST" })
 export const assignFleetManagerTrucksFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    assignFleetManagerTrucksSchema.parse(input),
+    assignFmTrucksSchema.parse(input),
   )
   .handler(async ({ data, context }) => {
     const result = await assignFleetManagerTrucks(
@@ -372,14 +372,14 @@ export const assignFleetManagerTrucksFn = createServerFn({ method: "POST" })
 
 export const listTruckDocuments = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => documentQuerySchema.parse(input))
+  .inputValidator((input: unknown) => docQuerySchema.parse(input))
   .handler(async ({ data, context }) =>
     readTruckDocuments(context.supabase, data),
   );
 
 export const uploadTruckDocument = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => createTruckDocumentSchema.parse(input))
+  .inputValidator((input: unknown) => createTruckDocSchema.parse(input))
   .handler(async ({ data, context }) => {
     const doc = await createTruckDocument(
       context.supabase,
@@ -399,14 +399,14 @@ export const uploadTruckDocument = createServerFn({ method: "POST" })
 
 export const listDriverDocuments = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => documentQuerySchema.parse(input))
+  .inputValidator((input: unknown) => docQuerySchema.parse(input))
   .handler(async ({ data, context }) =>
     readDriverDocuments(context.supabase, data),
   );
 
 export const uploadDriverDocument = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => createDriverDocumentSchema.parse(input))
+  .inputValidator((input: unknown) => createDriverDocSchema.parse(input))
   .handler(async ({ data, context }) => {
     const doc = await createDriverDocument(
       context.supabase,
@@ -426,7 +426,7 @@ export const uploadDriverDocument = createServerFn({ method: "POST" })
 
 export const removeDocument = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => deleteDocumentSchema.parse(input))
+  .inputValidator((input: unknown) => deleteDocSchema.parse(input))
   .handler(async ({ data, context }) => {
     const result = await deleteDocument(context.supabase, data);
     await writeAuditEvent(context.supabase, context.userId, {
@@ -443,14 +443,14 @@ export const removeDocument = createServerFn({ method: "POST" })
 
 export const listMaintenanceRecords = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => maintenanceQuerySchema.parse(input))
+  .inputValidator((input: unknown) => maintQuerySchema.parse(input))
   .handler(async ({ data, context }) =>
     readMaintenanceRecords(context.supabase, data),
   );
 
 export const addMaintenanceRecord = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => createMaintenanceSchema.parse(input))
+  .inputValidator((input: unknown) => createMaintSchema.parse(input))
   .handler(async ({ data, context }) => {
     const rec = await createMaintenance(
       context.supabase,
@@ -470,7 +470,7 @@ export const addMaintenanceRecord = createServerFn({ method: "POST" })
 
 export const editMaintenanceRecord = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => updateMaintenanceSchema.parse(input))
+  .inputValidator((input: unknown) => updateMaintSchema.parse(input))
   .handler(async ({ data, context }) => {
     const rec = await updateMaintenance(
       context.supabase,

@@ -16,8 +16,8 @@ import {
   tripQuerySchema,
   updateTripStatusSchema,
   updateTripETASchema,
-  createTripDocumentSchema,
-  tripDocumentQuerySchema,
+  createTripDocSchema,
+  tripDocQuerySchema,
   createTripCostSchema,
   tripCostQuerySchema,
   createTripDelaySchema,
@@ -286,14 +286,14 @@ export const getTripTimeline = createServerFn({ method: "POST" })
 
 export const listTripDocuments = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => tripDocumentQuerySchema.parse(input))
+  .inputValidator((input: unknown) => tripDocQuerySchema.parse(input))
   .handler(async ({ data, context }) =>
     readTripDocuments(context.supabase, data),
   );
 
 export const uploadTripDocument = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => createTripDocumentSchema.parse(input))
+  .inputValidator((input: unknown) => createTripDocSchema.parse(input))
   .handler(async ({ data, context }) => {
     const doc = await createTripDocument(
       context.supabase,
@@ -314,7 +314,7 @@ export const uploadTripDocument = createServerFn({ method: "POST" })
 export const removeTripDocument = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    tripDocumentQuerySchema
+    tripDocQuerySchema
       .extend({ id: truckIdSchema.shape.id })
       .parse(input),
   )
