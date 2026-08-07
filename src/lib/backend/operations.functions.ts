@@ -217,7 +217,7 @@ export const addTrip = createServerFn({ method: "POST" })
       module: "operations",
       entityType: "trip",
       entityId: trip.id,
-      entityLabel: trip.trip_number,
+      entityLabel: trip.trip_number ?? undefined,
       action: "created",
     });
     return trip;
@@ -233,7 +233,7 @@ export const editTrip = createServerFn({ method: "POST" })
       module: "operations",
       entityType: "trip",
       entityId: trip.id,
-      entityLabel: trip.trip_number,
+      entityLabel: trip.trip_number ?? undefined,
       action: "updated",
     });
     return trip;
