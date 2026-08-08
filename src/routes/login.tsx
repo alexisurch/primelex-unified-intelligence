@@ -5,7 +5,9 @@ import { Label } from "@/components/ui/label";
 import { ArrowRight, Route as RouteIcon, ShieldCheck, Sparkles, Building2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { getOrganisationByAdminEmail, ensureSeedOrganisation } from "@/lib/organisations-store";
+import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { listMyOrganisations, getOrganisationContext } from "@/lib/backend/organisations.functions";
 import { useBranding } from "@/lib/branding";
 import { PublicBackground } from "../components/public/PublicShared";
 
@@ -19,30 +21,65 @@ function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignIn = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const fetchMyOrgs = useServerFn(listMyOrganisations);
+  const fetchContext = useServerFn(getOrganisationContext);
+
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error("Enter your administrator email and password");
       return;
     }
-    ensureSeedOrganisation();
-    const org = getOrganisationByAdminEmail(email);
-    if (!org) {
-      toast.error("No organisation found for this administrator email");
-      return;
+    setSubmitting(true);
+    try {
+      const { data: auth, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (error || !auth.user) {
+        toast.error(error?.message ?? "Invalid email or password");
+        return;
+      }
+
+      const memberships = (await fetchMyOrgs({})) as Array<Record<string, any>>;
+      const membership = memberships?.[0];
+      if (!membership) {
+        toast.error("No organisation is linked to this account");
+        await supabase.auth.signOut();
+        return;
+      }
+
+      const ctx = (await fetchContext({
+        data: { organizationId: String(membership.organization_id) },
+      })) as Record<string, any>;
+
+      const org = ctx?.organisation ?? {};
+      const brandingRow = ctx?.branding ?? {};
+      const workspace = ctx?.workspace ?? {};
+      const adminName =
+        String(auth.user.user_metadata?.full_name ?? "") ||
+        String(ctx?.profile?.full_name ?? "") ||
+        email.split("@")[0];
+
+      branding.update({
+        companyName: String(org.name ?? "PrimeLex Logistics"),
+        companyShort: String(org.short_name ?? org.name ?? "PrimeLex"),
+        logoDataUrl: brandingRow.logo_url ?? undefined,
+        primaryColor: String(brandingRow.primary_color ?? "#2563eb"),
+        secondaryColor: String(brandingRow.secondary_color ?? "#0ea5e9"),
+        workspaceSlug: String(workspace.slug ?? org.slug ?? ""),
+        adminEmail: email.trim(),
+        adminName,
+      });
+
+      toast.success(`Welcome back, ${adminName.split(" ")[0]}`);
+      navigate({ to: "/dashboard" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Unable to sign in");
+    } finally {
+      setSubmitting(false);
     }
-    branding.update({
-      companyName: org.companyName,
-      companyShort: org.companyShort,
-      logoDataUrl: org.logoDataUrl,
-      primaryColor: org.primaryColor,
-      secondaryColor: org.secondaryColor,
-      workspaceSlug: org.slug,
-      adminEmail: org.adminEmail,
-      adminName: org.adminName,
-    });
-    toast.success(`Welcome back, ${org.adminName.split(" ")[0]}`);
-    navigate({ to: "/dashboard" });
   };
 
   return (
@@ -124,8 +161,8 @@ function AdminLogin() {
               </div>
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
             </div>
-            <Button type="submit" className="w-full">
-              Sign In
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? "Signing in…" : "Sign In"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
