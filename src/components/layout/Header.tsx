@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { alerts } from "@/lib/mock-data";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const alertIconMap: Record<string, typeof Bell> = {
   AlertTriangle,
@@ -46,7 +47,12 @@ export function Header({ title, subtitle, actions }: HeaderProps) {
   const isDark = resolvedTheme === "dark";
   const [activeAlert, setActiveAlert] = useState<(typeof alerts)[number] | null>(null);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      /* ignore — still return to the sign-in screen */
+    }
     navigate({ to: "/login" });
   };
 
