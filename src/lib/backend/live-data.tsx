@@ -7,6 +7,7 @@
  * approved UI completely untouched while the data becomes fully backend driven.
  */
 import {
+  Fragment,
   createContext,
   useContext,
   useEffect,
@@ -417,5 +418,10 @@ export function FleetDataProvider({ children }: { children: ReactNode }) {
     [organizationId, version],
   );
 
-  return <OrgCtx.Provider value={value}>{children}</OrgCtx.Provider>;
+  return (
+    <OrgCtx.Provider value={value}>
+      {/* Remount the tree once live records replace the seed collections. */}
+      <Fragment key={version}>{children}</Fragment>
+    </OrgCtx.Provider>
+  );
 }

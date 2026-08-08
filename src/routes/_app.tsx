@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { usePreferences } from "@/lib/preferences";
 import { ProfileDrawerProvider } from "@/lib/profile-drawer";
 import { FleetManagersProvider } from "@/lib/fleet-managers-store";
+import { FleetDataProvider } from "@/lib/backend/live-data";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/_app")({
 function AppLayout() {
   const { resolvedTheme } = usePreferences();
   return (
+    <FleetDataProvider>
     <FleetManagersProvider>
       <ProfileDrawerProvider>
         <div className="flex h-screen w-full overflow-hidden bg-background">
@@ -24,5 +26,6 @@ function AppLayout() {
         </div>
       </ProfileDrawerProvider>
     </FleetManagersProvider>
+    </FleetDataProvider>
   );
 }
