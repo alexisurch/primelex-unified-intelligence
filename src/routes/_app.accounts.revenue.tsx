@@ -1,16 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import {
-  ArrowDownUp,
-  Banknote,
-  Clock,
-  Download,
-  Filter,
-  Percent,
-  Route as RouteIcon,
-  Search,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowDownUp, Banknote, Clock, Download, ListFilter as Filter, Percent, Route as RouteIcon, Search, TrendingUp } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -154,6 +144,7 @@ function RevenuePage() {
   const [rangeKey, setRangeKey] = useState<RangeKey>("year");
   const [agg, setAgg] = useState<AggKey>("monthly");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [paymentFilter, setPaymentFilter] = useState("all");
   const [clientFilter, setClientFilter] = useState("all");
   const [truckFilter, setTruckFilter] = useState("all");
   const [driverFilter, setDriverFilter] = useState("all");
@@ -196,6 +187,7 @@ function RevenuePage() {
     () =>
       dateFiltered.filter((t) => {
         if (statusFilter !== "all" && t.status !== statusFilter) return false;
+        if (paymentFilter !== "all" && t.paymentStatus !== paymentFilter) return false;
         if (clientFilter !== "all" && t.customer !== clientFilter) return false;
         if (truckFilter !== "all" && t.truck !== truckFilter) return false;
         if (driverFilter !== "all" && t.driver !== driverFilter) return false;
@@ -210,7 +202,7 @@ function RevenuePage() {
           t.destination.toLowerCase().includes(s)
         );
       }),
-    [dateFiltered, statusFilter, clientFilter, truckFilter, driverFilter, search],
+    [dateFiltered, statusFilter, paymentFilter, clientFilter, truckFilter, driverFilter, search],
   );
 
   const totalRevenue = filtered.reduce((sum, t) => sum + t.revenue, 0);
@@ -399,6 +391,22 @@ function RevenuePage() {
         </span>
       ),
     },
+    {
+      key: "paymentStatus",
+      label: "Payment Status",
+      render: (r) => (
+        <span
+          className={cn(
+            "inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium",
+            r.paymentStatus === "Paid"
+              ? "bg-success/15 text-success"
+              : "bg-warning/15 text-warning",
+          )}
+        >
+          {r.paymentStatus}
+        </span>
+      ),
+    },
   ];
 
   return (
@@ -438,6 +446,20 @@ function RevenuePage() {
                     {s}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={paymentFilter}
+              onValueChange={setPaymentFilter}
+            >
+              <SelectTrigger className="h-9 w-[140px] border-border bg-elevated/60 text-xs">
+                <Filter className="mr-1.5 h-3.5 w-3.5" />
+                <SelectValue placeholder="Payment" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Payments</SelectItem>
+                <SelectItem value="Paid">Paid</SelectItem>
+                <SelectItem value="Pending">Pending</SelectItem>
               </SelectContent>
             </Select>
             <Button

@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { trucks } from "@/lib/mock-data";
+import { ProfileLink } from "@/lib/profile-drawer";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/accounts/depreciation")({ component: DepreciationPage });
@@ -262,9 +263,10 @@ function DepreciationTable({ tab, records, onEdit }: { tab: TabKey; records: Dep
 function TableRow({ tab, record, values, onEdit }: { tab: TabKey; record: DepreciationRecord; values: ReturnType<typeof calculations>; onEdit: (record: DepreciationRecord) => void }) {
   const cell = (content: React.ReactNode, className?: string) => <td className={cn("whitespace-nowrap border-t border-border/60 px-5 py-3.5 text-[12px] text-foreground", className)}>{content}</td>;
   const action = <td className="border-t border-border/60 px-5 py-3.5"><Button variant="outline" size="icon" className="h-7 w-7 border-border bg-elevated/60" onClick={() => onEdit(record)} aria-label={`Edit ${record.truckId}`}><Pencil className="h-3.5 w-3.5 text-primary" /></Button></td>;
-  if (tab === "monthly") return <tr className="transition-colors hover:bg-white/[0.03]">{cell(<span className="font-semibold text-primary">{record.truckId}</span>)}{cell(money(values.cost), "font-semibold text-success")}{cell(record.depreciationPeriod, "text-center")}{cell(money(values.depreciation), "font-semibold text-success")}{cell(money(values.monthly), "font-semibold text-success")}{action}</tr>;
-  if (tab === "cost") return <tr className="transition-colors hover:bg-white/[0.03]">{cell(<span className="font-semibold text-primary">{record.truckId}</span>)}{cell(dateLabel(record.purchaseDate))}{cell(money(record.tractorAmount))}{cell(money(record.shippingCost))}{cell(money(record.clearingCost))}{cell(money(values.cost), "font-semibold text-success")}{action}</tr>;
-  return <tr className="transition-colors hover:bg-white/[0.03]">{cell(<span className="font-semibold text-primary">{record.truckId}</span>)}{cell(dateLabel(record.purchaseDate))}{cell(dateLabel(record.firstTripDate))}{cell(money(values.cost), "font-semibold text-success")}{cell(money(values.depreciation), "font-semibold text-success")}{cell(money(values.balance), values.balance ? "font-semibold text-warning" : "font-semibold text-success")}{cell(values.balanceMonths, "text-center")}{action}</tr>;
+  const truckCell = <ProfileLink kind="truck" id={record.truckId} className="font-semibold text-primary hover:underline">{record.truckId}</ProfileLink>;
+  if (tab === "monthly") return <tr className="transition-colors hover:bg-white/[0.03]">{cell(truckCell)}{cell(money(values.cost), "font-semibold text-success")}{cell(record.depreciationPeriod, "text-center")}{cell(money(values.depreciation), "font-semibold text-success")}{cell(money(values.monthly), "font-semibold text-success")}{action}</tr>;
+  if (tab === "cost") return <tr className="transition-colors hover:bg-white/[0.03]">{cell(truckCell)}{cell(dateLabel(record.purchaseDate))}{cell(money(record.tractorAmount))}{cell(money(record.shippingCost))}{cell(money(record.clearingCost))}{cell(money(values.cost), "font-semibold text-success")}{action}</tr>;
+  return <tr className="transition-colors hover:bg-white/[0.03]">{cell(truckCell)}{cell(dateLabel(record.purchaseDate))}{cell(dateLabel(record.firstTripDate))}{cell(money(values.cost), "font-semibold text-success")}{cell(money(values.depreciation), "font-semibold text-success")}{cell(money(values.balance), values.balance ? "font-semibold text-warning" : "font-semibold text-success")}{cell(values.balanceMonths, "text-center")}{action}</tr>;
 }
 
 function AssetDialog({ open, onOpenChange, record, availableTrucks, onSave }: { open: boolean; onOpenChange: (open: boolean) => void; record: DepreciationRecord | null; availableTrucks: typeof trucks; onSave: (values: FormValues) => void }) {
