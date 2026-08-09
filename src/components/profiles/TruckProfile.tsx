@@ -1,9 +1,9 @@
-import { Truck as TruckIcon, CircleUser as UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CircleCheck as CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog, Pencil, Archive, ArchiveRestore } from "lucide-react";
+import { Truck as TruckIcon, CircleUser as UserCircle2, ClipboardList, TrendingUp, MapPin, Clock, Gauge, Satellite, Route as RouteIcon, Activity, Fuel, DollarSign, CircleCheck as CheckCircle2, Circle, Wrench, IdCard, Calendar, Phone, ShieldAlert, UserCog, Pencil, Archive, ArchiveRestore, Receipt, Percent } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Pill } from "@/components/shared/Cards";
-import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend } from "@/lib/mock-data";
+import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend, getDepreciationForTruck, depreciationCalculations, tripFuelCost, tripOtherExpenses, getDepreciationForTrip } from "@/lib/mock-data";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
@@ -11,8 +11,27 @@ import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, Documen
 import { CollaborationPanel } from "@/components/shared/CollaborationPanel";
 import { DocumentUploadDialog, EditProfileDialog } from "./ProfileDialogs";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const naira = (n: number) => "₦" + n.toLocaleString();
+
+function ExpenseLine({ label, amount, total, isDepreciation }: { label: string; amount: number; total: number; isDepreciation?: boolean }) {
+  const pct = total ? (amount / total) * 100 : 0;
+  return (
+    <div>
+      <div className="mb-1 flex justify-between text-xs">
+        <span className={cn("text-muted-foreground", isDepreciation && "font-medium text-warning")}>
+          {isDepreciation && <span className="mr-1.5 inline-flex items-center rounded px-1.5 py-0.5 bg-warning/15 text-warning text-[9px] font-semibold uppercase">Excl. Gross</span>}
+          {label}
+        </span>
+        <span className={cn("font-medium text-foreground", isDepreciation && "text-warning")}>{naira(amount)}</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-background/70">
+        <div className={cn("h-full rounded-full", isDepreciation ? "bg-warning ring-1 ring-warning/30" : "bg-primary")} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
 
 export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -109,21 +128,23 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
     <div className="overflow-hidden rounded-xl border border-border/60">
       <table className="w-full text-sm">
         <thead className="bg-elevated/70">
-          <tr>{["Trip","Customer","Route","Distance","Fuel Assigned","L/km","Status"].map((h) => <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>)}</tr>
+          <tr>{["Trip","Date","Client","Route","Driver","Distance","Revenue","Payment","Status"].map((h) => <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>)}</tr>
         </thead>
         <tbody>
-          {truckTrips.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-xs text-muted-foreground">No trips recorded.</td></tr>}
+          {truckTrips.length === 0 && <tr><td colSpan={9} className="px-4 py-10 text-center text-xs text-muted-foreground">No trips recorded.</td></tr>}
           {truckTrips.map((tp) => {
             const hist = tripFuelHistory.find((h) => h.tripId === tp.id);
             const routeId = getRouteFor(tp.origin, tp.destination)?.id;
             return (
               <tr key={tp.id} className="border-t border-border/60 hover:bg-white/[0.03]">
                 <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "trip", id: tp.id })} className="font-semibold text-primary hover:underline">{tp.id}</button></td>
+                <td className="px-4 py-3 text-xs text-muted-foreground">{tp.date}</td>
                 <td className="px-4 py-3 text-xs">{tp.customer}</td>
                 <td className="px-4 py-3 text-xs">{routeId ? <button onClick={() => onOpen({ kind: "route", id: routeId })} className="text-primary hover:underline">{tp.origin} → {tp.destination}</button> : `${tp.origin} → ${tp.destination}`}</td>
+                <td className="px-4 py-3 text-xs">{tp.driver}</td>
                 <td className="px-4 py-3 text-xs">{tp.distance} km</td>
-                <td className="px-4 py-3 text-xs">{hist ? `${hist.assignedFuelL} L` : "—"}</td>
-                <td className="px-4 py-3 text-xs">{hist ? hist.litersPerKm.toFixed(2) : <span className="text-warning">Learning</span>}</td>
+                <td className="px-4 py-3 text-xs font-semibold text-foreground">{naira(tp.revenue)}</td>
+                <td className="px-4 py-3"><Pill tone={tp.paymentStatus === "Paid" ? "success" : "warning"}>{tp.paymentStatus}</Pill></td>
                 <td className="px-4 py-3"><Pill tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "In Transit" ? "info" : "warning"}>{tp.status}</Pill></td>
               </tr>
             );
@@ -131,6 +152,93 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
         </tbody>
       </table>
     </div>
+  );
+
+  const truckRevenue = truckTrips.reduce((s, tp) => s + tp.revenue, 0);
+  const truckFuelTotal = truckTrips.reduce((s, tp) => s + tripFuelCost(tp), 0);
+  const truckOtherExpTotal = truckTrips.reduce((s) => s + tripOtherExpenses(), 0);
+  const truckMaintSpend = getMaintenanceSpend(t.id);
+  const truckTolls = truckTrips.length * 15000;
+  const truckDriverExp = truckTrips.length * 25000;
+  const truckInsurance = 40000;
+  const truckDepreciationRecord = getDepreciationForTruck(t.id);
+  const truckDepreciationMonthly = truckDepreciationRecord ? depreciationCalculations(truckDepreciationRecord).monthly : 0;
+  const truckDepreciationAllocated = truckTrips.reduce((s, tp) => s + (getDepreciationForTrip(tp)?.perTrip ?? 0), 0);
+  const truckExpensesExclDep = truckFuelTotal + truckMaintSpend + truckTolls + truckDriverExp + truckOtherExpTotal + truckInsurance;
+  const truckTotalExpenses = truckExpensesExclDep + truckDepreciationAllocated;
+  const truckGrossProfit = truckRevenue - truckExpensesExclDep;
+  const truckNetProfit = truckRevenue - truckTotalExpenses;
+  const truckNetMargin = truckRevenue ? (truckNetProfit / truckRevenue) * 100 : 0;
+
+  const accountsTab = (
+    <>
+      <ProfileSection title="Financial Summary" icon={Receipt}>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+          <StatTile label="Revenue" value={naira(truckRevenue)} icon={DollarSign} />
+          <StatTile label="Total Expenses" value={naira(truckTotalExpenses)} icon={Receipt} />
+          <StatTile label="Gross Profit" value={naira(truckGrossProfit)} icon={TrendingUp} />
+          <StatTile label="Depreciation" value={naira(truckDepreciationAllocated)} icon={Wrench} muted />
+          <StatTile label="Net Profit" value={naira(truckNetProfit)} icon={DollarSign} />
+          <StatTile label="Net Margin" value={`${truckNetMargin.toFixed(1)}%`} icon={Percent} />
+        </div>
+        <p className="mt-3 text-[11px] text-muted-foreground">Gross Profit excludes depreciation. Net Profit includes depreciation. Total Expenses includes depreciation.</p>
+      </ProfileSection>
+      <ProfileSection title="Revenue by Trip" icon={DollarSign}>
+        <div className="overflow-hidden rounded-xl border border-border/60">
+          <table className="w-full text-sm">
+            <thead className="bg-elevated/70">
+              <tr>{["Trip","Date","Client","Revenue","Expenses","Payment"].map((h) => <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>)}</tr>
+            </thead>
+            <tbody>
+              {truckTrips.length === 0 && <tr><td colSpan={6} className="px-4 py-10 text-center text-xs text-muted-foreground">No trips recorded.</td></tr>}
+              {truckTrips.map((tp) => (
+                <tr key={tp.id} className="border-t border-border/60 hover:bg-white/[0.03]">
+                  <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "trip", id: tp.id })} className="font-semibold text-primary hover:underline">{tp.id}</button></td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{tp.date}</td>
+                  <td className="px-4 py-3 text-xs">{tp.customer}</td>
+                  <td className="px-4 py-3 text-xs font-semibold text-foreground">{naira(tp.revenue)}</td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{naira(tripFuelCost(tp) + tripOtherExpenses())}</td>
+                  <td className="px-4 py-3"><Pill tone={tp.paymentStatus === "Paid" ? "success" : "warning"}>{tp.paymentStatus}</Pill></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </ProfileSection>
+      <ProfileSection title="Expenses by Category" icon={Receipt}>
+        <div className="space-y-3">
+          <ExpenseLine label="Diesel / Fuel" amount={truckFuelTotal} total={truckTotalExpenses} />
+          <ExpenseLine label="Maintenance" amount={truckMaintSpend} total={truckTotalExpenses} />
+          <ExpenseLine label="Tolls" amount={truckTolls} total={truckTotalExpenses} />
+          <ExpenseLine label="Driver Expenses" amount={truckDriverExp} total={truckTotalExpenses} />
+          <ExpenseLine label="Other Trip Expenses" amount={truckOtherExpTotal} total={truckTotalExpenses} />
+          <ExpenseLine label="Insurance" amount={truckInsurance} total={truckTotalExpenses} />
+          <ExpenseLine label="Depreciation" amount={truckDepreciationAllocated} total={truckTotalExpenses} isDepreciation />
+        </div>
+        <div className="mt-4 flex justify-between border-t border-border/60 pt-3 text-sm">
+          <span className="font-semibold text-foreground">Total Expenses</span>
+          <span className="font-semibold text-foreground">{naira(truckTotalExpenses)}</span>
+        </div>
+      </ProfileSection>
+      {truckDepreciationRecord && (
+        <ProfileSection title="Depreciation" icon={Wrench}>
+          <InfoGrid items={[
+            ["Total Asset Cost", naira(depreciationCalculations(truckDepreciationRecord).cost)],
+            ["Monthly Depreciation", naira(truckDepreciationMonthly)],
+            ["Allocated to Trips", naira(truckDepreciationAllocated)],
+            ["Depreciation Period", `${truckDepreciationRecord.depreciationPeriod} months`],
+          ]} />
+        </ProfileSection>
+      )}
+      <ProfileSection title="Profitability" icon={TrendingUp}>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <StatTile label="Revenue" value={naira(truckRevenue)} icon={DollarSign} />
+          <StatTile label="Gross Profit" value={naira(truckGrossProfit)} icon={TrendingUp} />
+          <StatTile label="Net Profit" value={naira(truckNetProfit)} icon={DollarSign} />
+          <StatTile label="Net Margin" value={`${truckNetMargin.toFixed(1)}%`} icon={Percent} />
+        </div>
+      </ProfileSection>
+    </>
   );
 
   const maintTab = (
@@ -196,6 +304,7 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
       />
       <ProfileTabs defaultValue="overview" tabs={[
         { value: "overview", label: "Overview", content: overviewTab },
+        { value: "accounts", label: "Accounts", content: accountsTab },
         { value: "trips", label: "Trip History", content: tripsTab },
         { value: "maintenance", label: "Maintenance", content: maintTab },
         { value: "incidents", label: "Incidents", content: incidentsTab },

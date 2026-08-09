@@ -149,27 +149,35 @@ export const trucks: Truck[] = Array.from({ length: 32 }, (_, i) => {
   };
 });
 
-export const trips: Trip[] = Array.from({ length: 24 }, (_, i) => {
+export const trips: Trip[] = (() => {
   const statuses: TripStatus[] = ["In Transit","In Transit","In Transit","Delivered","Delivered","Delayed","Scheduled"];
   const priorities: Priority[] = ["Critical","High","High","Medium","Medium","Low"];
-  return {
-    id: `TRP-${7300 + i}`,
-    customer: pick(customers, i),
-    origin: pick(cities, i),
-    destination: pick(cities, i + 2),
-    driver: pick(driverNames, i),
-    truck: `TRK-${1000 + (i % 32)}`,
-    status: pick(statuses, i),
-    progress: (i * 17) % 100,
-    eta: `${(i % 8) + 1}h ${(i * 11) % 60}m`,
-    stops: (i % 4) + 1,
-    distance: 120 + i * 37,
-    priority: pick(priorities, i),
-    date: `2026-08-${String((i % 9) + 1).padStart(2, "0")}`,
-    revenue: (120 + i * 37) * 4500,
-    paymentStatus: i % 5 === 0 || i % 7 === 0 ? "Pending" : "Paid",
-  };
-});
+  const perMonthCounters = new Map<string, number>();
+  return Array.from({ length: 24 }, (_, i) => {
+    const date = `2026-08-${String((i % 9) + 1).padStart(2, "0")}`;
+    const monthKey = date.slice(0, 7);
+    const seq = (perMonthCounters.get(monthKey) ?? 0) + 1;
+    perMonthCounters.set(monthKey, seq);
+    const id = `${monthKey}-${String(seq).padStart(4, "0")}`;
+    return {
+      id,
+      customer: pick(customers, i),
+      origin: pick(cities, i),
+      destination: pick(cities, i + 2),
+      driver: pick(driverNames, i),
+      truck: `TRK-${1000 + (i % 32)}`,
+      status: pick(statuses, i),
+      progress: (i * 17) % 100,
+      eta: `${(i % 8) + 1}h ${(i * 11) % 60}m`,
+      stops: (i % 4) + 1,
+      distance: 120 + i * 37,
+      priority: pick(priorities, i),
+      date,
+      revenue: (120 + i * 37) * 4500,
+      paymentStatus: i % 5 === 0 || i % 7 === 0 ? "Pending" : "Paid",
+    };
+  });
+})();
 
 export const drivers: Driver[] = Array.from({ length: 20 }, (_, i) => {
   const risks: Driver["risk"][] = ["Low","Low","Low","Medium","Medium","High"];
@@ -245,7 +253,7 @@ export const documents: DocumentRow[] = Array.from({ length: 18 }, (_, i) => {
 });
 
 export const alerts = [
-  { id: 1, type: "danger", title: "Delivery delayed", detail: "Trip TRP-7382 to ABC Stores", time: "10 min ago", icon: "AlertTriangle" as const },
+  { id: 1, type: "danger", title: "Delivery delayed", detail: "Trip 2026-08-0006 to ABC Stores", time: "10 min ago", icon: "AlertTriangle" as const },
   { id: 2, type: "warning", title: "Maintenance due", detail: "Truck KJA 89XY due in 3 days", time: "25 min ago", icon: "Wrench" as const },
   { id: 3, type: "info", title: "License expiring", detail: "Driver Tunde A. license expires in 7 days", time: "1 hr ago", icon: "IdCard" as const },
   { id: 4, type: "purple", title: "Insurance expiring", detail: "Insurance for GGE 543RT expires in 5 days", time: "3 hr ago", icon: "ShieldAlert" as const },
@@ -567,6 +575,90 @@ export function getRouteFuelSummary(routeId: string) {
   const totalFuel = routeFuel.reduce((s, h) => s + h.assignedFuelL, 0);
   const totalDist = routeFuel.reduce((s, h) => s + h.distanceKm, 0);
   return { totalFuel, avgFuelPerTrip: routeFuel.length ? Math.round(totalFuel / routeFuel.length) : 0, avgLkm: totalDist ? totalFuel / totalDist : 0 };
+}
+
+// ---- Depreciation records (UI-only phase) ----
+export interface DepreciationRecord {
+  id: string;
+  truckId: string;
+  purchaseDate: string;
+  firstTripDate: string;
+  tractorAmount: number;
+  shippingCost: number;
+  clearingCost: number;
+  depreciationPeriod: number;
+}
+
+const depreciationSeeds: Array<Omit<DepreciationRecord, "id">> = [
+  { truckId: "TRK-1000", purchaseDate: "2024-11-06", firstTripDate: "2024-12-17", tractorAmount: 25810000, shippingCost: 7440400, clearingCost: 1668393, depreciationPeriod: 24 },
+  { truckId: "TRK-1001", purchaseDate: "2025-10-05", firstTripDate: "2025-11-06", tractorAmount: 29850000, shippingCost: 0, clearingCost: 6000000, depreciationPeriod: 24 },
+  { truckId: "TRK-1002", purchaseDate: "2025-10-05", firstTripDate: "2025-11-06", tractorAmount: 29850000, shippingCost: 34000000, clearingCost: 6000000, depreciationPeriod: 24 },
+  { truckId: "TRK-1003", purchaseDate: "2026-05-14", firstTripDate: "2026-06-16", tractorAmount: 68000000, shippingCost: 0, clearingCost: 0, depreciationPeriod: 24 },
+  { truckId: "TRK-1004", purchaseDate: "2026-05-14", firstTripDate: "2026-06-13", tractorAmount: 68000000, shippingCost: 0, clearingCost: 0, depreciationPeriod: 24 },
+];
+
+export const depreciationRecords: DepreciationRecord[] = depreciationSeeds.map((seed, i) => ({ ...seed, id: `DEP-${100 + i}` }));
+
+const AS_OF_DATE = new Date("2026-08-09T12:00:00");
+
+function monthDiff(start: string, end: Date): number {
+  const d = new Date(`${start}T00:00:00`);
+  if (Number.isNaN(d.getTime()) || d > end) return 0;
+  return Math.max(0, (end.getFullYear() - d.getFullYear()) * 12 + end.getMonth() - d.getMonth());
+}
+
+export function depreciationTotalCost(r: Pick<DepreciationRecord, "tractorAmount" | "shippingCost" | "clearingCost">): number {
+  return r.tractorAmount + r.shippingCost + r.clearingCost;
+}
+
+export function depreciationCalculations(r: Pick<DepreciationRecord, "tractorAmount" | "shippingCost" | "clearingCost" | "firstTripDate" | "depreciationPeriod">) {
+  const cost = depreciationTotalCost(r);
+  const period = Math.max(1, r.depreciationPeriod || 1);
+  const monthly = cost / period;
+  const elapsed = Math.min(period, monthDiff(r.firstTripDate, AS_OF_DATE));
+  const depreciation = Math.min(cost, monthly * elapsed);
+  return {
+    cost,
+    monthly,
+    elapsed,
+    depreciation,
+    balance: Math.max(0, cost - depreciation),
+    balanceMonths: Math.max(0, period - elapsed),
+  };
+}
+
+export function getDepreciationForTruck(truckId: string): DepreciationRecord | undefined {
+  return depreciationRecords.find((r) => r.truckId === truckId);
+}
+
+export function getDepreciationForTrip(trip: { truck: string; distance: number }): { monthly: number; perTrip: number } | undefined {
+  const record = getDepreciationForTruck(trip.truck);
+  if (!record) return undefined;
+  const calc = depreciationCalculations(record);
+  const truckTrips = trips.filter((t) => t.truck === trip.truck);
+  const totalDistance = truckTrips.reduce((s, t) => s + t.distance, 0) || 1;
+  const perTrip = (calc.monthly / totalDistance) * trip.distance;
+  return { monthly: calc.monthly, perTrip };
+}
+
+export function tripFuelCost(trip: { distance: number }): number {
+  return Math.round(trip.distance * 0.32) * 980;
+}
+
+export function tripOtherExpenses(): number {
+  return 45000;
+}
+
+export function tripTotalExpenses(trip: { truck: string; distance: number }): number {
+  return tripFuelCost(trip) + tripOtherExpenses() + (getDepreciationForTrip(trip)?.perTrip ?? 0);
+}
+
+export function tripGrossProfit(trip: { distance: number }): number {
+  return trip.distance * 4500 - tripFuelCost(trip) - tripOtherExpenses();
+}
+
+export function tripNetProfit(trip: { truck: string; distance: number }): number {
+  return trip.distance * 4500 - tripTotalExpenses(trip);
 }
 
 // ---- CSV export helper ----

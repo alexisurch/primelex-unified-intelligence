@@ -40,8 +40,8 @@ const ALERT_RECORDS: Record<string, NotificationRecord> = {
   "alert-1": {
     id: "alert-1", title: "Delivery Delayed", category: "Alert", priority: "High",
     status: "Open", time: "10 min ago",
-    description: "Trip TRP-7382 to ABC Stores is delayed beyond the scheduled delivery window.",
-    relatedTrip: "TRP-7382", relatedClient: "ABC Stores",
+    description: "Trip 2026-08-0006 to ABC Stores is delayed beyond the scheduled delivery window.",
+    relatedTrip: "2026-08-0006", relatedClient: "ABC Stores",
     assignedUser: "Operations Team",
     aiReview: "This delay pattern matches recurring congestion on the Lagos–Ibadan corridor on weekday mornings. Consider rerouting via the Sagamu interchange.",
     recommendedActions: ["Contact driver to confirm current position.", "Notify ABC Stores of revised ETA.", "Log delay in the trip record for SLA reporting."],
