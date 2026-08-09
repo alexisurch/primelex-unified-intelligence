@@ -35,6 +35,9 @@ import { Route as AppBillingRouteImport } from './routes/_app.billing'
 import { Route as AppAuditTrailRouteImport } from './routes/_app.audit-trail'
 import { Route as AppActionCenterRouteImport } from './routes/_app.action-center'
 import { Route as OrganisationLoginRouteImport } from './routes/$organisation/login'
+import { Route as AppAccountsRevenueRouteImport } from './routes/_app.accounts.revenue'
+import { Route as AppAccountsPnlRouteImport } from './routes/_app.accounts.pnl'
+import { Route as AppAccountsDepreciationRouteImport } from './routes/_app.accounts.depreciation'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -165,6 +168,21 @@ const OrganisationLoginRoute = OrganisationLoginRouteImport.update({
   path: '/$organisation/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAccountsRevenueRoute = AppAccountsRevenueRouteImport.update({
+  id: '/accounts/revenue',
+  path: '/accounts/revenue',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAccountsPnlRoute = AppAccountsPnlRouteImport.update({
+  id: '/accounts/pnl',
+  path: '/accounts/pnl',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAccountsDepreciationRoute = AppAccountsDepreciationRouteImport.update({
+  id: '/accounts/depreciation',
+  path: '/accounts/depreciation',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -192,6 +210,9 @@ export interface FileRoutesByFullPath {
   '/system-settings': typeof AppSystemSettingsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/users-access': typeof AppUsersAccessRoute
+  '/accounts/depreciation': typeof AppAccountsDepreciationRoute
+  '/accounts/pnl': typeof AppAccountsPnlRoute
+  '/accounts/revenue': typeof AppAccountsRevenueRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -219,6 +240,9 @@ export interface FileRoutesByTo {
   '/system-settings': typeof AppSystemSettingsRoute
   '/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/users-access': typeof AppUsersAccessRoute
+  '/accounts/depreciation': typeof AppAccountsDepreciationRoute
+  '/accounts/pnl': typeof AppAccountsPnlRoute
+  '/accounts/revenue': typeof AppAccountsRevenueRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -248,6 +272,9 @@ export interface FileRoutesById {
   '/_app/system-settings': typeof AppSystemSettingsRoute
   '/_app/trips-deliveries': typeof AppTripsDeliveriesRoute
   '/_app/users-access': typeof AppUsersAccessRoute
+  '/_app/accounts/depreciation': typeof AppAccountsDepreciationRoute
+  '/_app/accounts/pnl': typeof AppAccountsPnlRoute
+  '/_app/accounts/revenue': typeof AppAccountsRevenueRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -277,6 +304,9 @@ export interface FileRouteTypes {
     | '/system-settings'
     | '/trips-deliveries'
     | '/users-access'
+    | '/accounts/depreciation'
+    | '/accounts/pnl'
+    | '/accounts/revenue'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -304,6 +334,9 @@ export interface FileRouteTypes {
     | '/system-settings'
     | '/trips-deliveries'
     | '/users-access'
+    | '/accounts/depreciation'
+    | '/accounts/pnl'
+    | '/accounts/revenue'
   id:
     | '__root__'
     | '/'
@@ -332,6 +365,9 @@ export interface FileRouteTypes {
     | '/_app/system-settings'
     | '/_app/trips-deliveries'
     | '/_app/users-access'
+    | '/_app/accounts/depreciation'
+    | '/_app/accounts/pnl'
+    | '/_app/accounts/revenue'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -529,6 +565,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganisationLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/accounts/revenue': {
+      id: '/_app/accounts/revenue'
+      path: '/accounts/revenue'
+      fullPath: '/accounts/revenue'
+      preLoaderRoute: typeof AppAccountsRevenueRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/accounts/pnl': {
+      id: '/_app/accounts/pnl'
+      path: '/accounts/pnl'
+      fullPath: '/accounts/pnl'
+      preLoaderRoute: typeof AppAccountsPnlRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/accounts/depreciation': {
+      id: '/_app/accounts/depreciation'
+      path: '/accounts/depreciation'
+      fullPath: '/accounts/depreciation'
+      preLoaderRoute: typeof AppAccountsDepreciationRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -551,6 +608,9 @@ interface AppRouteChildren {
   AppSystemSettingsRoute: typeof AppSystemSettingsRoute
   AppTripsDeliveriesRoute: typeof AppTripsDeliveriesRoute
   AppUsersAccessRoute: typeof AppUsersAccessRoute
+  AppAccountsDepreciationRoute: typeof AppAccountsDepreciationRoute
+  AppAccountsPnlRoute: typeof AppAccountsPnlRoute
+  AppAccountsRevenueRoute: typeof AppAccountsRevenueRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -572,6 +632,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppSystemSettingsRoute: AppSystemSettingsRoute,
   AppTripsDeliveriesRoute: AppTripsDeliveriesRoute,
   AppUsersAccessRoute: AppUsersAccessRoute,
+  AppAccountsDepreciationRoute: AppAccountsDepreciationRoute,
+  AppAccountsPnlRoute: AppAccountsPnlRoute,
+  AppAccountsRevenueRoute: AppAccountsRevenueRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -589,3 +652,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

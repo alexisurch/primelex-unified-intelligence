@@ -34,6 +34,10 @@ export interface Trip {
   stops: number;
   distance: number;
   priority: Priority;
+  date?: string;
+  revenue?: number;
+  fuelCost?: number;
+  otherExpenses?: number;
 }
 
 export interface Driver {
@@ -161,6 +165,9 @@ export const trips: Trip[] = Array.from({ length: 24 }, (_, i) => {
     stops: (i % 4) + 1,
     distance: 120 + i * 37,
     priority: pick(priorities, i),
+    date: `2026-${String((i % 8) + 1).padStart(2, "0")}-${String((i % 27) + 1).padStart(2, "0")}`,
+    revenue: 450000 + ((i * 137) % 600000),
+    otherExpenses: 15000 + ((i * 23) % 35000),
   };
 });
 
