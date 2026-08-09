@@ -3,7 +3,8 @@ import { Search, ListFilter as Filter, Download, ChevronLeft, ChevronRight } fro
 import { GlassCard } from "./Cards";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMemo, useState, type ReactNode } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 export interface Column<T> {
   key: keyof T | string;
@@ -18,15 +19,21 @@ interface DataTableProps<T> {
   rows: T[];
   searchKeys?: (keyof T)[];
   pageSize?: number;
+  pageSizeOptions?: number[];
   actions?: ReactNode;
   hideToolbar?: boolean;
 }
 
 export function DataTable<T extends { id: string }>({
-  title, columns, rows, searchKeys, pageSize = 8, actions, hideToolbar,
+  title, columns, rows, searchKeys, pageSize: initialPageSize = 8, pageSizeOptions, actions, hideToolbar,
 }: DataTableProps<T>) {
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(initialPageSize);
+
+  useEffect(() => {
+    setPage(1);
+  }, [rows, pageSize]);
 
   const filtered = useMemo(() => {
     if (!q || !searchKeys) return rows;
@@ -93,16 +100,19 @@ export function DataTable<T extends { id: string }>({
         </table>
       </div>
 
-      <div className="flex items-center justify-between border-t border-border/60 px-5 py-3 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 px-5 py-3 text-xs text-muted-foreground">
         <span>Showing {pageRows.length} of {filtered.length}</span>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-3">
+          {pageSizeOptions && <label className="flex items-center gap-2">Rows per page<Select value={String(pageSize)} onValueChange={(value) => setPageSize(Number(value))}><SelectTrigger className="h-7 w-[82px] border-border bg-elevated/60 text-[11px]"><SelectValue /></SelectTrigger><SelectContent>{pageSizeOptions.map((size) => <SelectItem key={size} value={String(size)}>{size} / page</SelectItem>)}</SelectContent></Select></label>}
+          <div className="flex items-center gap-1">
           <Button size="icon" variant="outline" className="h-7 w-7 border-border bg-elevated/60" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
             <ChevronLeft className="h-3.5 w-3.5" />
           </Button>
           <span className="px-2 tabular-nums">{page} / {totalPages}</span>
-          <Button size="icon" variant="outline" className="h-7 w-7 border-border bg-elevated/60" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
-            <ChevronRight className="h-3.5 w-3.5" />
-          </Button>
+            <Button size="icon" variant="outline" className="h-7 w-7 border-border bg-elevated/60" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
       </div>
     </GlassCard>

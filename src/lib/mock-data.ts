@@ -4,6 +4,7 @@
 export type TruckStatus = "On The Road" | "Idle" | "Maintenance" | "Offline";
 export type Priority = "Critical" | "High" | "Medium" | "Low";
 export type TripStatus = "In Transit" | "Delivered" | "Delayed" | "Scheduled" | "Cancelled";
+export type PaymentStatus = "Paid" | "Pending";
 
 export interface Truck {
   id: string;
@@ -34,6 +35,9 @@ export interface Trip {
   stops: number;
   distance: number;
   priority: Priority;
+  date: string;
+  revenue: number;
+  paymentStatus: PaymentStatus;
 }
 
 export interface Driver {
@@ -161,6 +165,9 @@ export const trips: Trip[] = Array.from({ length: 24 }, (_, i) => {
     stops: (i % 4) + 1,
     distance: 120 + i * 37,
     priority: pick(priorities, i),
+    date: `2026-08-${String((i % 9) + 1).padStart(2, "0")}`,
+    revenue: (120 + i * 37) * 4500,
+    paymentStatus: i % 5 === 0 || i % 7 === 0 ? "Pending" : "Paid",
   };
 });
 
