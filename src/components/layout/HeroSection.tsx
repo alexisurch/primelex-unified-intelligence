@@ -35,7 +35,7 @@ function HeroContent() {
       </div>
 
       <h1 className="mt-6 max-w-[620px] text-[clamp(2.8rem,4.1vw,4.95rem)] font-extrabold leading-[1.16] tracking-[-0.045em] text-white">
-        <span className="block">The Operating System</span>
+        <span className="block">ALL -IN-ONE System</span>
         <span className="block">
           for{" "}
           <span className="text-primary drop-shadow-[0_0_35px_oklch(0.60_0.22_258/0.45)]">

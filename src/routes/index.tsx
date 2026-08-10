@@ -87,7 +87,7 @@ function Hero() {
               className="mt-6 font-extrabold leading-[1.04] tracking-[-0.035em] text-foreground"
               style={{ fontSize: "clamp(2.7rem, 3.55vw, 3.95rem)" }}
             >
-              <span className="block whitespace-nowrap">The Operating System</span>
+              <span className="block whitespace-nowrap">ALL -IN-ONE System</span>
               <span className="block">
                 for{" "}
                 <span
@@ -170,7 +170,7 @@ function Hero() {
             Logistics Intelligence System (LIS)
           </div>
           <h1 className="mt-5 text-[2.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
-            <span className="block whitespace-nowrap">The Operating System</span>
+            <span className="block whitespace-nowrap">ALL -IN-ONE System</span>
             <span className="block">
               for <span className="text-primary">Modern Logistics</span>
             </span>
