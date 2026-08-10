@@ -7,8 +7,9 @@ import { ClientProfile } from "@/components/profiles/ClientProfile";
 import { IncidentProfile } from "@/components/profiles/IncidentProfile";
 import { FleetManagerProfile } from "@/components/profiles/FleetManagerProfile";
 import { RouteProfile } from "@/components/profiles/RouteProfile";
+import { SupplierProfile } from "@/components/profiles/SupplierProfile";
 
-export type ProfileKind = "truck" | "driver" | "trip" | "client" | "incident" | "fleet-manager" | "route";
+export type ProfileKind = "truck" | "driver" | "trip" | "client" | "incident" | "fleet-manager" | "route" | "supplier";
 export interface ProfileTarget { kind: ProfileKind; id: string }
 
 interface ProfileDrawerState {
@@ -46,6 +47,7 @@ export function ProfileDrawerProvider({ children }: { children: ReactNode }) {
           {current?.kind === "incident" && <IncidentProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
           {current?.kind === "fleet-manager" && <FleetManagerProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
           {current?.kind === "route" && <RouteProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
+          {current?.kind === "supplier" && <SupplierProfile id={current.id} onOpen={open} onBack={stack.length > 1 ? back : undefined} />}
         </SheetContent>
       </Sheet>
     </Ctx.Provider>

@@ -353,6 +353,94 @@ export const maintenanceRecords: MaintenanceRecord[] = Array.from({ length: 22 }
   };
 });
 
+// ---- Suppliers ----
+export type SupplierType = "Parts Supplier" | "Maintenance Provider" | "Workshop" | "Tyre Supplier" | "Fuel Supplier" | "Other";
+export type SupplierStatus = "Active" | "Inactive";
+
+export interface Supplier {
+  id: string;
+  name: string;
+  type: SupplierType;
+  contactPerson: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  notes?: string;
+  status: SupplierStatus;
+  createdAt: string;
+}
+
+export interface SupplierPurchase {
+  id: string;
+  supplierId: string;
+  maintenanceId: string;
+  date: string;
+  partItem: string;
+  truck: string;
+  quantity: number;
+  unitCost: number;
+  totalCost: number;
+}
+
+const supplierSeeds: Array<Omit<Supplier, "createdAt">> = [
+  { id: "SUP-001", name: "ABC Auto Parts", type: "Parts Supplier", contactPerson: "Emeka Nwosu", phone: "+234 803 111 2233", email: "sales@abcauto.ng", address: "15 Industrial Layout", city: "Lagos", state: "Lagos", notes: "Fast delivery on brake and engine parts.", status: "Active" },
+  { id: "SUP-002", name: "Lagos Truck Services", type: "Maintenance Provider", contactPerson: "Ade Bakare", phone: "+234 805 222 3344", email: "info@lagostruck.ng", address: "8 Apapa Wharf Rd", city: "Lagos", state: "Lagos", notes: "Full-service workshop with diagnostics.", status: "Active" },
+  { id: "SUP-003", name: "XYZ Motors", type: "Workshop", contactPerson: "Fatima Idris", phone: "+234 807 333 4455", email: "service@xyzmotors.ng", address: "22 Wuse Market St", city: "Abuja", state: "FCT", status: "Active" },
+  { id: "SUP-004", name: "Prime Engineering", type: "Parts Supplier", contactPerson: "Kunle Odunsi", phone: "+234 809 444 5566", email: "orders@primeeng.ng", address: "100 Trans Amadi Rd", city: "Port Harcourt", state: "Rivers", notes: "Specialises in transmission and suspension parts.", status: "Active" },
+  { id: "SUP-005", name: "Naija Tyre Hub", type: "Tyre Supplier", contactPerson: "Sani Bello", phone: "+234 811 555 6677", email: "sales@naijatyre.ng", address: "5 Ring Rd", city: "Ibadan", state: "Oyo", status: "Inactive" },
+  { id: "SUP-006", name: "QuickFix Workshop", type: "Workshop", contactPerson: "Tope Akin", phone: "+234 813 666 7788", email: "team@quickfix.ng", address: "31 Ahmadu Bello Way", city: "Kano", state: "Kano", status: "Active" },
+];
+
+export const suppliers: Supplier[] = supplierSeeds.map((s, i) => ({
+  ...s,
+  createdAt: `2025-${String((i % 9) + 1).padStart(2, "0")}-1${i % 9}`,
+}));
+
+const partItems = ["Brake Pad", "Oil Filter", "Air Filter", "Tire", "Clutch Plate", "Headlight Bulb", "Brake Fluid", "Coolant", "Spark Plug", "Shock Absorber"];
+
+export const supplierPurchases: SupplierPurchase[] = maintenanceRecords
+  .filter((m) => m.status === "Completed")
+  .slice(0, 12)
+  .map((m, i) => {
+    const supplier = suppliers[i % suppliers.length];
+    const qty = 1 + (i % 4);
+    const unitCost = 15000 + (i * 23000) % 120000;
+    return {
+      id: `PUR-${600 + i}`,
+      supplierId: supplier.id,
+      maintenanceId: m.id,
+      date: m.date,
+      partItem: partItems[i % partItems.length],
+      truck: m.truck,
+      quantity: qty,
+      unitCost,
+      totalCost: qty * unitCost,
+    };
+  });
+
+export function getSupplierForMaintenance(maintenanceId: string): Supplier | undefined {
+  const purchase = supplierPurchases.find((p) => p.maintenanceId === maintenanceId);
+  if (purchase) return suppliers.find((s) => s.id === purchase.supplierId);
+  return undefined;
+}
+
+export function getPurchasesForSupplier(supplierId: string): SupplierPurchase[] {
+  return supplierPurchases.filter((p) => p.supplierId === supplierId);
+}
+
+export function getMaintenanceForSupplier(supplierId: string): MaintenanceRecord[] {
+  const purchaseMaintenanceIds = supplierPurchases
+    .filter((p) => p.supplierId === supplierId)
+    .map((p) => p.maintenanceId);
+  return maintenanceRecords.filter((m) => purchaseMaintenanceIds.includes(m.id));
+}
+
+export function getSupplierSpend(supplierId: string): number {
+  return getPurchasesForSupplier(supplierId).reduce((s, p) => s + p.totalCost, 0);
+}
+
 // ---- Fuel transactions ----
 export interface FuelTransaction {
   id: string;

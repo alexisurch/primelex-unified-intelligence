@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { DataTable, type Column } from "@/components/shared/DataTable";
-import { maintenanceRecords, trucks, getMaintenanceSpend, getAvgDowntime, getAvgRepairCost, exportCSV, type MaintenanceRecord } from "@/lib/mock-data";
+import { maintenanceRecords, trucks, getMaintenanceSpend, getAvgDowntime, getAvgRepairCost, exportCSV, getSupplierForMaintenance, type MaintenanceRecord, type SupplierType } from "@/lib/mock-data";
 import { useProfileDrawer } from "@/lib/profile-drawer";
-import { Calendar, Wrench, TriangleAlert as AlertTriangle, DollarSign, Clock, ShieldCheck, Plus, MoveVertical as MoreVertical, Eye, Truck as TruckIcon, ChevronDown, Search as SearchIcon, Download } from "lucide-react";
+import { useSuppliers } from "@/lib/suppliers-store";
+import { Calendar, Wrench, TriangleAlert as AlertTriangle, DollarSign, Clock, ShieldCheck, Plus, MoveVertical as MoreVertical, Eye, Truck as TruckIcon, ChevronDown, Search as SearchIcon, Download, Building2 } from "lucide-react";
 import {
   ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Tooltip, XAxis, YAxis, CartesianGrid,
 } from "recharts";
@@ -194,6 +195,141 @@ function SearchableTruckSelect({ value, onValueChange }: { value: string; onValu
   );
 }
 
+function SearchableSupplierSelect({ value, onValueChange, onAddSupplier }: { value: string; onValueChange: (v: string) => void; onAddSupplier: () => void }) {
+  const { suppliers } = useSuppliers();
+  const [search, setSearch] = useState("");
+  const filtered = suppliers.filter((s) =>
+    s.name.toLowerCase().includes(search.toLowerCase()) ||
+    s.type.toLowerCase().includes(search.toLowerCase()) ||
+    s.city.toLowerCase().includes(search.toLowerCase()),
+  );
+  return (
+    <Select value={value} onValueChange={onValueChange}>
+      <SelectTrigger className="mt-1"><SelectValue placeholder="Search and select supplier…" /></SelectTrigger>
+      <SelectContent>
+        <div className="p-2" onClick={(e) => e.stopPropagation()}>
+          <Input placeholder="Search suppliers…" value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 text-xs" />
+        </div>
+        {filtered.length === 0 && (
+          <div className="px-3 py-2 text-xs text-muted-foreground">No suppliers found.</div>
+        )}
+        {filtered.map((s) => (
+          <SelectItem key={s.id} value={s.id}>
+            <span className="inline-flex items-center gap-2">
+              <Building2 className="h-3 w-3 text-muted-foreground" />
+              {s.name} · {s.type}
+            </span>
+          </SelectItem>
+        ))}
+        <SelectSeparator />
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onAddSupplier(); }}
+          className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/10 rounded-sm"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Add Supplier
+        </button>
+      </SelectContent>
+    </Select>
+  );
+}
+
+function AddSupplierDialog({ open, onOpenChange, onCreated }: { open: boolean; onOpenChange: (v: boolean) => void; onCreated: (s: import("@/lib/mock-data").Supplier) => void }) {
+  const { addSupplier } = useSuppliers();
+  const [name, setName] = useState("");
+  const [type, setType] = useState<SupplierType>("Parts Supplier");
+  const [contactPerson, setContactPerson] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [notes, setNotes] = useState("");
+
+  const reset = () => {
+    setName(""); setType("Parts Supplier"); setContactPerson(""); setPhone(""); setEmail(""); setAddress(""); setCity(""); setState(""); setNotes("");
+  };
+
+  const submit = () => {
+    if (!name.trim()) { toast.error("Supplier name is required"); return; }
+    const supplier = addSupplier({
+      name: name.trim(),
+      type,
+      contactPerson: contactPerson.trim() || "—",
+      phone: phone.trim() || "—",
+      email: email.trim() || "—",
+      address: address.trim() || "—",
+      city: city.trim() || "—",
+      state: state.trim() || "—",
+      notes: notes.trim() || undefined,
+      status: "Active",
+    });
+    onCreated(supplier);
+    reset();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) reset(); }}>
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogHeader><DialogTitle>Add Supplier</DialogTitle></DialogHeader>
+        <div className="grid grid-cols-2 gap-4 pt-2">
+          <div className="col-span-2">
+            <Label className="text-[11px] uppercase text-muted-foreground">Supplier Name</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. ABC Auto Parts" className="mt-1" />
+          </div>
+          <div className="col-span-2">
+            <Label className="text-[11px] uppercase text-muted-foreground">Supplier Type</Label>
+            <Select value={type} onValueChange={(v) => setType(v as SupplierType)}>
+              <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Parts Supplier">Parts Supplier</SelectItem>
+                <SelectItem value="Maintenance Provider">Maintenance Provider</SelectItem>
+                <SelectItem value="Workshop">Workshop</SelectItem>
+                <SelectItem value="Tyre Supplier">Tyre Supplier</SelectItem>
+                <SelectItem value="Fuel Supplier">Fuel Supplier</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-[11px] uppercase text-muted-foreground">Contact Person</Label>
+            <Input value={contactPerson} onChange={(e) => setContactPerson(e.target.value)} placeholder="e.g. Emeka Nwosu" className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-[11px] uppercase text-muted-foreground">Phone Number</Label>
+            <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. +234 803 111 2233" className="mt-1" />
+          </div>
+          <div className="col-span-2">
+            <Label className="text-[11px] uppercase text-muted-foreground">Email</Label>
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="e.g. sales@abcauto.ng" className="mt-1" />
+          </div>
+          <div className="col-span-2">
+            <Label className="text-[11px] uppercase text-muted-foreground">Address</Label>
+            <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street address" className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-[11px] uppercase text-muted-foreground">City</Label>
+            <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder="e.g. Lagos" className="mt-1" />
+          </div>
+          <div>
+            <Label className="text-[11px] uppercase text-muted-foreground">State</Label>
+            <Input value={state} onChange={(e) => setState(e.target.value)} placeholder="e.g. Lagos" className="mt-1" />
+          </div>
+          <div className="col-span-2">
+            <Label className="text-[11px] uppercase text-muted-foreground">Notes</Label>
+            <Textarea rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional notes about this supplier…" className="mt-1" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={submit} className="bg-primary text-primary-foreground">Add Supplier</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function ScheduleMaintenanceDialog({ onDone }: { onDone: () => void }) {
   const [scheduleType, setScheduleType] = useState<"date" | "distance">("date");
   const [title, setTitle] = useState("");
@@ -253,17 +389,29 @@ function ScheduleMaintenanceDialog({ onDone }: { onDone: () => void }) {
 }
 
 function LogMaintenanceDialog({ onDone }: { onDone: () => void }) {
+  const { suppliers, addSupplier } = useSuppliers();
+  const { open } = useProfileDrawer();
   const [title, setTitle] = useState("");
   const [truck, setTruck] = useState("");
   const [cost, setCost] = useState("");
   const [summary, setSummary] = useState("");
+  const [supplierId, setSupplierId] = useState("");
+  const [partItem, setPartItem] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [unitCost, setUnitCost] = useState("");
+  const [showAddSupplier, setShowAddSupplier] = useState(false);
+
+  const selectedSupplier = suppliers.find((s) => s.id === supplierId);
 
   const submit = () => {
     if (!truck) { toast.error("Truck is required"); return; }
     if (!title.trim()) { toast.error("Maintenance title is required"); return; }
+    if (!supplierId) { toast.error("Supplier is required"); return; }
     toast.success(`Maintenance logged for ${truck}`);
     onDone();
   };
+
+  const totalPartCost = (parseFloat(quantity) || 0) * (parseFloat(unitCost) || 0);
 
   return (
     <>
@@ -273,6 +421,24 @@ function LogMaintenanceDialog({ onDone }: { onDone: () => void }) {
           <Label className="text-[11px] uppercase text-muted-foreground">Truck</Label>
           <SearchableTruckSelect value={truck} onValueChange={setTruck} />
         </div>
+        <div className="col-span-2">
+          <Label className="text-[11px] uppercase text-muted-foreground">Supplier</Label>
+          <SearchableSupplierSelect
+            value={supplierId}
+            onValueChange={setSupplierId}
+            onAddSupplier={() => setShowAddSupplier(true)}
+          />
+          {selectedSupplier && (
+            <button
+              type="button"
+              onClick={() => open({ kind: "supplier", id: selectedSupplier.id })}
+              className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+            >
+              <Building2 className="h-3 w-3" />
+              {selectedSupplier.name} · View profile
+            </button>
+          )}
+        </div>
         <div>
           <Label className="text-[11px] uppercase text-muted-foreground">Maintenance Title</Label>
           <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Brake Replacement" className="mt-1" />
@@ -280,6 +446,29 @@ function LogMaintenanceDialog({ onDone }: { onDone: () => void }) {
         <div>
           <Label className="text-[11px] uppercase text-muted-foreground">Cost (₦)</Label>
           <Input type="number" value={cost} onChange={(e) => setCost(e.target.value)} className="mt-1" />
+        </div>
+        <div className="col-span-2 mt-2">
+          <div className="rounded-lg border border-border/60 bg-background/30 p-3">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Parts / Materials</div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="col-span-2 sm:col-span-1">
+                <Label className="text-[10px] uppercase text-muted-foreground">Part / Item</Label>
+                <Input value={partItem} onChange={(e) => setPartItem(e.target.value)} placeholder="e.g. Brake Pad" className="mt-1 h-8 text-xs" />
+              </div>
+              <div>
+                <Label className="text-[10px] uppercase text-muted-foreground">Qty</Label>
+                <Input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder="0" className="mt-1 h-8 text-xs" />
+              </div>
+              <div>
+                <Label className="text-[10px] uppercase text-muted-foreground">Unit Cost (₦)</Label>
+                <Input type="number" value={unitCost} onChange={(e) => setUnitCost(e.target.value)} placeholder="0" className="mt-1 h-8 text-xs" />
+              </div>
+              <div>
+                <Label className="text-[10px] uppercase text-muted-foreground">Total Cost</Label>
+                <div className="mt-1 h-8 flex items-center text-xs font-medium text-muted-foreground">₦{Math.round(totalPartCost).toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="col-span-2">
           <Label className="text-[11px] uppercase text-muted-foreground">Summary</Label>
@@ -290,6 +479,13 @@ function LogMaintenanceDialog({ onDone }: { onDone: () => void }) {
         <Button variant="outline" onClick={onDone}>Cancel</Button>
         <Button onClick={submit} className="bg-primary text-primary-foreground">Log Maintenance</Button>
       </DialogFooter>
+      {showAddSupplier && (
+        <AddSupplierDialog
+          open={showAddSupplier}
+          onOpenChange={setShowAddSupplier}
+          onCreated={(s) => { setSupplierId(s.id); setShowAddSupplier(false); toast.success(`Supplier "${s.name}" added`); }}
+        />
+      )}
     </>
   );
 }
@@ -351,7 +547,8 @@ function RecordsTable({ rows }: { rows: MaintenanceRecord[] }) {
       if (statusFilter !== "all" && r.status !== statusFilter) return false;
       if (!search) return true;
       const s = search.toLowerCase();
-      return r.truck.toLowerCase().includes(s) || r.service.toLowerCase().includes(s) || r.performedBy.toLowerCase().includes(s);
+      const sup = getSupplierForMaintenance(r.id);
+    return r.truck.toLowerCase().includes(s) || r.service.toLowerCase().includes(s) || r.performedBy.toLowerCase().includes(s) || (sup?.name.toLowerCase().includes(s) ?? false);
     });
   }, [rows, search, statusFilter]);
 
@@ -375,6 +572,15 @@ function RecordsTable({ rows }: { rows: MaintenanceRecord[] }) {
     { key: "service", label: "Service Type", render: (r) => (
       <div><div className="font-medium">{r.service}</div><div className="text-[10px]"><Pill tone="info">{r.type}</Pill></div></div>
     )},
+    { key: "supplier", label: "Supplier", render: (r) => {
+      const sup = getSupplierForMaintenance(r.id);
+      if (!sup) return <span className="text-xs text-muted-foreground">—</span>;
+      return (
+        <button onClick={() => open({ kind: "supplier", id: sup.id })} className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
+          <Building2 className="h-3 w-3" />{sup.name}
+        </button>
+      );
+    }},
     { key: "workDone", label: "Work Done", render: (r) => (
       <div className="max-w-xs"><div className="text-xs">{r.workDone || "—"}</div><div className="text-[10px] text-muted-foreground truncate">{r.nextService}</div></div>
     )},
