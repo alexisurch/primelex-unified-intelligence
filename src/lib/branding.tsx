@@ -15,17 +15,17 @@ export interface BrandingState {
 }
 
 const DEFAULTS: BrandingState = {
-  companyName: "PrimeLex Logistics",
-  companyShort: "PRIMELEX",
+  companyName: "MUVD LOGISTICS",
+  companyShort: "MUVD LOGISTICS",
   industry: "Logistics & Transportation",
-  businessEmail: "ops@primelex.com",
+  businessEmail: "ops@muvdlogistics.com",
   phone: "+234 800 000 0000",
-  logoDataUrl: null,
+  logoDataUrl: "/MOVE_LOGO.jpeg",
   primaryColor: "#3b82f6",
   secondaryColor: "#8b5cf6",
-  workspaceSlug: "primelex-logistics",
+  workspaceSlug: "muvd-logistics",
   adminName: "Adeleke Oladipo",
-  adminEmail: "adeleke@primelex.com",
+  adminEmail: "adeleke@muvdlogistics.com",
 };
 
 interface Ctx extends BrandingState {
@@ -34,7 +34,7 @@ interface Ctx extends BrandingState {
 }
 
 const BrandingContext = createContext<Ctx | null>(null);
-const STORAGE_KEY = "primelex.branding";
+const STORAGE_KEY = "muvd.branding";
 
 export function BrandingProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<BrandingState>(DEFAULTS);

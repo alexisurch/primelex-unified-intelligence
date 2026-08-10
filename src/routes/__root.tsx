@@ -81,9 +81,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PrimeLex Logistics UIS — Unified Intelligence System" },
+      { title: "MUVD LOGISTICS" },
       { name: "description", content: "Enterprise fleet, dispatch, compliance and logistics intelligence in a single unified command platform." },
-      { property: "og:title", content: "PrimeLex Logistics UIS" },
+      { property: "og:title", content: "MUVD LOGISTICS" },
       { property: "og:description", content: "Enterprise fleet, dispatch, compliance and logistics intelligence in a single unified command platform." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -93,8 +93,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/lis-favicon.png", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/lis-favicon.png" }
+      { rel: "icon", href: "/MOVE_LOGO.jpeg", type: "image/jpeg" },
+      { rel: "apple-touch-icon", href: "/MOVE_LOGO.jpeg" }
     ],
   }),
   shellComponent: RootShell,

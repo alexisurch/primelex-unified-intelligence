@@ -60,7 +60,7 @@ export function AIInsight({ title, insights }: { title?: string; insights: { lab
         </div>
         <div>
           <h3 className="text-[14px] font-semibold">{title ?? "AI Recommendations"}</h3>
-          <p className="text-[11px] text-muted-foreground">Powered by PrimeLex Intelligence</p>
+          <p className="text-[11px] text-muted-foreground">Powered by MUVD LOGISTICS</p>
         </div>
       </div>
       <div className="space-y-3">

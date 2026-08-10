@@ -137,7 +137,7 @@ function TrackingSection() {
 function AppearanceSection() {
   const { theme, setTheme, resolvedTheme } = usePreferences();
   const options: { id: ThemePreference; icon: typeof Sun; name: string; desc: string }[] = [
-    { id: "dark",   icon: Moon,               name: "Dark",           desc: "Default PrimeLex enterprise theme." },
+    { id: "dark",   icon: Moon,               name: "Dark",           desc: "Default MUVD LOGISTICS enterprise theme." },
     { id: "light",  icon: Sun,                name: "Light",          desc: "High-contrast light interface." },
     { id: "system", icon: MonitorSmartphone,  name: "System Default", desc: "Match your operating system preference." },
   ];
@@ -145,7 +145,7 @@ function AppearanceSection() {
   return (
     <SectionCard title="Appearance">
       <p className="pb-4 text-xs text-muted-foreground">
-        Choose a theme for the main workspace. The sidebar always uses the PrimeLex brand dark palette.
+        Choose a theme for the main workspace. The sidebar always uses the MUVD LOGISTICS brand dark palette.
       </p>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {options.map((o) => {

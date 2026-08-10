@@ -144,9 +144,9 @@ export function PublicHeader() {
             </div>
           </div>
           <div className="leading-none">
-            <div className="text-[21px] font-black tracking-[0.14em] text-foreground">PRIMELEX</div>
+            <div className="text-[21px] font-black tracking-[0.14em] text-foreground">MUVD LOGISTICS</div>
             <div className="mt-[3px] text-[10px] font-semibold tracking-[0.42em] text-muted-foreground">
-              TECHNOLOGIES
+              LOGISTICS PLATFORM
             </div>
           </div>
         </Link>
@@ -191,9 +191,9 @@ export function PublicFooter() {
                 <RouteIcon className="h-4 w-4 text-white" />
               </div>
               <div className="leading-tight">
-                <div className="text-[13px] font-bold tracking-wide text-white">PRIMELEX</div>
+                <div className="text-[13px] font-bold tracking-wide text-white">MUVD LOGISTICS</div>
                 <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-white/40">
-                  TECHNOLOGIES
+                  LOGISTICS PLATFORM
                 </div>
               </div>
             </Link>
@@ -235,7 +235,7 @@ export function PublicFooter() {
           <div className="flex flex-col gap-3">
             <div className="text-[12px] font-semibold text-white">Support</div>
             <ul className="flex flex-col gap-2.5">
-              <li className="text-[12px] text-white/45">hello@primelextech.com</li>
+              <li className="text-[12px] text-white/45">hello@muvdlogistics.com</li>
               <li className="text-[12px] text-white/45">+234 800 123 4567</li>
               <li className="text-[12px] text-white/45">Mon – Fri: 8:00 AM – 6:00 PM</li>
             </ul>
@@ -244,7 +244,7 @@ export function PublicFooter() {
       </div>
 
       <div className="border-t border-white/[0.05] py-4 text-center text-[11px] text-white/30">
-        © 2025 PrimeLex Technologies. All rights reserved.
+        © 2025 MUVD LOGISTICS. All rights reserved.
       </div>
     </footer>
   );

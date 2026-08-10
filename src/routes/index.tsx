@@ -79,7 +79,7 @@ function Hero() {
           <div className="flex flex-col pt-0">
             {/* Badge */}
             <div className="inline-flex w-fit items-center rounded-full border border-primary/50 bg-primary/[0.08] px-4 py-[7px] text-[12px] font-semibold uppercase tracking-[0.06em] text-primary">
-              Logistics Intelligence System (LIS)
+              Logistics Platform
             </div>
 
             {/* Headline */}
@@ -155,7 +155,7 @@ function Hero() {
             >
               <img
                 src="/dashboard-screenshot.png"
-                alt="PrimeLex Logistics Intelligence System dashboard"
+                alt="MUVD LOGISTICS dashboard"
                 className="block w-full select-none lg:max-h-[430px] lg:object-cover lg:object-top"
                 draggable={false}
                 loading="eager"
@@ -167,7 +167,7 @@ function Hero() {
         {/* ── Mobile/tablet single-column ── */}
         <div className="flex flex-col lg:hidden">
           <div className="inline-flex w-fit items-center rounded-full border border-primary/40 bg-primary/[0.08] px-4 py-[6px] text-[11px] font-semibold uppercase tracking-[0.13em] text-primary/90">
-            Logistics Intelligence System (LIS)
+            Logistics Platform
           </div>
           <h1 className="mt-5 text-[2.4rem] font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground">
             <span className="block whitespace-nowrap">ALL -IN-ONE System</span>
@@ -205,7 +205,7 @@ function Hero() {
           >
             <img
               src="/dashboard-screenshot.png"
-              alt="LIS Dashboard"
+              alt="MUVD LOGISTICS Dashboard"
               className="block w-full"
               loading="eager"
             />

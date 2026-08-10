@@ -31,7 +31,7 @@ function HeroContent() {
   return (
     <div className="relative z-10 flex flex-col lg:-mt-8">
       <div className="inline-flex w-fit items-center rounded-full border border-primary/70 bg-primary/[0.07] px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.04em] text-primary shadow-[0_0_28px_oklch(0.55_0.22_258/0.16)]">
-        Logistics Intelligence System (LIS)
+        Logistics Platform
       </div>
 
       <h1 className="mt-6 max-w-[620px] text-[clamp(2.8rem,4.1vw,4.95rem)] font-extrabold leading-[1.16] tracking-[-0.045em] text-white">

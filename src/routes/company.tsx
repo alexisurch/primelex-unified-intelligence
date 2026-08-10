@@ -98,7 +98,7 @@ function CompanyHero() {
             for <span className="text-[#3b82f6]">Modern Logistics</span>
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-[1.72] text-white/50">
-            PrimeLex Technologies builds intelligent software that helps logistics companies operate
+            MUVD LOGISTICS builds intelligent software that helps logistics companies operate
             smarter, faster and more profitably.
           </p>
         </div>
@@ -114,8 +114,8 @@ function AboutSection() {
       <Container>
         <div className="mx-auto max-w-3xl">
           <SectionHeading
-            eyebrow="About PrimeLex Technologies"
-            title="About PrimeLex Technologies"
+            eyebrow="About MUVD LOGISTICS"
+            title="About MUVD LOGISTICS"
             description="We are a technology company focused on building intelligent software for the logistics industry."
             align="left"
           />
@@ -126,7 +126,7 @@ function AboutSection() {
               act on.
             </p>
             <p>
-              We built LIS to replace that fragmentation with a single, intelligent platform. One
+              We built MUVD LOGISTICS to replace that fragmentation with a single, intelligent platform. One
               place to manage fleet, dispatch, fuel, maintenance, routes, safety and reporting —
               with operational AI that turns data into decisions.
             </p>
@@ -187,7 +187,7 @@ function Philosophy() {
             </div>
           </div>
           <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#3b82f6]">
-            Why we built LIS
+            Why we built MUVD LOGISTICS
           </div>
           <h2 className="text-[1.75rem] font-bold leading-tight tracking-tight text-white">
             Our Philosophy
@@ -229,11 +229,11 @@ function Contact() {
         <SectionHeading
           eyebrow="Contact"
           title="Get in Touch"
-          description="Have a question or want to learn more about LIS? We'd love to hear from you."
+          description="Have a question or want to learn more about MUVD LOGISTICS? We'd love to hear from you."
         />
         <div className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="flex flex-col gap-6">
-            <ContactRow icon={Mail} label="Email" value="hello@primelextech.com" />
+            <ContactRow icon={Mail} label="Email" value="hello@muvdlogistics.com" />
             <ContactRow icon={Phone} label="Phone" value="+234 800 123 4567" />
             <ContactRow icon={MapPin} label="Location" value="Lagos, Nigeria" />
           </div>

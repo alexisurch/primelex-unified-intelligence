@@ -95,7 +95,7 @@ const FAQS = [
   },
   {
     q: "Do you support GPS integrations?",
-    a: "LIS is designed to integrate with GPS and telematics providers. Contact us to discuss your specific integration needs.",
+    a: "MUVD LOGISTICS is designed to integrate with GPS and telematics providers. Contact us to discuss your specific integration needs.",
   },
   {
     q: "How long does implementation take?",
@@ -178,7 +178,7 @@ function PricingCard() {
             />
             <div className="relative z-10 text-center">
               <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#3b82f6]">
-                LIS Platform
+                MUVD LOGISTICS Platform
               </div>
               <div className="mt-4 flex items-end justify-center gap-2">
                 <span className="text-[4rem] font-extrabold leading-none text-white">₦5,000</span>
@@ -245,8 +245,8 @@ function ROISection() {
       <Container>
         <SectionHeading
           eyebrow="ROI"
-          title="Why Companies Choose LIS"
-          description="LIS is designed to deliver business outcomes — not just features."
+          title="Why Companies Choose MUVD LOGISTICS"
+          description="MUVD LOGISTICS is designed to deliver business outcomes — not just features."
         />
         <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {ROI_CARDS.map((c) => (
@@ -269,7 +269,7 @@ function ROISection() {
             style={{ background: "rgba(26,86,219,0.06)" }}
           >
             <p className="text-[1.25rem] font-semibold leading-snug text-white">
-              "LIS is designed to protect significantly more value than it costs."
+              "MUVD LOGISTICS is designed to protect significantly more value than it costs."
             </p>
           </div>
         </div>
@@ -286,7 +286,7 @@ function FAQ() {
         <SectionHeading
           eyebrow="FAQ"
           title="Frequently Asked Questions"
-          description="Everything you need to know about how LIS pricing works."
+          description="Everything you need to know about how MUVD LOGISTICS pricing works."
         />
         <div className="mx-auto mt-12 max-w-2xl flex flex-col gap-3">
           {FAQS.map((f, i) => (

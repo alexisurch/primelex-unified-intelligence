@@ -242,7 +242,7 @@ function ProductHero() {
             for <span className="text-[#3b82f6]">Modern Logistics</span> Companies
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-[1.72] text-white/50">
-            LIS unifies fleet operations, dispatch, maintenance, fuel intelligence, route
+            MUVD LOGISTICS unifies fleet operations, dispatch, maintenance, fuel intelligence, route
             intelligence, reporting and operational AI into one intelligent platform.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-[14px]">
@@ -263,7 +263,7 @@ function PlatformOverview() {
         <SectionHeading
           eyebrow="Platform Overview"
           title="One Connected Platform"
-          description="LIS brings every logistics function into a single intelligent system — no more disconnected tools."
+          description="MUVD LOGISTICS brings every logistics function into a single intelligent system — no more disconnected tools."
         />
         <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {MODULE_CARDS.map((m) => (

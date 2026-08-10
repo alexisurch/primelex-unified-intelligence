@@ -1,4 +1,4 @@
-// Central mock data for the entire PrimeLex Logistics UIS.
+// Central mock data for the entire MUVD LOGISTICS platform.
 // Every page pulls from here so the platform feels internally consistent.
 
 export type TruckStatus = "On The Road" | "Idle" | "Maintenance" | "Offline";

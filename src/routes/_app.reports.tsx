@@ -62,7 +62,7 @@ function Reports() {
                 <h2 className="text-lg font-semibold text-foreground">Executive Summary</h2>
                 <p>
                   This report covers the reporting period from {readerReport.date} for <strong className="text-foreground">{readerReport.name}</strong>.
-                  The data presented herein is compiled from operational records maintained by the LIS platform and
+                  The data presented herein is compiled from operational records maintained by the MUVD LOGISTICS platform and
                   reflects all activity logged through {readerReport.owner}'s fleet operations.
                 </p>
                 <h3 className="text-base font-semibold text-foreground">Key Findings</h3>
@@ -89,7 +89,7 @@ function Reports() {
                 </ol>
                 <h3 className="text-base font-semibold text-foreground">Methodology</h3>
                 <p>
-                  Data was collected automatically through the LIS platform's integrated telemetry, dispatch, and
+                  Data was collected automatically through the MUVD LOGISTICS platform's integrated telemetry, dispatch, and
                   fuel management modules. All figures are verified against source logs and cross-referenced with
                   driver-subplied trip reports. The full data set is available for audit upon request.
                 </p>

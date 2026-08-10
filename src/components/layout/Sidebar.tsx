@@ -83,7 +83,7 @@ export function Sidebar() {
         {!collapsed && (
           <div className="min-w-0">
             <div className="truncate text-[13px] font-bold tracking-wide">{companyShort}</div>
-            <div className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Unified Intelligence System</div>
+            <div className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground">Logistics Platform</div>
           </div>
         )}
       </div>

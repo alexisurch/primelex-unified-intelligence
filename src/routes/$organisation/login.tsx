@@ -67,7 +67,7 @@ function WorkspaceLogin() {
           )}
           <div>
             <div className="text-sm font-bold tracking-wide text-white">{org.companyShort}</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Logistics Intelligence System</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Logistics Platform</div>
           </div>
         </div>
 
@@ -75,12 +75,12 @@ function WorkspaceLogin() {
           <div className="text-sm text-white/60">Welcome to</div>
           <h1 className="text-4xl font-semibold leading-tight text-white">{org.companyName}</h1>
           <p className="max-w-md text-sm text-white/70">
-            Logistics Intelligence System. Sign in to continue.
+            Logistics Platform. Sign in to continue.
           </p>
         </div>
 
         <div className="relative z-10 text-xs text-white/50">
-          © {new Date().getFullYear()} {org.companyName}. Powered by PrimeLex Technologies.
+          © {new Date().getFullYear()} {org.companyName}. Powered by MUVD LOGISTICS.
         </div>
       </div>
 
@@ -98,7 +98,7 @@ function WorkspaceLogin() {
               )}
               <div className="leading-tight">
                 <div className="text-sm font-bold">{org.companyName}</div>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Logistics Intelligence System</div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Logistics Platform</div>
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@ function WorkspaceNotFound({ slug }: { slug: string }) {
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go to PrimeLex
+            Go to MUVD LOGISTICS
           </Link>
           <Link to="/login" className="text-xs text-muted-foreground transition-colors hover:text-foreground">
             Administrator login

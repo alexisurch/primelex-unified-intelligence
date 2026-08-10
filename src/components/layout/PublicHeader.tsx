@@ -20,9 +20,9 @@ export function PublicHeader() {
             <Hexagon className="relative h-5 w-5 fill-primary/30 text-primary" strokeWidth={2.8} />
           </div>
           <div className="leading-none">
-            <div className="text-[21px] font-black tracking-[0.16em] text-white">PRIMELEX</div>
+            <div className="text-[21px] font-black tracking-[0.16em] text-white">MUVD LOGISTICS</div>
             <div className="mt-1 text-[10px] font-semibold tracking-[0.43em] text-white/70">
-              TECHNOLOGIES
+              LOGISTICS PLATFORM
             </div>
           </div>
         </Link>

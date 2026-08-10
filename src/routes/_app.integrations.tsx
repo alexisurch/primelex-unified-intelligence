@@ -327,7 +327,7 @@ function IntegrationsPage() {
     <>
       <Header
         title="Connected Systems"
-        subtitle="Connect GPS tracking providers and external systems to automatically synchronize vehicles, trips, locations and operational data into LIS."
+        subtitle="Connect GPS tracking providers and external systems to automatically synchronize vehicles, trips, locations and operational data into MUVD LOGISTICS."
         showDate={false}
       />
       <div className="space-y-6 p-8">

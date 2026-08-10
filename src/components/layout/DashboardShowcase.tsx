@@ -1,4 +1,4 @@
-import { AlertTriangle, Bell, FileText, Lock, Search, Truck, Users } from "lucide-react";
+import { TriangleAlert as AlertTriangle, Bell, FileText, Lock, Search, Truck, Users } from "lucide-react";
 
 const sideItems = [
   "Overview",
@@ -30,7 +30,7 @@ export function DashboardShowcase() {
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/15 text-primary">
               ⬢
             </span>
-            <span className="font-bold">LIS</span>
+            <span className="font-bold">MUVD LOGISTICS</span>
           </div>
           <div className="flex items-center gap-4 text-white/60">
             <div className="hidden h-7 w-36 items-center gap-2 rounded-md bg-white/[0.035] px-3 text-[10px] md:flex">

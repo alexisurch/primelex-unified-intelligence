@@ -11,7 +11,7 @@ export interface OrganisationRecord {
   createdAt: string;
 }
 
-const STORAGE_KEY = "primelex.organisations";
+const STORAGE_KEY = "muvd.organisations";
 
 function readAll(): Record<string, OrganisationRecord> {
   if (typeof window === "undefined") return {};
@@ -52,17 +52,17 @@ export function saveOrganisation(org: OrganisationRecord): void {
 
 export function ensureSeedOrganisation(): void {
   const orgs = readAll();
-  if (!orgs["primelex-logistics"]) {
-    orgs["primelex-logistics"] = {
-      slug: "primelex-logistics",
-      companyName: "PrimeLex Logistics",
-      companyShort: "PRIMELEX",
+  if (!orgs["muvd-logistics"]) {
+    orgs["muvd-logistics"] = {
+      slug: "muvd-logistics",
+      companyName: "MUVD LOGISTICS",
+      companyShort: "MUVD LOGISTICS",
       industry: "Logistics & Transportation",
-      logoDataUrl: null,
+      logoDataUrl: "/MOVE_LOGO.jpeg",
       primaryColor: "#3b82f6",
       secondaryColor: "#8b5cf6",
       adminName: "Adeleke Oladipo",
-      adminEmail: "adeleke@primelex.com",
+      adminEmail: "adeleke@muvdlogistics.com",
       createdAt: new Date().toISOString(),
     };
     writeAll(orgs);

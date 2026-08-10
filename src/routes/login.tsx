@@ -62,8 +62,8 @@ function AdminLogin() {
             <RouteIcon className="h-6 w-6 text-white" />
           </div>
           <div>
-            <div className="text-sm font-bold tracking-wide text-white">PrimeLex Technologies</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Logistics Intelligence System</div>
+            <div className="text-sm font-bold tracking-wide text-white">MUVD LOGISTICS</div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Logistics Platform</div>
           </div>
         </div>
 
@@ -86,7 +86,7 @@ function AdminLogin() {
         </div>
 
         <div className="relative z-10 text-xs text-white/50">
-          © {new Date().getFullYear()} PrimeLex Technologies. All rights reserved.
+          © {new Date().getFullYear()} MUVD LOGISTICS. All rights reserved.
         </div>
       </div>
 
@@ -99,8 +99,8 @@ function AdminLogin() {
                 <RouteIcon className="h-5 w-5 text-primary-foreground" />
               </div>
               <div>
-                <div className="text-sm font-bold">PrimeLex Technologies</div>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Logistics Intelligence System</div>
+                <div className="text-sm font-bold">MUVD LOGISTICS</div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Logistics Platform</div>
               </div>
             </div>
           </div>
