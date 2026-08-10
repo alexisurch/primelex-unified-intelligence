@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Route as RouteIcon, User, Lock, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
+import { User, Lock, Linkedin, Twitter, Facebook, Youtube } from "lucide-react";
 import ctaTruck from "../../assets/cta-truck.png";
 
 const NAV_LINKS = [
@@ -134,15 +134,7 @@ export function PublicHeader() {
     <header className="absolute top-0 z-50 w-full bg-transparent">
       <div className="mx-auto flex h-[96px] max-w-[1400px] items-center px-9 lg:px-12">
         <Link to="/" className="flex shrink-0 items-center gap-3">
-          <div className="relative h-[50px] w-[50px] shrink-0">
-            <div
-              className="absolute inset-0 bg-primary"
-              style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
-            />
-            <div className="relative z-10 flex h-full w-full items-center justify-center">
-              <RouteIcon className="h-[20px] w-[20px] text-white" />
-            </div>
-          </div>
+          <img src="/muvd-logo.jpeg" alt="MUVD LOGISTICS" className="h-[50px] w-[50px] shrink-0 rounded-xl object-cover" />
           <div className="leading-none">
             <div className="text-[21px] font-black tracking-[0.14em] text-foreground">MUVD LOGISTICS</div>
             <div className="mt-[3px] text-[10px] font-semibold tracking-[0.42em] text-muted-foreground">
@@ -182,14 +174,7 @@ export function PublicFooter() {
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:grid-cols-7">
           <div className="col-span-2 flex flex-col gap-4 sm:col-span-3 lg:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
-              <div
-                className="flex h-9 w-9 items-center justify-center bg-primary"
-                style={{
-                  clipPath: "polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%)",
-                }}
-              >
-                <RouteIcon className="h-4 w-4 text-white" />
-              </div>
+              <img src="/muvd-logo.jpeg" alt="MUVD LOGISTICS" className="h-9 w-9 rounded-lg object-cover" />
               <div className="leading-tight">
                 <div className="text-[13px] font-bold tracking-wide text-white">MUVD LOGISTICS</div>
                 <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-white/40">

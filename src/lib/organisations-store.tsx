@@ -58,7 +58,7 @@ export function ensureSeedOrganisation(): void {
       companyName: "MUVD LOGISTICS",
       companyShort: "MUVD LOGISTICS",
       industry: "Logistics & Transportation",
-      logoDataUrl: "/MOVE_LOGO.jpeg",
+      logoDataUrl: "/muvd-logo.jpeg",
       primaryColor: "#3b82f6",
       secondaryColor: "#8b5cf6",
       adminName: "Adeleke Oladipo",

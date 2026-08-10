@@ -20,7 +20,7 @@ const DEFAULTS: BrandingState = {
   industry: "Logistics & Transportation",
   businessEmail: "ops@muvdlogistics.com",
   phone: "+234 800 000 0000",
-  logoDataUrl: "/MOVE_LOGO.jpeg",
+  logoDataUrl: "/muvd-logo.jpeg",
   primaryColor: "#3b82f6",
   secondaryColor: "#8b5cf6",
   workspaceSlug: "muvd-logistics",

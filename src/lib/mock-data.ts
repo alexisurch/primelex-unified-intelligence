@@ -396,10 +396,10 @@ export const fuelTransactions: FuelTransaction[] = Array.from({ length: 24 }, (_
 
 // ---- Fleet Managers ----
 const managerSeed: Array<Omit<FleetManager, "assignedTruckIds">> = [
-  { id: "FM-101", name: "Bola Adeyemi",   employeeId: "EMP-1021", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0110", email: "bola.a@primelex.com", status: "Active", dateJoined: "2023-04-11" },
-  { id: "FM-102", name: "Chinedu Okonkwo", employeeId: "EMP-1044", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0221", email: "chinedu.o@primelex.com", status: "Active", dateJoined: "2022-11-02" },
-  { id: "FM-103", name: "Aisha Bello",     employeeId: "EMP-1065", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0332", email: "aisha.b@primelex.com", status: "Active", dateJoined: "2024-02-19" },
-  { id: "FM-104", name: "Musa Ibrahim",    employeeId: "EMP-1088", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0443", email: "musa.i@primelex.com", status: "Active", dateJoined: "2023-08-25" },
+  { id: "FM-101", name: "Bola Adeyemi",   employeeId: "EMP-1021", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0110", email: "bola.a@muvdlogistics.com", status: "Active", dateJoined: "2023-04-11" },
+  { id: "FM-102", name: "Chinedu Okonkwo", employeeId: "EMP-1044", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0221", email: "chinedu.o@muvdlogistics.com", status: "Active", dateJoined: "2022-11-02" },
+  { id: "FM-103", name: "Aisha Bello",     employeeId: "EMP-1065", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0332", email: "aisha.b@muvdlogistics.com", status: "Active", dateJoined: "2024-02-19" },
+  { id: "FM-104", name: "Musa Ibrahim",    employeeId: "EMP-1088", role: "Fleet Manager", department: "Operations", phone: "+234 803 555 0443", email: "musa.i@muvdlogistics.com", status: "Active", dateJoined: "2023-08-25" },
 ];
 
 // Default round-robin assignment of trucks to managers (used as seed baseline).

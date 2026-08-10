@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Route as RouteIcon, ShieldCheck, Sparkles, Building2 } from "lucide-react";
+import { ArrowRight, ShieldCheck, Sparkles, Building2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getOrganisationByAdminEmail, ensureSeedOrganisation } from "@/lib/organisations-store";
@@ -58,9 +58,7 @@ function AdminLogin() {
         style={{ background: `linear-gradient(135deg, var(--primary) 0%, #0f172a 60%, #020617 100%)` }}
       >
         <div className="relative z-10 flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 ring-2 ring-white/20 backdrop-blur">
-            <RouteIcon className="h-6 w-6 text-white" />
-          </div>
+          <img src="/muvd-logo.jpeg" alt="MUVD LOGISTICS" className="h-11 w-11 rounded-xl object-cover ring-2 ring-white/20" />
           <div>
             <div className="text-sm font-bold tracking-wide text-white">MUVD LOGISTICS</div>
             <div className="text-[10px] uppercase tracking-[0.2em] text-white/60">Logistics Platform</div>
@@ -95,9 +93,7 @@ function AdminLogin() {
         <div className="w-full max-w-md space-y-8">
           <div className="lg:hidden">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                <RouteIcon className="h-5 w-5 text-primary-foreground" />
-              </div>
+              <img src="/muvd-logo.jpeg" alt="MUVD LOGISTICS" className="h-10 w-10 rounded-lg object-cover" />
               <div>
                 <div className="text-sm font-bold">MUVD LOGISTICS</div>
                 <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Logistics Platform</div>

@@ -23,10 +23,10 @@ export const Route = createFileRoute("/_app/users-access")({
 interface UserRow { id: string; name: string; email: string; role: string; department: string; status: "Active" | "Invited" | "Suspended"; lastActive: string; fleetManagerId?: string }
 
 const staticUsers: UserRow[] = [
-  { id: "U-001", name: "Adeleke Oladipo", email: "adeleke@primelex.com", role: "CEO / Admin", department: "Executive", status: "Active", lastActive: "Just now" },
-  { id: "U-005", name: "Kelechi Obi", email: "kelechi@primelex.com", role: "Dispatch Coordinator", department: "Dispatch", status: "Active", lastActive: "3 hr ago" },
-  { id: "U-007", name: "Ngozi Umeh", email: "ngozi@primelex.com", role: "Finance Analyst", department: "Finance", status: "Invited", lastActive: "—" },
-  { id: "U-008", name: "Femi Johnson", email: "femi@primelex.com", role: "Driver Manager", department: "HR", status: "Suspended", lastActive: "10 days ago" },
+  { id: "U-001", name: "Adeleke Oladipo", email: "adeleke@muvdlogistics.com", role: "CEO / Admin", department: "Executive", status: "Active", lastActive: "Just now" },
+  { id: "U-005", name: "Kelechi Obi", email: "kelechi@muvdlogistics.com", role: "Dispatch Coordinator", department: "Dispatch", status: "Active", lastActive: "3 hr ago" },
+  { id: "U-007", name: "Ngozi Umeh", email: "ngozi@muvdlogistics.com", role: "Finance Analyst", department: "Finance", status: "Invited", lastActive: "—" },
+  { id: "U-008", name: "Femi Johnson", email: "femi@muvdlogistics.com", role: "Driver Manager", department: "HR", status: "Suspended", lastActive: "10 days ago" },
 ];
 
 const statusTone = { Active: "success", Invited: "warning", Suspended: "danger" } as const;
@@ -41,7 +41,7 @@ function UsersAccess() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilterVal, setStatusFilterVal] = useState("all");
-  const workspaceUrl = `https://${workspaceSlug}.primelex.app`;
+  const workspaceUrl = `https://${workspaceSlug}.muvdlogistics.app`;
 
   const copyUrl = () => {
     navigator.clipboard?.writeText(workspaceUrl);

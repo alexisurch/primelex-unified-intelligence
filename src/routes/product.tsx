@@ -331,7 +331,7 @@ function RouteIntelligence() {
               key={f}
               className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] px-5 py-4 transition-all hover:border-[#3b82f6]/30"
             >
-              <RouteIcon className="h-4 w-4 shrink-0 text-[#3b82f6]" />
+              <img src="/muvd-logo.jpeg" alt="MUVD LOGISTICS" className="h-4 w-4 shrink-0 rounded object-cover" />
               <span className="text-[13px] font-medium text-white/80">{f}</span>
             </div>
           ))}

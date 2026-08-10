@@ -39,16 +39,16 @@ function Organisation() {
   const reset = () => {
     branding.reset();
     setForm({
-      companyName: "PrimeLex Logistics",
-      companyShort: "PRIMELEX",
+      companyName: "MUVD LOGISTICS",
+      companyShort: "MUVD",
       industry: "Logistics & Transportation",
-      businessEmail: "ops@primelex.com",
+      businessEmail: "ops@muvdlogistics.com",
       phone: "+234 800 000 0000",
       primaryColor: "#3b82f6",
       secondaryColor: "#8b5cf6",
-      workspaceSlug: "primelex-logistics",
+      workspaceSlug: "muvd-logistics",
       adminName: "Adeleke Oladipo",
-      adminEmail: "adeleke@primelex.com",
+      adminEmail: "adeleke@muvdlogistics.com",
     });
     toast.success("Reset to defaults");
   };
@@ -167,7 +167,7 @@ function Organisation() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-xs flex items-center gap-1.5"><Globe className="h-3 w-3" />Workspace URL</Label>
-              <Input value={`https://${form.workspaceSlug}.primelex.app`} readOnly className="bg-elevated/60 font-mono text-xs" />
+              <Input value={`https://${form.workspaceSlug}.muvdlogistics.app`} readOnly className="bg-elevated/60 font-mono text-xs" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs flex items-center gap-1.5"><Mail className="h-3 w-3" />Admin Email</Label>
