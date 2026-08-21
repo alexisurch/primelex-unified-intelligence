@@ -1,4 +1,138 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Package, Navigation, CircleCheck as CheckCircle2, Clock, Route as RouteIcon } from "lucide-react";
+import { Header } from "@/components/layout/Header";
+import { KPICard, Pill } from "@/components/shared/Cards";
+import { DataTable, type Column } from "@/components/shared/DataTable";
+import { trips, trucks, drivers, routes, getRouteFor, type Trip, type TripStatus, type Tone } from "@/lib/mock-data";
+import { useProfileDrawer } from "@/lib/profile-drawer";
+
+const STATUS_TONE: Record<TripStatus, Tone> = {
+  Delivered: "success",
+  "In Transit": "info",
+  Delayed: "danger",
+  Scheduled: "warning",
+  Cancelled: "danger",
+  Dispatched: "info",
+};
+
+const TRUCK_PLATE = new Map(trucks.map((t) => [t.id, t.plate]));
+const DRIVER_ID_BY_NAME = new Map(drivers.map((d) => [d.name, d.id]));
+const ROUTE_NAME = new Map(routes.map((r) => [r.id, r.name]));
+
+export const Route = createFileRoute("/_app/trips-deliveries")({
+  component: TripsDeliveriesPage,
+});
+
+function TripsDeliveriesPage() {
+  const { open: openProfile } = useProfileDrawer();
+
+  const inTransit = trips.filter((t) => t.status === "In Transit").length;
+  const delivered = trips.filter((t) => t.status === "Delivered").length;
+  const delayed = trips.filter((t) => t.status === "Delayed").length;
+
+  const columns: Column<Trip>[] = [
+    {
+      key: "id",
+      label: "Trip ID",
+      render: (t) => (
+        <button
+          type="button"
+          onClick={() => openProfile({ kind: "trip", id: t.id })}
+          className="font-medium text-primary transition-colors hover:text-primary/80 hover:underline"
+        >
+          {t.id}
+        </button>
+      ),
+    },
+    { key: "origin", label: "Origin" },
+    { key: "destination", label: "Destination" },
+    {
+      key: "truck",
+      label: "Truck",
+      render: (t) => {
+        const plate = TRUCK_PLATE.get(t.truck) ?? t.truck;
+        return (
+          <button
+            type="button"
+            onClick={() => openProfile({ kind: "truck", id: t.truck })}
+            className="font-medium text-primary transition-colors hover:text-primary/80 hover:underline"
+          >
+            {plate}
+          </button>
+        );
+      },
+    },
+    {
+      key: "driver",
+      label: "Driver",
+      render: (t) => {
+        const driverId = DRIVER_ID_BY_NAME.get(t.driver);
+        return (
+          <button
+            type="button"
+            onClick={() => { if (driverId) openProfile({ kind: "driver", id: driverId }); }}
+            className="font-medium text-primary transition-colors hover:text-primary/80 hover:underline"
+          >
+            {t.driver}
+          </button>
+        );
+      },
+    },
+    {
+      key: "distance",
+      label: "Distance",
+      render: (t) => <span>{t.distance} km</span>,
+    },
+    {
+      key: "route",
+      label: "Route",
+      render: (t) => {
+        const rt = getRouteFor(t.origin, t.destination);
+        const name = rt ? (ROUTE_NAME.get(rt.id) ?? rt.name) : `${t.origin} → ${t.destination}`;
+        return (
+          <button
+            type="button"
+            onClick={() => { if (rt) openProfile({ kind: "route", id: rt.id }); }}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-white/[0.02] px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-white/[0.04] hover:text-primary"
+          >
+            <RouteIcon className="h-3.5 w-3.5" strokeWidth={2} />
+            {name}
+          </button>
+        );
+      },
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (t) => <Pill tone={STATUS_TONE[t.status]}>{t.status}</Pill>,
+    },
+  ];
+
+  return (
+    <div className="flex flex-col gap-6">
+      <Header
+        title="Trips & Deliveries"
+        subtitle="Track every trip from origin to destination across the network."
+      />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KPICard icon={Package} label="Total Trips" value={trips.length} tone="info" delta={{ value: 8, direction: "up" }} />
+        <KPICard icon={Navigation} label="In Transit" value={inTransit} tone="info" />
+        <KPICard icon={CheckCircle2} label="Delivered" value={delivered} tone="success" delta={{ value: "12%", direction: "up" }} />
+        <KPICard icon={Clock} label="Delayed" value={delayed} tone="danger" delta={{ value: 2, direction: "down" }} />
+      </div>
+
+      <DataTable
+        title="All Trips"
+        columns={columns}
+        rows={trips}
+        searchKeys={["id", "origin", "destination", "truck", "driver", "status"]}
+        pageSize={10}
+      />
+    </div>
+  );
+}
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
 import { KPICard, Pill } from "@/components/shared/Cards";

@@ -1,3 +1,12 @@
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/_app/route-intelligence')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  return <div>Hello "/_app/route-intelligence"!</div>
+}
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
