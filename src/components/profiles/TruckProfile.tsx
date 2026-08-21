@@ -3,7 +3,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Pill } from "@/components/shared/Cards";
-import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend, getDepreciationForTruck, depreciationCalculations, tripFuelCost, tripOtherExpenses, getDepreciationForTrip } from "@/lib/mock-data";
+import { trucks, drivers, clients, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend, getDepreciationForTruck, depreciationCalculations, tripFuelCost, tripOtherExpenses, getDepreciationForTrip } from "@/lib/mock-data";
+import { useTrips, formatRouteDisplay, isRoutePending, type TripWithRoute } from "@/lib/trips-store";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
@@ -39,13 +40,14 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
   const [archived, setArchived] = useState(false);
   const { trackingMode } = usePreferences();
   const { getManagerForTruck } = useFleetManagers();
+  const { trips: storeTrips } = useTrips();
   const isManual = trackingMode === "manual";
   const t = trucks.find((x) => x.id === id);
   if (!t) return <div className="p-6 text-sm text-muted-foreground">Truck not found.</div>;
   const fleetManager = getManagerForTruck(t.id);
 
-  const truckTrips = trips.filter((tp) => tp.truck === t.id);
-  const active = truckTrips.find((tp) => tp.status === "In Transit" || tp.status === "Scheduled" || tp.status === "Delayed");
+  const truckTrips = storeTrips.filter((tp) => tp.truck === t.id);
+  const active = truckTrips.find((tp) => tp.status === "In Transit" || tp.status === "Scheduled" || tp.status === "Delayed" || tp.status === "Dispatched");
   const truckIncidents = incidents.filter((i) => i.truck === t.id);
   const truckMaint = maintenanceRecords.filter((m) => m.truck === t.id);
   const [lastLoc] = t.location.split(" → ");
@@ -88,8 +90,10 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
           <div className="space-y-3">
             <InfoGrid items={[
               ["Trip", <button key="tr" onClick={() => onOpen({ kind: "trip", id: active.id })} className="text-primary hover:underline">{active.id}</button>],
-              ["Client", <button key="cl" onClick={() => { const c = active.customer; onOpen({ kind: "client", id: `CLI-${300 + ["ABC Stores","Dangote Cement","Chi Ltd","Konga","Jumia","MTN Nigeria","Nestlé NG","Shoprite","SPAR","Unilever"].indexOf(c) }` }); }} className="text-primary hover:underline">{active.customer}</button>],
-              ["Pickup", active.origin], ["Destination", active.destination], ["Status", active.status],
+              ["Client", (() => { const c = clients.find((cl) => cl.name === active.customer); return c ? <button key="cl" onClick={() => onOpen({ kind: "client", id: c.id })} className="text-primary hover:underline">{active.customer}</button> : active.customer; })()],
+              ["Driver", active.driver],
+              ["Route", isRoutePending(active as TripWithRoute) ? <span key="r" className="text-muted-foreground italic">Route Pending</span> : <span key="r" className="text-foreground">{formatRouteDisplay((active as TripWithRoute).routeStops)}</span>],
+              ["Status", active.status],
             ]} />
             <div className="rounded-lg border border-border/60 bg-background/30 p-3 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
               <Info label={isManual ? "Last Known Location" : "Live Location"} icon={MapPin} value={lastLoc} />
@@ -134,18 +138,17 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
           {truckTrips.length === 0 && <tr><td colSpan={9} className="px-4 py-10 text-center text-xs text-muted-foreground">No trips recorded.</td></tr>}
           {truckTrips.map((tp) => {
             const hist = tripFuelHistory.find((h) => h.tripId === tp.id);
-            const routeId = getRouteFor(tp.origin, tp.destination)?.id;
             return (
               <tr key={tp.id} className="border-t border-border/60 hover:bg-white/[0.03]">
                 <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "trip", id: tp.id })} className="font-semibold text-primary hover:underline">{tp.id}</button></td>
                 <td className="px-4 py-3 text-xs text-muted-foreground">{tp.date}</td>
                 <td className="px-4 py-3 text-xs">{tp.customer}</td>
-                <td className="px-4 py-3 text-xs">{routeId ? <button onClick={() => onOpen({ kind: "route", id: routeId })} className="text-primary hover:underline">{tp.origin} → {tp.destination}</button> : `${tp.origin} → ${tp.destination}`}</td>
+                <td className="px-4 py-3 text-xs">{(() => { const r = getRouteFor(tp.origin, tp.destination); const tw = tp as TripWithRoute; if (!isRoutePending(tw)) return <span className="text-foreground">{formatRouteDisplay(tw.routeStops)}</span>; return r ? <button onClick={() => onOpen({ kind: "route", id: r.id })} className="text-primary hover:underline">{tp.origin} → {tp.destination}</button> : `${tp.origin} → ${tp.destination}`; })()}</td>
                 <td className="px-4 py-3 text-xs">{tp.driver}</td>
                 <td className="px-4 py-3 text-xs">{tp.distance} km</td>
                 <td className="px-4 py-3 text-xs font-semibold text-foreground">{naira(tp.revenue)}</td>
                 <td className="px-4 py-3"><Pill tone={tp.paymentStatus === "Paid" ? "success" : "warning"}>{tp.paymentStatus}</Pill></td>
-                <td className="px-4 py-3"><Pill tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "In Transit" ? "info" : "warning"}>{tp.status}</Pill></td>
+                <td className="px-4 py-3"><Pill tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "In Transit" ? "info" : tp.status === "Dispatched" ? "warning" : "warning"}>{tp.status}</Pill></td>
               </tr>
             );
           })}

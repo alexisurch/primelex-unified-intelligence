@@ -8,12 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useState, useMemo } from "react";
 import { trucks, drivers, clients, getTruckAvgLkm, exportCSV, type Client } from "@/lib/mock-data";
+import { useTrips, formatRouteDisplay, isRoutePending } from "@/lib/trips-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
+import { DispatchDialog } from "@/components/shared/DispatchDialog";
+import { RouteEditorDialog } from "@/components/shared/RouteEditorDialog";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import { toast } from "sonner";
 import {
-  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog, Building2, ArrowUpDown,
+  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog, Building2, ArrowUpDown, ClipboardList,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/dispatch-center")({
@@ -24,18 +27,22 @@ function DispatchCenter() {
   const { open } = useProfileDrawer();
   const { getManagerForTruck } = useFleetManagers();
   const { trackingMode } = usePreferences();
+  const { trips: storeTrips, isTruckAvailable } = useTrips();
   const isManual = trackingMode === "manual";
   const [pickup, setPickup] = useState("ABC Stores, 27 Warehouse Road, Ikeja, Lagos");
   const [truckType, setTruckType] = useState("any");
-  const [selectedId, setSelectedId] = useState<string>("TRK-1000");
+  const [selectedId, setSelectedId] = useState<string>("");
   const [detailOpen, setDetailOpen] = useState(true);
   const [selectedClient, setSelectedClient] = useState("none");
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [clientList, setClientList] = useState(clients);
   const [sortBy, setSortBy] = useState<"distance" | "plate" | "driver">("distance");
+  const [dispatchOpen, setDispatchOpen] = useState(false);
+  const [dispatchPreselect, setDispatchPreselect] = useState<string | undefined>(undefined);
+  const [routeEditTripId, setRouteEditTripId] = useState<string | null>(null);
 
   const available = useMemo(() => {
-    const filtered = trucks.filter(t => t.status !== "Maintenance" && t.status !== "Offline").slice(0, 6).map((t, i) => ({
+    const filtered = trucks.filter(t => isTruckAvailable(t.id)).slice(0, 6).map((t, i) => ({
       ...t,
       distanceKm: [8.2, 9.7, 11.3, 14.8, 20.1, 22.4][i] ?? (8 + i * 3),
       tone: (["success","success","success","warning","danger","danger"] as const)[i] ?? "success",
@@ -45,10 +52,13 @@ function DispatchCenter() {
     else if (sortBy === "plate") filtered.sort((a, b) => a.plate.localeCompare(b.plate));
     else filtered.sort((a, b) => a.driver.localeCompare(b.driver));
     return filtered;
-  }, [sortBy]);
+  }, [sortBy, isTruckAvailable]);
 
   const selected = available.find(t => t.id === selectedId) ?? available[0];
   const selectedDriver = drivers.find(d => d.name === selected?.driver);
+
+  const dispatchedTrips = storeTrips.filter(t => t.status === "Dispatched");
+  const routeEditTrip = storeTrips.find(t => t.id === routeEditTripId) ?? null;
 
   function handleAddClient(name: string) {
     const newClient: Client = {
@@ -241,15 +251,50 @@ function DispatchCenter() {
                   <Button variant="outline" className="border-border bg-elevated/60" disabled={isManual}><MapPin className="mr-2 h-3.5 w-3.5" />View Live Location</Button>
                   <div className="flex gap-2">
                     <Button variant="outline" className="border-border bg-elevated/60" onClick={() => open({ kind: "truck", id: selected.id })}>View Full Truck Profile</Button>
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => toast.success(`Dispatched ${selected.plate}`)}>Dispatch This Truck</Button>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => { setDispatchPreselect(selected.id); setDispatchOpen(true); }}>Dispatch This Truck</Button>
                   </div>
                 </div>
               </GlassCard>
             )}
           </div>
         </div>
+
+        {dispatchedTrips.length > 0 && (
+          <GlassCard hover={false} className="mt-4 p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <ClipboardList className="h-4 w-4 text-primary" />
+              <h3 className="text-sm font-semibold">Active Dispatched Trips</h3>
+              <Pill tone="info">{dispatchedTrips.length}</Pill>
+            </div>
+            <div className="overflow-hidden rounded-xl border border-border/60">
+              <table className="w-full text-sm">
+                <thead className="bg-elevated/70">
+                  <tr>{["Trip","Truck","Driver","Client","Route","Status",""].map((h) => <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {dispatchedTrips.map((tp) => {
+                    const truck = trucks.find(t => t.id === tp.truck);
+                    return (
+                      <tr key={tp.id} className="border-t border-border/60 hover:bg-white/[0.03]">
+                        <td className="px-4 py-3 text-xs"><button onClick={() => open({ kind: "trip", id: tp.id })} className="font-semibold text-primary hover:underline">{tp.id}</button></td>
+                        <td className="px-4 py-3 text-xs"><button onClick={() => open({ kind: "truck", id: tp.truck })} className="text-primary hover:underline">{truck?.plate ?? tp.truck}</button></td>
+                        <td className="px-4 py-3 text-xs">{tp.driver}</td>
+                        <td className="px-4 py-3 text-xs">{tp.customer}</td>
+                        <td className="px-4 py-3 text-xs">{isRoutePending(tp) ? <span className="text-muted-foreground italic">Route Pending</span> : <span className="text-foreground">{formatRouteDisplay(tp.routeStops)}</span>}</td>
+                        <td className="px-4 py-3"><Pill tone="warning">Dispatched</Pill></td>
+                        <td className="px-4 py-3"><Button size="sm" variant="outline" className="h-7 text-[11px] border-border bg-elevated/60" onClick={() => setRouteEditTripId(tp.id)}>{isRoutePending(tp) ? "Add Route" : "Update Route"}</Button></td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </GlassCard>
+        )}
       </div>
 
+      <DispatchDialog open={dispatchOpen} onOpenChange={setDispatchOpen} preselectedTruckId={dispatchPreselect} />
+      <RouteEditorDialog open={!!routeEditTripId} onOpenChange={(v) => { if (!v) setRouteEditTripId(null); }} trip={routeEditTrip} />
       <AddClientDialog open={addClientOpen} onOpenChange={setAddClientOpen} onAdd={handleAddClient} />
     </>
   );

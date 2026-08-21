@@ -3,7 +3,7 @@
 
 export type TruckStatus = "On The Road" | "Idle" | "Maintenance" | "Offline";
 export type Priority = "Critical" | "High" | "Medium" | "Low";
-export type TripStatus = "In Transit" | "Delivered" | "Delayed" | "Scheduled" | "Cancelled";
+export type TripStatus = "In Transit" | "Delivered" | "Delayed" | "Scheduled" | "Cancelled" | "Dispatched";
 export type PaymentStatus = "Paid" | "Pending";
 
 export interface Truck {
@@ -38,6 +38,8 @@ export interface Trip {
   date: string;
   revenue: number;
   paymentStatus: PaymentStatus;
+  routeStops?: string[];
+  routeUpdates?: Array<{ id: string; date: string; previousRoute: string | null; newRoute: string }>;
 }
 
 export interface Driver {

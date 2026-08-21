@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Route as RouteIcon, MapPin, Activity, Fuel, ShieldAlert, Search, Download } from "lucide-react";
-import { routes, trips, incidents, tripFuelHistory, exportCSV, type RouteEntity } from "@/lib/mock-data";
+import { routes, incidents, tripFuelHistory, exportCSV, type RouteEntity } from "@/lib/mock-data";
+import { useTrips, formatRouteDisplay, isRoutePending, type TripWithRoute } from "@/lib/trips-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { toast } from "sonner";
 
@@ -25,19 +26,20 @@ interface Row extends RouteEntity {
 
 function RouteIntelligence() {
   const { open } = useProfileDrawer();
+  const { trips } = useTrips();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
   const allRows: Row[] = useMemo(() => {
     return routes.map((r) => {
-      const rTrips = trips.filter((t) => t.origin === r.origin && t.destination === r.destination);
+      const rTrips = trips.filter((t) => (t.origin === r.origin && t.destination === r.destination) || (t.routeStops && t.routeStops.join(" → ") === r.name));
       const rHist = tripFuelHistory.filter((h) => h.routeId === r.id);
       const dist = rHist.reduce((s, h) => s + h.distanceKm, 0);
       const fuel = rHist.reduce((s, h) => s + h.assignedFuelL, 0);
       return {
         ...r,
         trips: rTrips.length,
-        active: rTrips.filter((t) => t.status === "In Transit" || t.status === "Scheduled").length,
+        active: rTrips.filter((t) => t.status === "In Transit" || t.status === "Scheduled" || t.status === "Dispatched").length,
         completed: rTrips.filter((t) => t.status === "Delivered").length,
         incidents: incidents.filter((i) => {
           const tp = trips.find((t) => t.id === i.trip);
@@ -46,7 +48,7 @@ function RouteIntelligence() {
         avgLpk: dist ? (fuel / dist).toFixed(2) : "—",
       };
     });
-  }, []);
+  }, [trips]);
 
   const filtered = useMemo(() => {
     return allRows.filter((r) => {
