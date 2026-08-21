@@ -1,12 +1,3 @@
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/_app/dispatch-center')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return <div>Hello "/_app/dispatch-center"!</div>
-}
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/layout/Header";
 import { GlassCard, Pill } from "@/components/shared/Cards";
