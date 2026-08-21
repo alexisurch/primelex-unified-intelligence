@@ -1,5 +1,6 @@
 import { Building2, TrendingUp, Package, CircleCheck as CheckCircle2, Activity, TriangleAlert as AlertTriangle, DollarSign, Clock, Route as RouteIcon, Circle, Phone, Mail, MapPin, ShieldAlert } from "lucide-react";
-import { clients, trips, incidents } from "@/lib/mock-data";
+import { clients, incidents } from "@/lib/mock-data";
+import { useTrips, formatRouteDisplay, isRoutePending, type TripWithRoute } from "@/lib/trips-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, DocumentsGrid, type Tone } from "./ProfileShell";
 import { Pill } from "@/components/shared/Cards";
@@ -10,11 +11,12 @@ import { AuditTrailPanel } from "@/components/shared/AuditTrailPanel";
 const naira = (n: number) => "₦" + n.toLocaleString();
 
 export function ClientProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
+  const { trips } = useTrips();
   const client = clients.find((c) => c.id === id) ?? clients.find((c) => c.name === id);
   if (!client) return <div className="p-6 text-sm text-muted-foreground">Client not found.</div>;
 
   const clientTrips = trips.filter((t) => t.customer === client.name);
-  const activeTrips = clientTrips.filter((t) => t.status === "In Transit" || t.status === "Scheduled");
+  const activeTrips = clientTrips.filter((t) => t.status === "In Transit" || t.status === "Scheduled" || t.status === "Dispatched");
   const delivered = clientTrips.filter((t) => t.status === "Delivered");
   const delayed = clientTrips.filter((t) => t.status === "Delayed");
   const totalDist = clientTrips.reduce((s, t) => s + t.distance, 0);
@@ -80,7 +82,7 @@ export function ClientProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
           <TimelineList events={[
             { time: client.since, label: "Customer Created", detail: `${client.name} onboarded`, tone: "info" },
             { time: "2025-10-14", label: "First Trip", detail: clientTrips[0]?.id ?? "-", tone: "success" },
-            ...delivered.slice(0, 3).map((t) => ({ time: "Recent", label: "Delivery Completed", detail: `${t.id} · ${t.destination}`, tone: "success" as const })),
+            ...delivered.slice(0, 3).map((t) => ({ time: "Recent", label: "Delivery Completed", detail: `${t.id} · ${t.destination || t.customer}`, tone: "success" as const })),
             ...clientIncidents.slice(0, 2).map((i) => ({ time: i.date, label: "Incident Reported", detail: `${i.type} · ${i.location}`, tone: "danger" as const })),
             { time: "This week", label: "New Booking", detail: activeTrips[0]?.id ?? "-", tone: "info" as const },
           ]} />
@@ -99,7 +101,7 @@ export function ClientProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
   );
 }
 
-function clientRecommendations(clientTrips: typeof trips, delayed: typeof trips, clientIncidents: typeof incidents): Recommendation[] {
+function clientRecommendations(clientTrips: TripWithRoute[], delayed: TripWithRoute[], clientIncidents: typeof incidents): Recommendation[] {
   const recs: Recommendation[] = [];
   if (delayed.length >= 2) recs.push({ title: "Frequent Delays", detail: delayed.length + " delayed trips. Review scheduling and route planning.", tone: "warning", icon: "performance" });
   if (clientIncidents.length >= 2) recs.push({ title: "Repeated Cargo Damage", detail: clientIncidents.length + " incidents. Review handling procedures.", tone: "danger", icon: "incident" });
@@ -108,7 +110,7 @@ function clientRecommendations(clientTrips: typeof trips, delayed: typeof trips,
   return recs;
 }
 
-function TripList({ trips: rows, onOpen, empty }: { trips: typeof trips; onOpen: (t: ProfileTarget) => void; empty: string }) {
+function TripList({ trips: rows, onOpen, empty }: { trips: TripWithRoute[]; onOpen: (t: ProfileTarget) => void; empty: string }) {
   if (rows.length === 0) return <p className="text-xs text-muted-foreground">{empty}</p>;
   return (
     <div className="overflow-hidden rounded-xl border border-border/60">
@@ -118,11 +120,11 @@ function TripList({ trips: rows, onOpen, empty }: { trips: typeof trips; onOpen:
           {rows.map((t) => (
             <tr key={t.id} className="border-t border-border/60">
               <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "trip", id: t.id })} className="font-semibold text-primary hover:underline">{t.id}</button></td>
-              <td className="px-4 py-3 text-xs">{t.origin} → {t.destination}</td>
-              <td className="px-4 py-3 text-xs">{t.truck}</td>
+              <td className="px-4 py-3 text-xs">{isRoutePending(t) ? <span className="text-muted-foreground italic">Route Pending</span> : formatRouteDisplay(t.routeStops)}</td>
+              <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "truck", id: t.truck })} className="text-primary hover:underline">{t.truck}</button></td>
               <td className="px-4 py-3 text-xs">{t.driver}</td>
               <td className="px-4 py-3 text-xs">{t.distance} km</td>
-              <td className="px-4 py-3"><Pill tone={t.status === "Delivered" ? "success" : t.status === "Delayed" ? "danger" : t.status === "In Transit" ? "info" : "warning"}>{t.status}</Pill></td>
+              <td className="px-4 py-3"><Pill tone={t.status === "Delivered" ? "success" : t.status === "Delayed" ? "danger" : t.status === "In Transit" ? "info" : t.status === "Dispatched" ? "warning" : "warning"}>{t.status}</Pill></td>
             </tr>
           ))}
         </tbody>

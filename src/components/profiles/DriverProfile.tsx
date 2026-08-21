@@ -2,7 +2,8 @@ import { CircleUser as UserCircle2, IdCard, ClipboardList, TrendingUp, Activity,
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pill } from "@/components/shared/Cards";
-import { drivers, trucks, trips, incidents, getDriverAvgLkm } from "@/lib/mock-data";
+import { drivers, trucks, incidents, getDriverAvgLkm, clients } from "@/lib/mock-data";
+import { useTrips, formatRouteDisplay, isRoutePending, type TripWithRoute } from "@/lib/trips-store";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, DocumentsGrid, initials, type Tone } from "./ProfileShell";
@@ -12,6 +13,7 @@ import { useState } from "react";
 
 export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const { getManagerForTruck } = useFleetManagers();
+  const { trips } = useTrips();
   const d = drivers.find((x) => x.id === id) ?? drivers.find((x) => x.name === id);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -64,6 +66,8 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
               <InfoGrid items={[
                 ["Assigned Truck", truck?.id ?? "—"],
                 ["Current Trip", active ? <button key="a" className="text-primary hover:underline" onClick={() => onOpen({ kind: "trip", id: active.id })}>{active.id}</button> : "—"],
+              ["Current Route", active ? (isRoutePending(active as TripWithRoute) ? <span key="r" className="text-muted-foreground italic">Route Pending</span> : <span key="r" className="text-foreground">{formatRouteDisplay((active as TripWithRoute).routeStops)}</span>) : "—"],
+              ["Current Client", active ? (() => { const c = clients.find((cl) => cl.name === active.customer); return c ? <button key="cl" className="text-primary hover:underline" onClick={() => onOpen({ kind: "client", id: c.id })}>{active.customer}</button> : active.customer; })() : "—"],
                 ["Current Status", d.status],
                 ["Last Known Location", truck?.location.split(" → ")[0] ?? "—"],
                 ["Fleet Manager", fleetManager ? <button key="fm" className="text-primary hover:underline" onClick={() => onOpen({ kind: "fleet-manager", id: fleetManager.id })}>{fleetManager.name}</button> : "—"],
@@ -92,9 +96,9 @@ export function DriverProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: 
                   <tr key={tp.id} className="border-t border-border/60">
                     <td className="px-4 py-3 text-xs"><button onClick={() => onOpen({ kind: "trip", id: tp.id })} className="font-semibold text-primary hover:underline">{tp.id}</button></td>
                     <td className="px-4 py-3 text-xs">{tp.customer}</td>
-                    <td className="px-4 py-3 text-xs">{tp.origin} → {tp.destination}</td>
+                    <td className="px-4 py-3 text-xs">{isRoutePending(tp as TripWithRoute) ? <span className="text-muted-foreground italic">Route Pending</span> : formatRouteDisplay((tp as TripWithRoute).routeStops)}</td>
                     <td className="px-4 py-3 text-xs">{tp.distance} km</td>
-                    <td className="px-4 py-3"><Pill tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : "info"}>{tp.status}</Pill></td>
+                    <td className="px-4 py-3"><Pill tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "Dispatched" ? "warning" : "info"}>{tp.status}</Pill></td>
                   </tr>
                 ))}
               </tbody>
