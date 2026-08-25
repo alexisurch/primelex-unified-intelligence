@@ -5,16 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { useState, useMemo } from "react";
-import { trucks, drivers, clients, getTruckAvgLkm, exportCSV, type Client } from "@/lib/mock-data";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { trucks, drivers, clients, getTruckAvgLkm, type Client, type Trip } from "@/lib/mock-data";
+import { useTrips } from "@/lib/trips-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import { toast } from "sonner";
-import {
-  Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog, Building2, ArrowUpDown,
-} from "lucide-react";
+import { Search, MapPin, Truck as TruckIcon, Plus, Minus, Layers, Locate, X, Phone, Satellite, EyeOff, UserCog, ArrowUpDown, CircleCheck as CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/dispatch-center")({
   component: DispatchCenter,
@@ -25,30 +24,35 @@ function DispatchCenter() {
   const { getManagerForTruck } = useFleetManagers();
   const { trackingMode } = usePreferences();
   const isManual = trackingMode === "manual";
+  const { addTrip, dispatchedTruckIds } = useTrips();
   const [pickup, setPickup] = useState("ABC Stores, 27 Warehouse Road, Ikeja, Lagos");
   const [truckType, setTruckType] = useState("any");
   const [selectedId, setSelectedId] = useState<string>("TRK-1000");
   const [detailOpen, setDetailOpen] = useState(true);
-  const [selectedClient, setSelectedClient] = useState("none");
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [clientList, setClientList] = useState(clients);
   const [sortBy, setSortBy] = useState<"distance" | "plate" | "driver">("distance");
+  const [dispatchOpen, setDispatchOpen] = useState(false);
+  const [successTrip, setSuccessTrip] = useState<Trip | null>(null);
 
   const available = useMemo(() => {
-    const filtered = trucks.filter(t => t.status !== "Maintenance" && t.status !== "Offline").slice(0, 6).map((t, i) => ({
-      ...t,
-      distanceKm: [8.2, 9.7, 11.3, 14.8, 20.1, 22.4][i] ?? (8 + i * 3),
-      tone: (["success","success","success","warning","danger","danger"] as const)[i] ?? "success",
-      avgLkm: getTruckAvgLkm(t.id),
-    }));
+    const filtered = trucks
+      .filter((t) => t.status !== "Maintenance" && t.status !== "Offline" && !dispatchedTruckIds.includes(t.id))
+      .slice(0, 6)
+      .map((t, i) => ({
+        ...t,
+        distanceKm: [8.2, 9.7, 11.3, 14.8, 20.1, 22.4][i] ?? (8 + i * 3),
+        tone: (["success", "success", "success", "warning", "danger", "danger"] as const)[i] ?? "success",
+        avgLkm: getTruckAvgLkm(t.id),
+      }));
     if (sortBy === "distance") filtered.sort((a, b) => a.distanceKm - b.distanceKm);
     else if (sortBy === "plate") filtered.sort((a, b) => a.plate.localeCompare(b.plate));
     else filtered.sort((a, b) => a.driver.localeCompare(b.driver));
     return filtered;
-  }, [sortBy]);
+  }, [sortBy, dispatchedTruckIds]);
 
-  const selected = available.find(t => t.id === selectedId) ?? available[0];
-  const selectedDriver = drivers.find(d => d.name === selected?.driver);
+  const selected = available.find((t) => t.id === selectedId) ?? available[0];
+  const selectedDriver = drivers.find((d) => d.name === selected?.driver);
 
   function handleAddClient(name: string) {
     const newClient: Client = {
@@ -63,8 +67,16 @@ function DispatchCenter() {
       status: "Active",
     };
     setClientList((prev) => [...prev, newClient]);
-    setSelectedClient(newClient.id);
     toast.success(`Client "${name}" created and added to dropdown`);
+  }
+
+  function handleDispatchSuccess(trip: Trip) {
+    setSuccessTrip(trip);
+    setDispatchOpen(false);
+    if (available.length > 1) {
+      const nextTruck = available.find((t) => t.id !== selected?.id);
+      if (nextTruck) setSelectedId(nextTruck.id);
+    }
   }
 
   return (
@@ -86,23 +98,6 @@ function DispatchCenter() {
                     <Input value={pickup} onChange={(e) => setPickup(e.target.value)} className="pr-9 bg-elevated/60" />
                     <Locate className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   </div>
-                </div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Client / Company</label>
-                    <button type="button" onClick={() => setAddClientOpen(true)} className="flex items-center gap-0.5 text-[11px] text-primary hover:underline">
-                      <Plus className="h-3 w-3" /> Add Client
-                    </button>
-                  </div>
-                  <Select value={selectedClient} onValueChange={setSelectedClient}>
-                    <SelectTrigger className="mt-1 bg-elevated/60"><SelectValue placeholder="Select client" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">No client selected</SelectItem>
-                      {clientList.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
                 <div>
                   <label className="text-[11px] uppercase tracking-wider text-muted-foreground">Truck Type / Capacity (Optional)</label>
@@ -128,7 +123,7 @@ function DispatchCenter() {
                 <h3 className="text-sm font-semibold">Available Trucks</h3>
               </div>
               <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{available.length} trucks found{!isManual && " within 25 km"}</span>
+                <span>{available.length} trucks available{!isManual && " within 25 km"}</span>
                 <button
                   type="button"
                   onClick={() => setSortBy(sortBy === "distance" ? "plate" : sortBy === "plate" ? "driver" : "distance")}
@@ -138,6 +133,9 @@ function DispatchCenter() {
                 </button>
               </div>
               <div className="space-y-2.5">
+                {available.length === 0 && (
+                  <div className="py-8 text-center text-xs text-muted-foreground">No trucks currently available for dispatch.</div>
+                )}
                 {available.map((t) => {
                   const active = t.id === selectedId;
                   return (
@@ -210,7 +208,7 @@ function DispatchCenter() {
                     <div className="flex h-24 w-full items-center justify-center rounded-lg bg-elevated/60"><TruckIcon className="h-10 w-10 text-muted-foreground" /></div>
                     {selectedDriver && (
                       <div className="mt-3 flex items-center gap-2 text-left">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-[11px] font-semibold text-primary">{selected.driver.split(" ").map(w => w[0]).join("").slice(0,2)}</div>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-[11px] font-semibold text-primary">{selected.driver.split(" ").map((w) => w[0]).join("").slice(0, 2)}</div>
                         <div>
                           <div className="text-xs font-semibold">{selected.driver}</div>
                           <div className="text-[10px] text-muted-foreground flex items-center gap-1"><Phone className="h-2.5 w-2.5" />+234 803 000 0000</div>
@@ -223,9 +221,9 @@ function DispatchCenter() {
                     ["Length", "9.5 m"], ["Height", "2.6 m"], ["Fuel Type", "Diesel"], ["Reg. Year", "2021"],
                   ]} />
                   <DetailCol title="Current Status" rows={[
-                    ["Location", selected.location.split(" → ")[0]], ["Status", "Available"], ["Last Update", `${3}m ago`],
+                    ["Location", selected.location.split(" → ")[0]], ["Status", "Available"], ["Last Update", "3m ago"],
                     ["Odometer", `${selected.odometer.toLocaleString()} km`], ["Current L/km", selected.avgLkm ? selected.avgLkm.toFixed(2) : "—"],
-                    ...(!isManual ? [["Distance Away", `${selected.distanceKm} km`] as [string,string]] : []),
+                    ...(!isManual ? [["Distance Away", `${selected.distanceKm} km`] as [string, string]] : []),
                   ]} />
                 </div>
 
@@ -241,7 +239,7 @@ function DispatchCenter() {
                   <Button variant="outline" className="border-border bg-elevated/60" disabled={isManual}><MapPin className="mr-2 h-3.5 w-3.5" />View Live Location</Button>
                   <div className="flex gap-2">
                     <Button variant="outline" className="border-border bg-elevated/60" onClick={() => open({ kind: "truck", id: selected.id })}>View Full Truck Profile</Button>
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => toast.success(`Dispatched ${selected.plate}`)}>Dispatch This Truck</Button>
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => setDispatchOpen(true)}>Dispatch This Truck</Button>
                   </div>
                 </div>
               </GlassCard>
@@ -250,8 +248,159 @@ function DispatchCenter() {
         </div>
       </div>
 
+      <DispatchDialog
+        open={dispatchOpen}
+        onOpenChange={setDispatchOpen}
+        truck={selected ?? null}
+        clientList={clientList}
+        onAddClientOpen={() => setAddClientOpen(true)}
+        addTrip={addTrip}
+        onSuccess={handleDispatchSuccess}
+      />
+
+      <SuccessDialog trip={successTrip} onClose={() => setSuccessTrip(null)} />
+
       <AddClientDialog open={addClientOpen} onOpenChange={setAddClientOpen} onAdd={handleAddClient} />
     </>
+  );
+}
+
+function DispatchDialog({ open, onOpenChange, truck, clientList, onAddClientOpen, addTrip, onSuccess }: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  truck: typeof trucks[number] | null;
+  clientList: Client[];
+  onAddClientOpen: () => void;
+  addTrip: (input: { truck: string; driver: string; customer: string }) => Trip;
+  onSuccess: (trip: Trip) => void;
+}) {
+  const defaultDriver = truck?.driver ?? "";
+  const [selectedDriver, setSelectedDriver] = useState(defaultDriver);
+  const [selectedClientId, setSelectedClientId] = useState("none");
+  const [error, setError] = useState("");
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (open) {
+      setSelectedDriver(defaultDriver);
+      setSelectedClientId("none");
+      setError("");
+      initializedRef.current = true;
+    }
+  }, [open, defaultDriver]);
+
+  function handleConfirm() {
+    if (!truck) return;
+    if (!selectedDriver) { setError("Please select a driver"); return; }
+    if (selectedClientId === "none") { setError("Please select a client"); return; }
+    const client = clientList.find((c) => c.id === selectedClientId);
+    if (!client) { setError("Please select a client"); return; }
+    const trip = addTrip({ truck: truck.id, driver: selectedDriver, customer: client.name });
+    onSuccess(trip);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Dispatch Truck</DialogTitle>
+          <DialogDescription>Confirm the truck, driver, and client for this trip.</DialogDescription>
+        </DialogHeader>
+
+        {truck && (
+          <div className="space-y-4 py-2">
+            <div className="rounded-lg border border-border/60 bg-elevated/30 p-3">
+              <Label className="text-[11px] uppercase text-muted-foreground">Truck</Label>
+              <div className="mt-1 flex items-center gap-2">
+                <TruckIcon className="h-4 w-4 text-muted-foreground" />
+                <span className="font-semibold">{truck.plate}</span>
+                <span className="text-xs text-muted-foreground">{truck.model}</span>
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-[11px] uppercase text-muted-foreground">Assigned Driver</Label>
+              <div className="mt-1 flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-elevated/30 p-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/20 text-[11px] font-semibold text-primary">
+                    {selectedDriver.split(" ").map((w) => w[0]).join("").slice(0, 2)}
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">{selectedDriver || "—"}</div>
+                    <div className="text-[10px] text-muted-foreground">
+                      {selectedDriver === defaultDriver ? "Default Driver" : "Trip-specific driver"}
+                    </div>
+                  </div>
+                </div>
+                <Select value={selectedDriver} onValueChange={(v) => { setSelectedDriver(v); setError(""); }}>
+                  <SelectTrigger className="h-8 w-36 text-xs bg-background/60">
+                    <SelectValue placeholder="Change Driver" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {drivers.map((d) => (
+                      <SelectItem key={d.id} value={d.name}>
+                        {d.name}{d.name === defaultDriver ? " (Default)" : ""}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                Changing the driver for this trip does not change the truck's permanently assigned driver.
+              </p>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <Label className="text-[11px] uppercase text-muted-foreground">Client *</Label>
+                <button type="button" onClick={onAddClientOpen} className="flex items-center gap-0.5 text-[11px] text-primary hover:underline">
+                  <Plus className="h-3 w-3" /> Add Client
+                </button>
+              </div>
+              <Select value={selectedClientId} onValueChange={(v) => { setSelectedClientId(v); setError(""); }}>
+                <SelectTrigger className="mt-1 bg-elevated/60"><SelectValue placeholder="Select Client" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Select Client</SelectItem>
+                  {clientList.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {error && (
+              <div className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-xs text-danger">{error}</div>
+            )}
+          </div>
+        )}
+
+        <DialogFooter className="gap-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleConfirm} className="bg-primary text-primary-foreground">Confirm Dispatch</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function SuccessDialog({ trip, onClose }: { trip: Trip | null; onClose: () => void }) {
+  return (
+    <Dialog open={!!trip} onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-success" />
+            Truck Successfully Dispatched
+          </DialogTitle>
+          <DialogDescription>
+            Trip {trip?.id} has been created and added to Trips & Deliveries.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button onClick={onClose} className="bg-primary text-primary-foreground">Done</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -315,16 +464,13 @@ function DetailCol({ title, rows }: { title: string; rows: [string, string][] })
   );
 }
 
-function MapCanvas({ trucks: list, selectedId, onSelect }: { trucks: Array<{ id: string; plate: string; distanceKm: number; tone: "success"|"warning"|"danger" }>; selectedId: string; onSelect: (id: string) => void }) {
+function MapCanvas({ trucks: list, selectedId, onSelect }: { trucks: Array<{ id: string; plate: string; distanceKm: number; tone: "success" | "warning" | "danger" }>; selectedId: string; onSelect: (id: string) => void }) {
   const positions = [
     { x: 32, y: 30 }, { x: 55, y: 26 }, { x: 72, y: 40 }, { x: 78, y: 55 }, { x: 40, y: 70 }, { x: 55, y: 78 },
   ];
   return (
     <div className="relative h-full w-full bg-[#0d1a2b]" style={{ minHeight: 520 }}>
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="road" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#1e3a5f" /><stop offset="1" stopColor="#0d1a2b" /></linearGradient>
-        </defs>
         <path d="M 0 45 C 30 40, 60 55, 100 30" stroke="#1a3355" strokeWidth="1.5" fill="none" />
         <path d="M 20 100 L 55 55 L 100 40" stroke="#1a3355" strokeWidth="1.5" fill="none" />
         <path d="M 0 80 L 100 75" stroke="#1a3355" strokeWidth="1" fill="none" />
@@ -351,7 +497,7 @@ function MapCanvas({ trucks: list, selectedId, onSelect }: { trucks: Array<{ id:
           <button
             key={t.id}
             onClick={() => onSelect(t.id)}
-            className="absolute -translate-x-1/2 -translate-y-1/2 group"
+            className="absolute -translate-x-1/2 -translate-y-1/2"
             style={{ left: `${p.x}%`, top: `${p.y}%` }}
           >
             <div className={`flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold text-white shadow-lg ${bg} ${active ? "ring-2 ring-white" : ""}`}>

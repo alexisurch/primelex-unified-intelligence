@@ -3,7 +3,7 @@
 
 export type TruckStatus = "On The Road" | "Idle" | "Maintenance" | "Offline";
 export type Priority = "Critical" | "High" | "Medium" | "Low";
-export type TripStatus = "In Transit" | "Delivered" | "Delayed" | "Scheduled" | "Cancelled";
+export type TripStatus = "Dispatched" | "In Transit" | "Delivered" | "Delayed" | "Scheduled" | "Cancelled";
 export type PaymentStatus = "Paid" | "Pending";
 
 export interface Truck {
@@ -38,6 +38,7 @@ export interface Trip {
   date: string;
   revenue: number;
   paymentStatus: PaymentStatus;
+  routeStops?: string[];
 }
 
 export interface Driver {
@@ -119,6 +120,7 @@ export interface RouteEntity {
   name: string;
   origin: string;
   destination: string;
+  stops?: string[];
   distanceKm: number;
   createdAt: string;
 }
@@ -501,26 +503,47 @@ export function getFleetManagerForTruck(truckId: string, managers: FleetManager[
 }
 
 // ---- Routes ----
-function routeKey(origin: string, destination: string) { return `${origin}__${destination}`; }
+function routeKey(origin: string, destination: string, stops: string[] = []) { return `${origin}__${stops.join(">")}__${destination}`; }
 const routeMap = new Map<string, RouteEntity>();
 trips.forEach((t) => {
-  const key = routeKey(t.origin, t.destination);
+  const stopList = t.routeStops ?? [];
+  const key = routeKey(t.origin, t.destination, stopList);
   if (!routeMap.has(key)) {
+    const nameParts = [t.origin, ...stopList, t.destination];
     routeMap.set(key, {
       id: `RTE-${400 + routeMap.size}`,
-      name: `${t.origin} → ${t.destination}`,
+      name: nameParts.join(" → "),
       origin: t.origin,
       destination: t.destination,
+      stops: stopList,
       distanceKm: t.distance,
       createdAt: "2025-06-01",
     });
   }
 });
 export const routes: RouteEntity[] = Array.from(routeMap.values());
-export function getRouteFor(origin: string, destination: string) {
-  return routeMap.get(routeKey(origin, destination));
+export function getRouteFor(origin: string, destination: string, stops: string[] = []) {
+  return routeMap.get(routeKey(origin, destination, stops));
 }
 export function getRouteById(id: string) { return routes.find((r) => r.id === id); }
+export function findOrCreateRoute(origin: string, destination: string, stops: string[] = []): RouteEntity {
+  const key = routeKey(origin, destination, stops);
+  const existing = routeMap.get(key);
+  if (existing) return existing;
+  const nameParts = [origin, ...stops, destination];
+  const route: RouteEntity = {
+    id: `RTE-${400 + routeMap.size}`,
+    name: nameParts.join(" → "),
+    origin,
+    destination,
+    stops,
+    distanceKm: 0,
+    createdAt: new Date().toISOString().slice(0, 10),
+  };
+  routeMap.set(key, route);
+  routes.push(route);
+  return route;
+}
 
 // ---- Trip historical fuel snapshots (permanent per trip) ----
 export interface TripFuelSnapshot { tripId: string; assignedFuelL: number; fuelCostNGN: number; distanceKm: number; litersPerKm: number; routeId?: string; }

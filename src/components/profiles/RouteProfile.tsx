@@ -1,6 +1,7 @@
 import { Route as RouteIcon, MapPin, Users, Truck as TruckIcon, ShieldAlert, Fuel, TrendingUp, Circle, Clock, Activity, DollarSign, Wrench } from "lucide-react";
 import { Pill } from "@/components/shared/Cards";
-import { routes, trips, incidents, tripFuelHistory, clients, getRouteById, drivers, getPreferredTrucks, getPreferredDrivers, getRouteHealthScore, getRouteMaintenanceSummary, getRouteFuelSummary } from "@/lib/mock-data";
+import { routes, incidents, tripFuelHistory, clients, getRouteById, drivers, getPreferredTrucks, getPreferredDrivers, getRouteHealthScore, getRouteMaintenanceSummary, getRouteFuelSummary } from "@/lib/mock-data";
+import { useTrips } from "@/lib/trips-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, type Tone } from "./ProfileShell";
 import { useState } from "react";
@@ -11,10 +12,11 @@ const naira = (n: number) => "₦" + n.toLocaleString();
 export function RouteProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const rt = getRouteById(id) ?? routes.find((r) => r.name === id);
   const [incidentsOpen, setIncidentsOpen] = useState(false);
+  const { trips } = useTrips();
   if (!rt) return <div className="p-6 text-sm text-muted-foreground">Route not found.</div>;
 
   const routeTrips = trips.filter((t) => t.origin === rt.origin && t.destination === rt.destination);
-  const activeTrips = routeTrips.filter((t) => t.status === "In Transit" || t.status === "Scheduled");
+  const activeTrips = routeTrips.filter((t) => t.status === "In Transit" || t.status === "Scheduled" || t.status === "Dispatched");
   const completed = routeTrips.filter((t) => t.status === "Delivered");
   const routeIncidents = incidents.filter((i) => {
     const tp = trips.find((t) => t.id === i.trip);
@@ -56,6 +58,7 @@ export function RouteProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
                 ["Route Name", rt.name],
                 ["Origin", rt.origin],
                 ["Destination", rt.destination],
+                ...(rt.stops && rt.stops.length > 0 ? [["Stops", rt.stops.join(", ")] as [string, string]] : []),
                 ["Total Distance", `${rt.distanceKm} km`],
                 ["Active Trips", String(activeTrips.length)],
                 ["Completed Trips", String(completed.length)],
