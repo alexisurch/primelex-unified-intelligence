@@ -4,9 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { KPICard, Pill } from "@/components/shared/Cards";
 import { DataTable, type Column } from "@/components/shared/DataTable";
 import { trips as rawTrips, clients, routes, getRouteFor, exportCSV, type Trip } from "@/lib/mock-data";
-import { useTrips, formatRouteDisplay, isRoutePending, type TripWithRoute } from "@/lib/trips-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
-import { RouteEditorDialog } from "@/components/shared/RouteEditorDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,42 +15,42 @@ export const Route = createFileRoute("/_app/trips-deliveries")({
   component: TripsDeliveries,
 });
 
-const tone = { "In Transit": "info", "Delivered": "success", "Delayed": "danger", "Scheduled": "warning", "Cancelled": "purple", "Dispatched": "warning" } as const;
-const ALL_STATUSES = ["Dispatched", "In Transit", "Delivered", "Delayed", "Scheduled", "Cancelled"] as const;
+const tone = { "In Transit": "info", "Delivered": "success", "Delayed": "danger", "Scheduled": "warning", "Cancelled": "purple" } as const;
+const ALL_STATUSES = ["In Transit", "Delivered", "Delayed", "Scheduled", "Cancelled"] as const;
 
 function TripsDeliveries() {
   const { open } = useProfileDrawer();
-  const { trips, updateStatus } = useTrips();
+  const [trips, setTrips] = useState<Trip[]>(rawTrips);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [routeEditTripId, setRouteEditTripId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     return trips.filter((t) => {
       if (statusFilter !== "all" && t.status !== statusFilter) return false;
       if (!search) return true;
       const s = search.toLowerCase();
-      const routeStr = isRoutePending(t) ? "route pending" : formatRouteDisplay(t.routeStops).toLowerCase();
-      return t.id.toLowerCase().includes(s) || t.customer.toLowerCase().includes(s) || t.driver.toLowerCase().includes(s) || t.truck.toLowerCase().includes(s) || routeStr.includes(s);
+      return t.id.toLowerCase().includes(s) || t.customer.toLowerCase().includes(s) || t.driver.toLowerCase().includes(s) || t.truck.toLowerCase().includes(s) || t.origin.toLowerCase().includes(s) || t.destination.toLowerCase().includes(s);
     });
   }, [trips, search, statusFilter]);
 
   function handleStatusChange(tripId: string, newStatus: string) {
-    updateStatus(tripId, newStatus as Trip["status"]);
+    setTrips((prev) => prev.map((t) => t.id === tripId ? { ...t, status: newStatus as Trip["status"] } : t));
     toast.success(`Trip ${tripId} status updated to ${newStatus}`);
+    if (newStatus === "On Trip") {
+      toast.info("Route dialog would open here to create/attach route");
+    }
   }
 
   function handleExport() {
     exportCSV(
       "trips-deliveries.csv",
-      ["Trip ID", "Customer", "Route", "Driver", "Truck", "Status", "ETA", "Distance"],
-      filtered.map((t) => [t.id, t.customer, isRoutePending(t) ? "Route Pending" : formatRouteDisplay(t.routeStops), t.driver, t.truck, t.status, t.eta, `${t.distance} km`]),
+      ["Trip ID", "Customer", "Origin", "Destination", "Driver", "Truck", "Status", "ETA", "Distance"],
+      filtered.map((t) => [t.id, t.customer, t.origin, t.destination, t.driver, t.truck, t.status, t.eta, `${t.distance} km`]),
     );
     toast.success("Exported trips to CSV");
   }
 
   const clientIdFor = (name: string) => clients.find((c) => c.name === name)?.id;
-  const routeEditTrip = trips.find((t) => t.id === routeEditTripId) ?? null;
 
   const cols: Column<Trip>[] = [
     { key: "id", label: "Trip ID", render: (r) => (
@@ -63,17 +61,13 @@ function TripsDeliveries() {
       return cid ? <button onClick={() => open({ kind: "client", id: cid })} className="hover:underline">{r.customer}</button> : r.customer;
     }},
     { key: "origin", label: "Route", render: (r) => {
-      if (isRoutePending(r)) return <span className="text-xs text-muted-foreground italic">Route Pending</span>;
       const route = getRouteFor(r.origin, r.destination);
       return route ? (
-        <button onClick={() => open({ kind: "route", id: route.id })} className="text-xs text-primary hover:underline">{formatRouteDisplay(r.routeStops)}</button>
+        <button onClick={() => open({ kind: "route", id: route.id })} className="text-xs text-primary hover:underline">{r.origin} → {r.destination}</button>
       ) : (
-        <span className="text-xs text-foreground">{formatRouteDisplay(r.routeStops)}</span>
+        <span className="text-xs text-muted-foreground">{r.origin} → {r.destination}</span>
       );
     }},
-    { key: "_routeAction", label: "", render: (r) => (
-      <Button size="sm" variant="outline" className="h-7 text-[11px] border-border bg-elevated/60" onClick={() => setRouteEditTripId(r.id)}>{isRoutePending(r) ? "Add Route" : "Edit Route"}</Button>
-    )},
     { key: "driver", label: "Driver", render: (r) => (
       <button onClick={() => open({ kind: "driver", id: r.driver })} className="hover:underline">{r.driver}</button>
     )},
@@ -133,7 +127,6 @@ function TripsDeliveries() {
 
         <DataTable title="Trips" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} hideToolbar />
       </div>
-      <RouteEditorDialog open={!!routeEditTripId} onOpenChange={(v) => { if (!v) setRouteEditTripId(null); }} trip={routeEditTrip} />
     </>
   );
 }

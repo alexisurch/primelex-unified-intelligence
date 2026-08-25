@@ -1,8 +1,7 @@
 import { UserCog, Truck as TruckIcon, Users, Package, Route as RouteIcon, Fuel, Wrench, ShieldAlert, TrendingUp, Circle, Phone, Mail, IdCard, Calendar, Activity, CircleCheck as CheckCircle2, Clock, TriangleAlert as AlertTriangle, DollarSign } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Pill } from "@/components/shared/Cards";
-import { trucks, drivers, incidents, maintenanceRecords, fuelTransactions, tripFuelHistory, getRouteFor } from "@/lib/mock-data";
-import { useTrips, formatRouteDisplay, isRoutePending, type TripWithRoute } from "@/lib/trips-store";
+import { trucks, trips, drivers, incidents, maintenanceRecords, fuelTransactions, tripFuelHistory, getRouteFor } from "@/lib/mock-data";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, TimelineList, initials, type Tone } from "./ProfileShell";
@@ -13,7 +12,6 @@ const naira = (n: number) => "₦" + n.toLocaleString();
 
 export function FleetManagerProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const { getManager } = useFleetManagers();
-  const { trips } = useTrips();
   const m = getManager(id);
   if (!m) return <div className="p-6 text-sm text-muted-foreground">Fleet Manager not found.</div>;
 
@@ -21,7 +19,7 @@ export function FleetManagerProfile({ id, onOpen, onBack }: { id: string; onOpen
   const myDriverNames = new Set(myTrucks.map((t) => t.driver));
   const myDrivers = drivers.filter((d) => myDriverNames.has(d.name));
   const myTrips = trips.filter((tp) => m.assignedTruckIds.includes(tp.truck));
-  const activeTrips = myTrips.filter((tp) => tp.status === "In Transit" || tp.status === "Scheduled" || tp.status === "Dispatched");
+  const activeTrips = myTrips.filter((tp) => tp.status === "In Transit" || tp.status === "Scheduled");
   const completedTrips = myTrips.filter((tp) => tp.status === "Delivered");
   const delayed = myTrips.filter((tp) => tp.status === "Delayed");
   const myIncidents = incidents.filter((i) => m.assignedTruckIds.includes(i.truck));
@@ -113,9 +111,9 @@ export function FleetManagerProfile({ id, onOpen, onBack }: { id: string; onOpen
             rows={activeTrips.map((tp) => [
               <button key="t" onClick={() => onOpen({ kind: "trip", id: tp.id })} className="text-primary font-semibold hover:underline">{tp.id}</button>,
               tp.customer,
-              isRoutePending(tp as TripWithRoute) ? "Route Pending" : formatRouteDisplay((tp as TripWithRoute).routeStops),
+              `${tp.origin} → ${tp.destination}`,
               <button key="tr" onClick={() => onOpen({ kind: "truck", id: tp.truck })} className="hover:underline">{tp.truck}</button>,
-              <Pill key="s" tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "In Transit" ? "info" : tp.status === "Dispatched" ? "warning" : "warning"}>{tp.status}</Pill>,
+              <Pill key="s" tone={tp.status === "Delivered" ? "success" : tp.status === "Delayed" ? "danger" : tp.status === "In Transit" ? "info" : "warning"}>{tp.status}</Pill>,
             ])}
             empty="No active trips."
           />
