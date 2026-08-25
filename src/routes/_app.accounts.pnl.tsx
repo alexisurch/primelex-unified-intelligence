@@ -39,12 +39,12 @@ import { usePreferences } from "@/lib/preferences";
 import {
   clients,
   exportCSV,
-  trips as allTrips,
   tripFuelCost,
   tripOtherExpenses,
   getDepreciationForTrip,
   type Trip,
 } from "@/lib/mock-data";
+import { useTrips } from "@/lib/trips-store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/accounts/pnl")({
@@ -178,6 +178,7 @@ const clientIdFor = (name: string) => clients.find((c) => c.name === name)?.id;
 function PnlPage() {
   const { open } = useProfileDrawer();
   const { resolvedTheme } = usePreferences();
+  const { trips: allTrips } = useTrips();
   const isDark = resolvedTheme === "dark";
   const gridStroke = isDark
     ? "rgba(255,255,255,0.08)"

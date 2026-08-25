@@ -3,7 +3,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Pill } from "@/components/shared/Cards";
-import { trucks, trips, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend, getDepreciationForTruck, depreciationCalculations, tripFuelCost, tripOtherExpenses, getDepreciationForTrip } from "@/lib/mock-data";
+import { trucks, drivers, incidents, maintenanceRecords, tripFuelHistory, getRouteFor, getTruckAvgLkm, getTruckHealthScore, getAvgDowntime, getAvgRepairCost, getMTBR, getMaintenanceSpend, getDepreciationForTruck, depreciationCalculations, tripFuelCost, tripOtherExpenses, getDepreciationForTrip } from "@/lib/mock-data";
+import { useTrips } from "@/lib/trips-store";
 import { useFleetManagers } from "@/lib/fleet-managers-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
@@ -39,6 +40,7 @@ export function TruckProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: P
   const [archived, setArchived] = useState(false);
   const { trackingMode } = usePreferences();
   const { getManagerForTruck } = useFleetManagers();
+  const { trips } = useTrips();
   const isManual = trackingMode === "manual";
   const t = trucks.find((x) => x.id === id);
   if (!t) return <div className="p-6 text-sm text-muted-foreground">Truck not found.</div>;

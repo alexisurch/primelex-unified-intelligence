@@ -27,9 +27,9 @@ import {
   clients,
   exportCSV,
   getRouteFor,
-  trips as allTrips,
   type Trip,
 } from "@/lib/mock-data";
+import { useTrips } from "@/lib/trips-store";
 import { usePreferences } from "@/lib/preferences";
 import { cn } from "@/lib/utils";
 
@@ -137,6 +137,7 @@ function bucketLabel(date: Date, agg: AggKey): string {
 function RevenuePage() {
   const { open } = useProfileDrawer();
   const { resolvedTheme } = usePreferences();
+  const { trips: allTrips } = useTrips();
   const isDark = resolvedTheme === "dark";
   const gridStroke = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
   const axisColour = isDark ? "#94a3b8" : "#64748b";

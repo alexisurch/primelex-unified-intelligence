@@ -1,5 +1,6 @@
 import { Route as RouteIcon, Package, MapPin, Fuel, DollarSign, ClipboardList, Truck as TruckIcon, CircleUser as UserCircle2, Building2, Circle, FileText, Clock, Upload, Receipt, Percent } from "lucide-react";
-import { trips, trucks, drivers, clients, incidents, tripFuelHistory, getRouteFor, getTruckAvgLkm, tripFuelCost, tripOtherExpenses, getDepreciationForTrip, tripGrossProfit, tripNetProfit, tripTotalExpenses } from "@/lib/mock-data";
+import { trucks, drivers, clients, incidents, tripFuelHistory, getRouteFor, getTruckAvgLkm, tripFuelCost, tripOtherExpenses, getDepreciationForTrip, tripGrossProfit, tripNetProfit, tripTotalExpenses } from "@/lib/mock-data";
+import { useTrips } from "@/lib/trips-store";
 import { usePreferences } from "@/lib/preferences";
 import type { ProfileTarget } from "@/lib/profile-drawer";
 import { ProfileHeader, ProfileSection, ProfileTabs, InfoGrid, StatTile, DocumentsGrid, type Tone } from "./ProfileShell";
@@ -12,8 +13,9 @@ const naira = (n: number) => "₦" + n.toLocaleString();
 
 export function TripProfile({ id, onOpen, onBack }: { id: string; onOpen: (t: ProfileTarget) => void; onBack?: () => void }) {
   const { trackingMode } = usePreferences();
+  const { getTrip } = useTrips();
   const isManual = trackingMode === "manual";
-  const trip = trips.find((t) => t.id === id);
+  const trip = getTrip(id);
   const [uploadOpen, setUploadOpen] = useState(false);
   if (!trip) return <div className="p-6 text-sm text-muted-foreground">Trip not found.</div>;
 

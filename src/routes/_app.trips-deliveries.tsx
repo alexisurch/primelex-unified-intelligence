@@ -1,13 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
-import { KPICard, Pill } from "@/components/shared/Cards";
+import { KPICard } from "@/components/shared/Cards";
 import { DataTable, type Column } from "@/components/shared/DataTable";
-import { trips as rawTrips, clients, routes, getRouteFor, exportCSV, type Trip } from "@/lib/mock-data";
+import { clients, getRouteFor, exportCSV, type Trip, type PaymentStatus } from "@/lib/mock-data";
+import { useTrips } from "@/lib/trips-store";
 import { useProfileDrawer } from "@/lib/profile-drawer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Route as RouteIcon, Package, Clock, TriangleAlert as AlertTriangle, Download, Search, ListFilter as Filter } from "lucide-react";
 
@@ -17,35 +26,73 @@ export const Route = createFileRoute("/_app/trips-deliveries")({
 
 const tone = { "In Transit": "info", "Delivered": "success", "Delayed": "danger", "Scheduled": "warning", "Cancelled": "purple" } as const;
 const ALL_STATUSES = ["In Transit", "Delivered", "Delayed", "Scheduled", "Cancelled"] as const;
+const ALL_PAYMENTS: PaymentStatus[] = ["Paid", "Pending"];
+
+const naira = (n: number) => "₦" + n.toLocaleString("en-NG", { maximumFractionDigits: 0 });
+
+interface ConfirmState {
+  trip: Trip;
+  newStatus: PaymentStatus;
+  previousStatus: PaymentStatus;
+}
 
 function TripsDeliveries() {
   const { open } = useProfileDrawer();
-  const [trips, setTrips] = useState<Trip[]>(rawTrips);
+  const { trips, updatePaymentStatus } = useTrips();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [paymentFilter, setPaymentFilter] = useState("all");
+  const [confirm, setConfirm] = useState<ConfirmState | null>(null);
 
   const filtered = useMemo(() => {
     return trips.filter((t) => {
       if (statusFilter !== "all" && t.status !== statusFilter) return false;
+      if (paymentFilter !== "all" && t.paymentStatus !== paymentFilter) return false;
       if (!search) return true;
       const s = search.toLowerCase();
       return t.id.toLowerCase().includes(s) || t.customer.toLowerCase().includes(s) || t.driver.toLowerCase().includes(s) || t.truck.toLowerCase().includes(s) || t.origin.toLowerCase().includes(s) || t.destination.toLowerCase().includes(s);
     });
-  }, [trips, search, statusFilter]);
+  }, [trips, search, statusFilter, paymentFilter]);
 
   function handleStatusChange(tripId: string, newStatus: string) {
-    setTrips((prev) => prev.map((t) => t.id === tripId ? { ...t, status: newStatus as Trip["status"] } : t));
+    const trip = trips.find((t) => t.id === tripId);
+    if (!trip) return;
+    // paymentStatus handled by handlePaymentChange; this is trip status
+    // (existing behavior kept)
     toast.success(`Trip ${tripId} status updated to ${newStatus}`);
     if (newStatus === "On Trip") {
       toast.info("Route dialog would open here to create/attach route");
     }
   }
 
+  function handlePaymentChange(tripId: string, newStatus: PaymentStatus) {
+    const trip = trips.find((t) => t.id === tripId);
+    if (!trip) return;
+    if (trip.paymentStatus === newStatus) return;
+    // Any payment status change requires confirmation
+    setConfirm({ trip, newStatus, previousStatus: trip.paymentStatus });
+  }
+
+  function confirmPaymentChange() {
+    if (!confirm) return;
+    updatePaymentStatus(confirm.trip.id, confirm.newStatus);
+    if (confirm.newStatus === "Paid") {
+      toast.success(`Payment confirmed for ${confirm.trip.id}`);
+    } else {
+      toast.success(`Payment status for ${confirm.trip.id} changed to ${confirm.newStatus}`);
+    }
+    setConfirm(null);
+  }
+
+  function cancelPaymentChange() {
+    setConfirm(null);
+  }
+
   function handleExport() {
     exportCSV(
       "trips-deliveries.csv",
-      ["Trip ID", "Customer", "Origin", "Destination", "Driver", "Truck", "Status", "ETA", "Distance"],
-      filtered.map((t) => [t.id, t.customer, t.origin, t.destination, t.driver, t.truck, t.status, t.eta, `${t.distance} km`]),
+      ["Trip ID", "Customer", "Origin", "Destination", "Driver", "Truck", "Status", "ETA", "Distance", "Revenue", "Payment Status"],
+      filtered.map((t) => [t.id, t.customer, t.origin, t.destination, t.driver, t.truck, t.status, t.eta, `${t.distance} km`, naira(t.revenue), t.paymentStatus]),
     );
     toast.success("Exported trips to CSV");
   }
@@ -84,7 +131,21 @@ function TripsDeliveries() {
     )},
     { key: "eta", label: "ETA" },
     { key: "distance", label: "Distance", render: (r) => <span className="text-xs">{r.distance} km</span> },
+    { key: "revenue", label: "Revenue", render: (r) => <span className="text-xs font-semibold text-foreground">{naira(r.revenue)}</span> },
+    { key: "paymentStatus", label: "Payment Status", render: (r) => (
+      <Select value={r.paymentStatus} onValueChange={(v) => handlePaymentChange(r.id, v as PaymentStatus)}>
+        <SelectTrigger className="h-7 w-28 text-xs border-border/60 bg-elevated/60">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {ALL_PAYMENTS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    )},
   ];
+
+  const isPendingToPaid = confirm?.previousStatus === "Pending" && confirm?.newStatus === "Paid";
+  const isPaidToPending = confirm?.previousStatus === "Paid" && confirm?.newStatus === "Pending";
 
   return (
     <>
@@ -118,6 +179,13 @@ function TripsDeliveries() {
                   {ALL_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                 </SelectContent>
               </Select>
+              <Select value={paymentFilter} onValueChange={setPaymentFilter}>
+                <SelectTrigger className="h-9 w-44 text-xs bg-elevated/60"><SelectValue placeholder="All Payment Statuses" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Payment Statuses</SelectItem>
+                  {ALL_PAYMENTS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <Button variant="outline" size="sm" className="border-border bg-elevated/60" onClick={handleExport}>
@@ -127,6 +195,58 @@ function TripsDeliveries() {
 
         <DataTable title="Trips" columns={cols} rows={filtered} searchKeys={[]} pageSize={10} hideToolbar />
       </div>
+
+      <Dialog open={!!confirm} onOpenChange={(o) => { if (!o) cancelPaymentChange(); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {isPendingToPaid ? "Mark Payment as Paid?" : "Change Payment Status?"}
+            </DialogTitle>
+            <DialogDescription>
+              {isPendingToPaid ? (
+                <>You are about to mark this trip as Paid.</>
+              ) : isPaidToPending ? (
+                <>You are about to change the payment status for this trip from <strong>Paid</strong> to <strong>Pending</strong>.</>
+              ) : null}
+            </DialogDescription>
+          </DialogHeader>
+
+          {confirm && (
+            <div className="space-y-2 rounded-lg border border-border/60 bg-elevated/30 px-4 py-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Trip</span>
+                <span className="font-medium">{confirm.trip.id}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Customer</span>
+                <span className="font-medium">{confirm.trip.customer}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Revenue</span>
+                <span className="font-semibold text-foreground">{naira(confirm.trip.revenue)}</span>
+              </div>
+            </div>
+          )}
+
+          {isPendingToPaid && (
+            <p className="text-sm text-muted-foreground">
+              Please confirm that payment for this trip has been received.
+            </p>
+          )}
+          {isPaidToPending && (
+            <p className="text-sm text-muted-foreground">
+              Are you sure you want to continue?
+            </p>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={cancelPaymentChange}>Cancel</Button>
+            <Button onClick={confirmPaymentChange}>
+              {isPendingToPaid ? "Confirm Payment" : "Confirm Change"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
